@@ -46,8 +46,9 @@
     <Compile Include="Layers\CommunicationLayer\Communication.cs" />
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
     <Compile Include="Layers\PersistenceLayer\MessageComparator.cs" />
-    <Compile Include="Layers\PersistenceLayer\MessageHandler.cs" />
+    <Compile Include="Layers\PersistenceLayer\MessageService.cs" />
     <Compile Include="Layers\PersistenceLayer\SerializationService.cs" />
+    <Compile Include="Layers\PersistenceLayer\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

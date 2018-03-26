@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.PersistenceLayer
 {
-    static class MessageHandler
+    static class MessageService
     {
         private const string MESSAGE_LIST = "Messages.bin"; //The file name to save the mesages
 
@@ -17,14 +17,13 @@ namespace ISE182_project.Layers.PersistenceLayer
 
         public static void SerializeMesages(ArrayList messages) //Cheak if legal
         {
-            Sort(messages);
-
             if (File.Exists(MESSAGE_LIST))
             {
                 reSerializeMesages(messages);
             }
             else
             {
+                Sort(messages);
                 SerializationService.Serialize(messages, MESSAGE_LIST);
             }        
         }
@@ -50,10 +49,14 @@ namespace ISE182_project.Layers.PersistenceLayer
             return toReturn;
         }
 
+        public static ArrayList DerializeLast20Mesages(int amount)
+        {
+            return DerializeMesages(20);
+        }
 
         //-----------------------------------------------------------------
 
-        // Serialize when an old Serializion exost 
+            // Serialize when an old Serializion exost 
         private static void reSerializeMesages(ArrayList messages)
         {
             ArrayList oldMessages = DeserializeMesages();
