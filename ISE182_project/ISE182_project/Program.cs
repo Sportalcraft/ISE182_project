@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using System;
 using System.Collections.Generic;
-using MileStoneClient.CommunicationLayer;
+
 
 namespace MileStoneClient
 {
@@ -8,6 +9,11 @@ namespace MileStoneClient
     {
 
         static void Main(string[] args)
+        {
+            ISE182_project.Layers.PersistenceLayer.SerializationService.Deserialize("abc");
+        }
+
+            static void Main2(string[] args)
         {
             string gourpID = "2";
             string nickName = "Ben";
