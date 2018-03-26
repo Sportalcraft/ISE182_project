@@ -1,5 +1,6 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,11 @@ namespace ISE182_project.Layers.PersistenceLayer
 
 
 
-        public static void SerializeMesages(LinkedList<IMessage> messages) //Cheak if legal
+        public static void SerializeMesages(ArrayList messages) //Cheak if legal
         {
-            if(File.Exists(MESSAGE_LIST))
+            Sort(messages);
+
+            if (File.Exists(MESSAGE_LIST))
             {
                 reSerializeMesages(messages);
             }
@@ -26,24 +29,24 @@ namespace ISE182_project.Layers.PersistenceLayer
             }        
         }
 
-        public static LinkedList<IMessage> DeserializeMesages() 
+        public static ArrayList DeserializeMesages() 
         {
-            return  (LinkedList<IMessage>)SerializationService.Deserialize(MESSAGE_LIST);
+            ArrayList temp =  (ArrayList)SerializationService.Deserialize(MESSAGE_LIST);
+            Sort(temp);
+            return temp;
         }
 
-        public static LinkedList<IMessage> DerializeMesages(int amount)
+        public static ArrayList DerializeMesages(int amount)
         {
-            LinkedList<IMessage> messages = DeserializeMesages();
-            LinkedList<IMessage> toReturn = new LinkedList<IMessage>();
+            ArrayList messages = DeserializeMesages();
+            ArrayList toReturn = new ArrayList();
 
             foreach (IMessage msg in messages)
             {
-                if (amount == 0)
-                    return toReturn;
-
-                toReturn.AddLast(msg);
+                toReturn.Add(msg);
             }
 
+            Sort(toReturn);
             return toReturn;
         }
 
@@ -51,25 +54,26 @@ namespace ISE182_project.Layers.PersistenceLayer
         //-----------------------------------------------------------------
 
         // Serialize when an old Serializion exost 
-        private static void reSerializeMesages(LinkedList<IMessage> messages)
+        private static void reSerializeMesages(ArrayList messages)
         {
-            LinkedList<IMessage> oldMessages = DeserializeMesages();
+            ArrayList oldMessages = DeserializeMesages();
             MergeIntoFirst(oldMessages, messages);
+            Sort(oldMessages);
             SerializationService.Serialize(oldMessages, MESSAGE_LIST);
         }
 
         // Merge to lists of messages 
-        private static void MergeIntoFirst(LinkedList<IMessage> msgs1, LinkedList<IMessage> msgs2)
+        private static void MergeIntoFirst(ArrayList msgs1, ArrayList msgs2)
         {
            foreach(IMessage msg in msgs2)
            {
                 if (!Exist(msgs1, msg.Id))
-                    msgs1.AddLast(msg);
+                    msgs1.Add(msg);
            }
         }
 
         //check if an old message already exists
-        private static bool Exist(LinkedList<IMessage> messages, Guid guid)
+        private static bool Exist(ArrayList messages, Guid guid)
         {
             foreach (IMessage msg in messages)
             {
@@ -77,6 +81,13 @@ namespace ISE182_project.Layers.PersistenceLayer
                     return true;
             }
             return false;
+        }
+
+
+        //Sort a message List by the time
+        private static void Sort(ArrayList messages)
+        {
+            messages.Sort(new MessageComparator());
         }
 
     }
