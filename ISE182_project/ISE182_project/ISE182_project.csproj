@@ -45,10 +45,10 @@
   <ItemGroup>
     <Compile Include="Layers\CommunicationLayer\Communication.cs" />
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
-    <Compile Include="Layers\PersistenceLayer\MessageComparator.cs" />
-    <Compile Include="Layers\PersistenceLayer\MessageService.cs" />
-    <Compile Include="Layers\PersistenceLayer\SerializationService.cs" />
-    <Compile Include="Layers\PersistenceLayer\User.cs" />
+    <Compile Include="Layers\PersistentLayer\MessageComparator.cs" />
+    <Compile Include="Layers\PersistentLayer\MessageService.cs" />
+    <Compile Include="Layers\PersistentLayer\SerializationService.cs" />
+    <Compile Include="Layers\PersistentLayer\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

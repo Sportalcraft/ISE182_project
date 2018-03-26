@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISE182_project.Layers.PersistenceLayer
+namespace ISE182_project.Layers.PersistentLayer
 {
     static class SerializationService
     {
