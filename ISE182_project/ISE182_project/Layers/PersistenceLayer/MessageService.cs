@@ -24,20 +24,30 @@ namespace ISE182_project.Layers.PersistenceLayer
             else
             {
                 Sort(messages);
-                SerializationService.Serialize(messages, MESSAGE_LIST);
+                Serialize(messages);
             }        
         }
 
-        public static ArrayList DeserializeMesages() 
+        public static ArrayList DeserializeAllMesages() 
         {
             ArrayList temp =  (ArrayList)SerializationService.Deserialize(MESSAGE_LIST);
             Sort(temp);
             return temp;
         }
 
-        public static ArrayList DerializeMesages(int amount)
+        public static ArrayList DerializeLast20Mesages(int amount)
         {
-            ArrayList messages = DeserializeMesages();
+            return DerializeMesages(20);
+        }
+
+        //-----------------------------------------------------------------
+
+        #region private methods
+
+        //return the last n Serialized messages
+        private static ArrayList DerializeMesages(int amount)
+        {
+            ArrayList messages = DeserializeAllMesages();
             ArrayList toReturn = new ArrayList();
 
             foreach (IMessage msg in messages)
@@ -49,20 +59,19 @@ namespace ISE182_project.Layers.PersistenceLayer
             return toReturn;
         }
 
-        public static ArrayList DerializeLast20Mesages(int amount)
+        //Serialze a list
+        private static void Serialize(ArrayList messages)
         {
-            return DerializeMesages(20);
+            SerializationService.Serialize(messages, MESSAGE_LIST);
         }
 
-        //-----------------------------------------------------------------
-
-            // Serialize when an old Serializion exost 
+        // Serialize when an old Serializion exost 
         private static void reSerializeMesages(ArrayList messages)
         {
-            ArrayList oldMessages = DeserializeMesages();
+            ArrayList oldMessages = DeserializeAllMesages();
             MergeIntoFirst(oldMessages, messages);
             Sort(oldMessages);
-            SerializationService.Serialize(oldMessages, MESSAGE_LIST);
+            Serialize(messages);
         }
 
         // Merge to lists of messages 
@@ -92,6 +101,8 @@ namespace ISE182_project.Layers.PersistenceLayer
         {
             messages.Sort(new MessageComparator());
         }
+
+        #endregion
 
     }
 }
