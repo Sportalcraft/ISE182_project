@@ -7,13 +7,7 @@ namespace MileStoneClient
 {
     class Program
     {
-
-        static void Main(string[] args)
-        {
-            ISE182_project.Layers.PersistenceLayer.SerializationService.Deserialize("abc");
-        }
-
-            static void Main2(string[] args)
+         static void Main(string[] args)
         {
             string gourpID = "2";
             string nickName = "Ben";

@@ -11,95 +11,87 @@ namespace ISE182_project.Layers.PersistentLayer
 {
     static class MessageService
     {
-        private const string MESSAGE_LIST = "Messages.bin"; //The file name to save the mesages
+        private const string MESSAGE_LIST = "Messages.bin"; // The file name to save the mesages
+        private static ArrayList _ramMessages;              // Store a coppy of the messages in the ram for quick acces
+
+        //Getter and setter to the messages stored in the ram
+        public static ArrayList RamMessages
+        {
+            private set { _ramMessages = value; }
+            get
+            {
+                if (_ramMessages == null)
+                    deserializeAllMesages();
+
+                return _ramMessages;
+            }
+        }
 
 
-
-        public static void SerializeMesages(ArrayList messages) //Cheak if legal
+        public static void serializeMesages(ArrayList messages)
         {
             if (File.Exists(MESSAGE_LIST))
             {
-                reSerializeMesages(messages);
+                mergeIntoFirst(RamMessages, messages);
+                messages = RamMessages;
             }
-            else
-            {
-                Sort(messages);
-                Serialize(messages);
-            }        
+
+            sort(messages);
+            serialize(messages);
+            RamMessages = messages;
         }
 
-        public static ArrayList DeserializeAllMesages() 
+        public static ArrayList last20Mesages(int amount)
         {
-            ArrayList temp =  (ArrayList)SerializationService.Deserialize(MESSAGE_LIST);
-            Sort(temp);
-            return temp;
-        }
-
-        public static ArrayList DerializeLast20Mesages(int amount)
-        {
-            return DerializeMesages(20);
+            return lastNmesages(20);
         }
 
         //-----------------------------------------------------------------
 
         #region private methods
 
-        //return the last n Serialized messages
-        private static ArrayList DerializeMesages(int amount)
+        //Deserialize all messages from the disk and save to ram
+        private static ArrayList deserializeAllMesages()
         {
-            ArrayList messages = DeserializeAllMesages();
-            ArrayList toReturn = new ArrayList();
+            ArrayList temp = (ArrayList)SerializationService.Deserialize(MESSAGE_LIST);
+            sort(temp);
+            RamMessages = temp;
+            return temp;
+        }
 
-            foreach (IMessage msg in messages)
+        //return the last n Serialized messages
+        private static ArrayList lastNmesages(int amount)
+        {
+            ArrayList toReturn = new ArrayList(amount);
+
+            for (int i = 0; i < amount & i < RamMessages.Count; i++)
             {
-                toReturn.Add(msg);
+                toReturn.Add(RamMessages[i]);
             }
 
-            Sort(toReturn);
             return toReturn;
         }
 
-        //Serialze a list
-        private static void Serialize(ArrayList messages)
+        //Serialze a list of messages
+        private static void serialize(ArrayList messages)
         {
             SerializationService.Serialize(messages, MESSAGE_LIST);
         }
 
-        // Serialize when an old Serializion exost 
-        private static void reSerializeMesages(ArrayList messages)
-        {
-            ArrayList oldMessages = DeserializeAllMesages();
-            MergeIntoFirst(oldMessages, messages);
-            Sort(oldMessages);
-            Serialize(messages);
-        }
-
-        // Merge to lists of messages 
-        private static void MergeIntoFirst(ArrayList msgs1, ArrayList msgs2)
-        {
-           foreach(IMessage msg in msgs2)
-           {
-                if (!Exist(msgs1, msg.Id))
-                    msgs1.Add(msg);
-           }
-        }
-
-        //check if an old message already exists
-        private static bool Exist(ArrayList messages, Guid guid)
-        {
-            foreach (IMessage msg in messages)
-            {
-                if (msg.Id.Equals(guid))
-                    return true;
-            }
-            return false;
-        }
-
-
         //Sort a message List by the time
-        private static void Sort(ArrayList messages)
+        private static void sort(ArrayList messages)
         {
-            messages.Sort(new MessageComparator());
+            messages.Sort(new MessageComparatorByDate());
+        }
+
+        // Merge two lists of messages to the first one
+        private static void mergeIntoFirst(ArrayList msgs1, ArrayList msgs2)
+        {
+            foreach (IMessage msg in msgs2)
+            {
+                if (!msgs1.Contains(msg))
+                    msgs1.Add(msg);
+            }
         }
 
         #endregion

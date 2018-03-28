@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.PersistentLayer
 {
-    class User
+    class User : IUser
     {
-        private int _groupID;     // The group ID from the registration sheet
-        private string _nickName; // The nickName chosen by the user
-
-        public int GroupID
-        {
-            get { return _groupID; }
-            //set { _groupID = value; }
-        }
+        private const int GROUP_ID = 32;  // The group ID from the registration sheet
+        private string _nickName;         // The nickName chosen by the user
 
         public string NickName
         {
             get { return _nickName; }
-           // set { _nickName = value; }
+            // set { _nickName = value; }
+        }
+
+        public User(string nickName)
+        {
+            _nickName = nickName;
         }
 
         public IMessage send(string msg)
@@ -29,9 +28,16 @@ namespace ISE182_project.Layers.PersistentLayer
             throw new NotImplementedException();
         }
 
-        public void logout()
+        public void logout() { }
+
+        public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            if (!(obj is IUser))
+                return false;
+
+            IUser other = (IUser)obj;
+            return NickName.Equals(other.NickName);
+
         }
     }
 }

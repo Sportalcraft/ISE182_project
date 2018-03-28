@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.PersistentLayer
 {
-    class MessageComparator : IComparer
+    class MessageComparatorByDate : IComparer
     {
-        public int Compare(object x, object y)
+        //This class impaments the IComparer iterface, 
+        //and making a ratio order acrding to the message time  
+
+        public int Compare(object x, object y) //Implamenting IComparer
         {
             IMessage msg1 = (IMessage)x;
             IMessage msg2 = (IMessage)y;
