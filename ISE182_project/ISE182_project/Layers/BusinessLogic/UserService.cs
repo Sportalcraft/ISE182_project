@@ -19,10 +19,17 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter and setter to the users stored in the ram
         public static ArrayList RamUsers
         {
-            set
+            private set // + Update
             {
-                MergeTwoArrays.mergeIntoFirst(_ramUsers, value); // Merging to avoid duplication
-                UserSerializationService.serialize(_ramUsers);   // Serialize the new list
+                if (_ramUsers == null) //there is ni stored messages
+                {
+                    _ramUsers = value;
+                }
+                else
+                {
+                    MergeTwoArrays.mergeIntoFirst(_ramUsers, value); // Merging to avoid duplication
+                    UserSerializationService.serialize(_ramUsers);   // Serialize the new list
+                }
             }
             get
             {

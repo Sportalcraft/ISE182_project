@@ -22,6 +22,18 @@ namespace ISE182_project.Layers.BusinessLogic
             set { _loggedinUser = value; }
         }
 
+        //retrive and sace the last meseges from server
+        public static void SaveLast10FromServer()
+        {
+            MessageService.SaveLast10FromServer(URL);
+        }
+
+        // register a user to the server
+        public static void register(string nickname)
+        {
+            UserService.register(new User(nickname));
+        }
+
         // logIn an existing user to the server
         public static void login(string nickname)
         {

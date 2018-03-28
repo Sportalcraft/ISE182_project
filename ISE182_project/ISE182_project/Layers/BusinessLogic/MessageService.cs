@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.PersistentLayer;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,11 +18,18 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter and setter to the messages stored in the ram
         public static ArrayList RamMessages
         {
-            private set
+            private set // + Update
             {
-                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // Merging to avoid duplication
-                sort(_ramMessages);                                  // Sorting
-                MessageSerializationService.serialize(_ramMessages); // Serialize the new list
+                if (_ramMessages == null) //there is ni stored messages
+                {
+                    _ramMessages = value;
+                }
+                else
+                {
+                    MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // Merging to avoid duplication
+                    sort(_ramMessages);                                  // Sorting
+                    MessageSerializationService.serialize(_ramMessages); // Serialize the new list
+                }
             }
             get
             {
@@ -45,10 +53,18 @@ namespace ISE182_project.Layers.BusinessLogic
             return toReturn;
         }
 
+        //Get the last 20 messages stored in RAM
         public static ArrayList last20Mesages(int amount)
         {
             return lastNmesages(20);
         }
+
+        //retrive and sace the last meseges from server
+        public static void SaveLast10FromServer(string url)
+        {
+            RamMessages = new ArrayList(Communication.Instance.GetTenMessages(url));
+        }
+
 
         //-----------------------------------------------------------------
 
