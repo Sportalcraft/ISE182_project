@@ -52,20 +52,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Layers\BusinessLogic\ChatRoom.cs" />
+    <Compile Include="Layers\BusinessLogic\MergeTwoArrays.cs" />
     <Compile Include="Layers\BusinessLogic\Message.cs" />
     <Compile Include="Layers\CommunicationLayer\Communication.cs" />
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
     <Compile Include="Layers\CommunicationLayer\IUser.cs" />
-    <Compile Include="Layers\PersistentLayer\MessageComparatorByDate.cs" />
-    <Compile Include="Layers\PersistentLayer\MessageService.cs" />
+    <Compile Include="Layers\BusinessLogic\MessageComparatorByDate.cs" />
+    <Compile Include="Layers\PersistentLayer\MessageSerializationService.cs" />
+    <Compile Include="Layers\BusinessLogic\MessageService.cs" />
     <Compile Include="Layers\PersistentLayer\SerializationService.cs" />
-    <Compile Include="Layers\PersistentLayer\User.cs" />
-    <Compile Include="Layers\PersistentLayer\UserService.cs" />
+    <Compile Include="Layers\BusinessLogic\User.cs" />
+    <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
+    <Compile Include="Layers\BusinessLogic\UserService.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Layers\LoggingLayey\" />
+    <Folder Include="Layers\PresentationLayer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

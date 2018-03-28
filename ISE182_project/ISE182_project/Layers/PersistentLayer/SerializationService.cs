@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.PersistentLayer
 {
+
+    //This class enable serializtion and deserializtion to the disk of any kind
     static class SerializationService
     {
 
-        //Serialize an object inder the given file name
-        public static void Serialize(object toSerialize, string fileName)
+        //Serialize an object into afile in  the given file name
+        public static void serialize(object toSerialize, string fileName)
         {
             Stream stream = File.Open(fileName, FileMode.Create);
             BinaryFormatter formater = new BinaryFormatter();
@@ -21,7 +23,7 @@ namespace ISE182_project.Layers.PersistentLayer
         }
 
         //deserialze an object from the given file name
-        public static object Deserialize(string fileName)
+        public static object deserialize(string fileName)
         {
             Stream stream = File.Open(fileName, FileMode.Open);
             BinaryFormatter formater = new BinaryFormatter();

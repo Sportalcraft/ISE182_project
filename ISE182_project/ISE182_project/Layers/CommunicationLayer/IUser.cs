@@ -11,6 +11,9 @@ namespace ISE182_project.Layers.CommunicationLayer
         //return the nickname of the user
         string NickName { get; }
 
+        //return the group ID of the user
+        int Goup_ID { get; }
+
         //Send a new message to the server
         IMessage send(string msg);
 

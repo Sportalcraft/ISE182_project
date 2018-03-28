@@ -1,5 +1,6 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,27 +8,57 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.BusinessLogic
 {
+
+    //This class hanel the chatroom
     static class ChatRoom
     {
-        private const string url = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
-        private static IUser loggedinUser;                                   // Current logged in user
+        private const string URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
+        private static IUser _loggedinUser;                           // Current logged in user
+
+        //Geter and setter to the current user
+        private static IUser LoggedinUser
+        {
+            get { return _loggedinUser; }
+            set { _loggedinUser = value; }
+        }
 
         // logIn an existing user to the server
-        public static void logIn(string nickname, int groupID)
+        public static void login(string nickname)
         {
-            throw new NotImplementedException();
+            IUser user = new User(nickname);
+
+            if (!UserService.canLogIn(user)) //Was regusterd
+                throw new ArgumentException("Must register first!");
+
+            LoggedinUser = user;
+        }
+
+        // logout the user from the server
+        public static void logout()
+        {
+            if(LoggedinUser == null) //There is no logged in userer
+                throw new ArgumentNullException("Must login first to logout!");
+
+            LoggedinUser.logout();
+            LoggedinUser = null; //Change the loggedin user to null
+        }
+
+        // Sebd new message to te server
+        public static IMessage send(string body)
+        {
+            return Communication.Instance.Send(URL, LoggedinUser.Goup_ID.ToString(), LoggedinUser.NickName, body);
         }
 
         // receive the last n messages
-        public static void requestMessages(int number)
+        public static ArrayList requestMessages(int number)
         {
-            throw new NotImplementedException();
+            return MessageService.lastNmesages(number);
         }
 
         //  receive all the messages
-        public static void requestAllMessages(int number)
+        public static ArrayList requestAllMessages(int number)
         {
-            throw new NotImplementedException();
+            return MessageService.RamMessages;
         }
     }
 }
