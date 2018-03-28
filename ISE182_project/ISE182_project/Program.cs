@@ -1,13 +1,13 @@
-﻿using System;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using System;
 using System.Collections.Generic;
-using MileStoneClient.CommunicationLayer;
+
 
 namespace MileStoneClient
 {
     class Program
     {
-
-        static void Main(string[] args)
+         static void Main(string[] args)
         {
             string gourpID = "2";
             string nickName = "Ben";

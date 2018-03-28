@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MileStoneClient.CommunicationLayer
+namespace ISE182_project.Layers.CommunicationLayer
 {
 
     public sealed class Communication // singleTon
@@ -111,10 +111,10 @@ namespace MileStoneClient.CommunicationLayer
                     jToken["groupID"].ToString(),
                     jToken["userName"].ToString(),
                     jToken["messageContent"].ToString(),
-                    Convert.ToInt64(jToken["msgDate"])    
+                    Convert.ToInt64(jToken["msgDate"])
                 );
             }
-            
+
         }
         #endregion
 
