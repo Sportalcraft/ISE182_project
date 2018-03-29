@@ -18,29 +18,48 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter and setter to the messages stored in the ram
         public static ArrayList RamMessages
         {
-            private set // + Update
+             private set
             {
-                if (_ramMessages == null) //there is ni stored messages
+                if (_ramMessages == null) // There is no stored messages
                 {
                     _ramMessages = value;
                 }
-                else
-                {
-                    MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // Merging to avoid duplication
-                    sort(_ramMessages);                                  // Sorting
-                    MessageSerializationService.serialize(_ramMessages); // Serialize the new list
-                }
+
+                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // merging to avoid duplication
+                sort(_ramMessages);                                  // sorting
+                MessageSerializationService.serialize(_ramMessages); // serialize the new list
             }
+
             get
             {
-                if (_ramMessages == null)
-                    _ramMessages = MessageSerializationService.deserialize(); // Deserialize messages to the ram if not there alrady
+                if (_ramMessages == null) // Deserialize messages to the ram if not there alrady
+                    _ramMessages = MessageSerializationService.deserialize();
 
                 return _ramMessages;
             }
         }
 
-        //return the last n Serialized messages
+
+        //save a single message to the RAM
+        public static void SaveMessage(IMessage msg)
+        {
+            RamMessages.Add(msg);
+            Update();
+        }
+
+        //Edid message and save to the RAM and disk
+        public static void EditMessage(IMessage editedMessage)
+        {
+            foreach(Message msg in RamMessages)
+            {
+                if (msg.Equals(editedMessage))
+                    msg.MessageContent = editedMessage.MessageContent;
+            }
+
+            Update();
+        }
+
+        //return the last n saved messages
         public static ArrayList lastNmesages(int amount)
         {
             ArrayList toReturn = new ArrayList(amount);
@@ -59,7 +78,7 @@ namespace ISE182_project.Layers.BusinessLogic
             return lastNmesages(20);
         }
 
-        //retrive and sace the last meseges from server
+        //retrive and save the last 10 meseges from server
         public static void SaveLast10FromServer(string url)
         {
             RamMessages = new ArrayList(Communication.Instance.GetTenMessages(url));
@@ -72,6 +91,12 @@ namespace ISE182_project.Layers.BusinessLogic
         private static void sort(ArrayList messages)
         {
             messages.Sort(new MessageComparatorByDate());
+        }
+
+        //Update the stored in disk mesages after changing ram
+        private static void Update()
+        {
+            RamMessages = RamMessages; //So the set atribulte will activate to ask to save to disk
         }
 
     }

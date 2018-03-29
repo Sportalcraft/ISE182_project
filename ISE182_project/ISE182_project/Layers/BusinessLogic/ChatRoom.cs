@@ -22,11 +22,7 @@ namespace ISE182_project.Layers.BusinessLogic
             set { _loggedinUser = value; }
         }
 
-        //retrive and sace the last meseges from server
-        public static void SaveLast10FromServer()
-        {
-            MessageService.SaveLast10FromServer(URL);
-        }
+        #region User
 
         // register a user to the server
         public static void register(string nickname)
@@ -38,6 +34,9 @@ namespace ISE182_project.Layers.BusinessLogic
         public static void login(string nickname)
         {
             IUser user = new User(nickname);
+
+            if (LoggedinUser != null) //Already logged In
+                throw new ArgumentException("Alrady loggedin!");
 
             if (!UserService.canLogIn(user)) //Was regusterd
                 throw new ArgumentException("Must register first!");
@@ -52,25 +51,43 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException("Must login first to logout!");
 
             LoggedinUser.logout();
-            LoggedinUser = null; //Change the loggedin user to null
+            LoggedinUser = null; // Change the loggedin user to null
         }
 
-        // Sebd new message to te server
-        public static IMessage send(string body)
+        #endregion
+
+        #region Message
+
+        // Send new message to te server
+        public static void send(string body)
         {
-            return Communication.Instance.Send(URL, LoggedinUser.Goup_ID.ToString(), LoggedinUser.NickName, body);
+            if(LoggedinUser == null) // There is no loged in iser
+                throw new ArgumentNullException("Must login first to send messages!");
+
+            if (!Message.isValid(body)) // The message is valid
+                throw new ArgumentException("the Message is not valid!");
+
+            LoggedinUser.send(body, URL);
         }
 
-        // receive the last n messages
+        //retrive and sace the last meseges from server
+        public static void SaveLast10FromServer()
+        {
+            MessageService.SaveLast10FromServer(URL);
+        }
+
+        // Receive the last n messages
         public static ArrayList requestMessages(int number)
         {
             return MessageService.lastNmesages(number);
         }
 
-        //  receive all the messages
-        public static ArrayList requestAllMessages(int number)
+        // Receive all the messages
+        public static ArrayList requestAllMessages()
         {
             return MessageService.RamMessages;
         }
+
+        #endregion
     }
 }

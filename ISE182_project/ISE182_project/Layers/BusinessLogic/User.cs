@@ -19,11 +19,10 @@ namespace ISE182_project.Layers.BusinessLogic
         public string NickName
         {
             get { return _nickName; }
-
         }
 
         //getter to the group ID
-        public int Goup_ID
+        public int Group_ID
         {
             get { return GROUP_ID; }
         }
@@ -34,14 +33,15 @@ namespace ISE182_project.Layers.BusinessLogic
             _nickName = nickName;
         }
 
-        //Send a new message to the chatroom
-        public IMessage send(string msg)
+        //Send a new message to the chatroom and save it
+        public void send(string msg, string URL)
         {
-            return ChatRoom.send(msg);
+            MessageService.SaveMessage(Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg));
         }
 
         //logout from the server
         public void logout() { }
+
 
         // Cheack if two users are equals.
         // Two useres are equaks if they both have the same group ID and the sane nicknake
@@ -52,7 +52,11 @@ namespace ISE182_project.Layers.BusinessLogic
 
             IUser other = (IUser)obj;
             return NickName.Equals(other.NickName);
+        }
 
+        public override string ToString()
+        {
+            return "User :\nNickName : " + NickName + "\nGroup ID : " + Group_ID;
         }
     }
 }

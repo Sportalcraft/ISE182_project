@@ -12,10 +12,10 @@ namespace ISE182_project.Layers.CommunicationLayer
         string NickName { get; }
 
         //return the group ID of the user
-        int Goup_ID { get; }
+        int Group_ID { get; }
 
         //Send a new message to the server
-        IMessage send(string msg);
+        void send(string msg, string URL);
 
         //logout the user
         void logout();

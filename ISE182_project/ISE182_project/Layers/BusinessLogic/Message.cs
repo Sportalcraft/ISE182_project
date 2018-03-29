@@ -1,4 +1,4 @@
-﻿using ISE182_project.Layers.CommunicationLayer;
+﻿  using ISE182_project.Layers.CommunicationLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter to the group ID
         public string GroupID
         {
-            get { return _sender.Goup_ID.ToString(); }
+            get { return _sender.Group_ID.ToString(); }
         }
 
         //Getter to the guid
@@ -39,7 +39,14 @@ namespace ISE182_project.Layers.BusinessLogic
         public string MessageContent
         {
             get { return _body; }
-            private set { _body = value; }
+
+            set
+            {
+                if (!isValid(value))
+                    throw new ArgumentException("the Message is not valid!");
+
+                _body = value;
+            }
         }
 
         //Getter to the sender nuckname
@@ -48,23 +55,22 @@ namespace ISE182_project.Layers.BusinessLogic
             get { return _sender.NickName; }
         }
 
-        //The constractor method
-        public Message(Guid guid, DateTime receivingTime, IUser sender, string body)
-        {
-            if (!isValid(body)) //check if the message is valid
-                throw new ArgumentException("Message is too long!");
-
-            _g_id = guid;
-            _receivingTime = receivingTime;
-            _sender = sender;
-            _body = body;
-        }
-
         //Edit the message's body
         public void editBody(string newBody)
         {
+            if (!isValid(newBody))
+                throw new ArgumentException("the Message is not valid!");
+
             MessageContent = newBody;
+            MessageService.EditMessage(this);
         }
+
+        //Cheak if the body is valid
+        public static bool isValid(string body)
+        {
+            return body.Length < 150;
+        }
+
 
         // Cheack if two messages are equals.
         // Two mesages are equals if they both have the same guid
@@ -78,10 +84,11 @@ namespace ISE182_project.Layers.BusinessLogic
             return Id.Equals(other.Id);
         }
 
-        //Cheak if the body is valid
-        private bool isValid(string body)
+        //return a string tat represent the message
+        public override string ToString()
         {
-            return body.Length < 150;
+            return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
+                "\nSender : NickName - " + UserName + " Group ID - " + GroupID + "\nMessage Body :\n" + MessageContent;
         }
     }
 }
