@@ -16,7 +16,7 @@ namespace ISE182_project.Layers.PersistentLayer
         //Serialize an object into afile in  the given file name
         public static void serialize(object toSerialize, string fileName)
         {
-            Stream stream = File.Open(fileName, FileMode.Create);
+            Stream stream = File.Open(fileName, FileMode.OpenOrCreate);
             BinaryFormatter formater = new BinaryFormatter();
             formater.Serialize(stream, toSerialize); //Serializing
             stream.Close();
@@ -25,10 +25,22 @@ namespace ISE182_project.Layers.PersistentLayer
         //deserialze an object from the given file name
         public static object deserialize(string fileName)
         {
-            Stream stream = File.Open(fileName, FileMode.Open);
+            Stream stream = File.Open(fileName, FileMode.OpenOrCreate);
             BinaryFormatter formater = new BinaryFormatter();
-            object derialized = formater.Deserialize(stream); //Deserializing 
-            stream.Close();
+            object derialized;
+
+            try
+            {
+                derialized = formater.Deserialize(stream); //Deserializing 
+            }
+            catch
+            {
+                derialized = null;
+            }
+            finally
+            {
+                stream.Close();
+            }
             
             return derialized;
         }

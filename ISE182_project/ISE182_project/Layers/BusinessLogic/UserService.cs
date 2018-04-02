@@ -46,6 +46,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentException("This user already taken!");
 
             RamUsers.Add(user);
+            Update();
         }
 
         //cheak if a user can register
@@ -58,6 +59,15 @@ namespace ISE182_project.Layers.BusinessLogic
         public static bool canLogIn(IUser user)
         {
             return RamUsers.Contains(user);
+        }
+
+
+        //-----------------------------------------------------------
+
+        //Update the stored in disk users after changing ram
+        private static void Update()
+        {
+            RamUsers = RamUsers; //So the set atribulte will activate to ask to save to disk
         }
     }
 }

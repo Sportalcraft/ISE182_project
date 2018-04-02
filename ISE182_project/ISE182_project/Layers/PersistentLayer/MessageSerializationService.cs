@@ -21,7 +21,12 @@ namespace ISE182_project.Layers.PersistentLayer
         //Deserialize all messages from the disk
         public static ArrayList deserialize()
         {
-            return (ArrayList)SerializationService.deserialize(MESSAGE_LIST);
+            ArrayList temp = (ArrayList)SerializationService.deserialize(MESSAGE_LIST);
+
+            if (temp == null)
+                return new ArrayList();
+
+            return temp;
         }
     }
 }

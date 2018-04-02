@@ -23,7 +23,12 @@ namespace ISE182_project.Layers.PersistentLayer
         //Deserialize all users from the disk
         public static ArrayList deserialize()
         {
-            return (ArrayList)SerializationService.deserialize(USERS_LIST);
+            ArrayList temp = (ArrayList)SerializationService.deserialize(USERS_LIST);
+
+            if(temp ==null)
+                return new ArrayList();
+
+            return temp;
         }
     }
 }

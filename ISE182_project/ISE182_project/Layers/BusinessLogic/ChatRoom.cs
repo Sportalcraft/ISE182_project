@@ -12,8 +12,11 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class hanel the chatroom
     static class ChatRoom
     {
-        private const string URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
+        //private const string URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
+        private const string URL = @"http://localhost/"; // The url addres of the server at home
         private static IUser _loggedinUser;                           // Current logged in user
+
+
 
         //Geter and setter to the current user
         private static IUser LoggedinUser

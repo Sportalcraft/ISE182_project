@@ -62,9 +62,12 @@ namespace ISE182_project.Layers.BusinessLogic
         //return the last n saved messages
         public static ArrayList lastNmesages(int amount)
         {
+            if (amount > RamMessages.Count)
+                amount = RamMessages.Count;
+
             ArrayList toReturn = new ArrayList(amount);
 
-            for (int i = 0; i < amount & i < RamMessages.Count; i++)
+            for (int i = RamMessages.Count - amount; i < RamMessages.Count; i++)
             {
                 toReturn.Add(RamMessages[i]);
             }
@@ -81,7 +84,25 @@ namespace ISE182_project.Layers.BusinessLogic
         //retrive and save the last 10 meseges from server
         public static void SaveLast10FromServer(string url)
         {
-            RamMessages = new ArrayList(Communication.Instance.GetTenMessages(url));
+            List<IMessage> retrived;
+
+            try
+            {
+                retrived = Communication.Instance.GetTenMessages(url);
+            }
+            catch
+            {
+                throw new Exception("Server was not found!");
+            }
+
+            ArrayList temp = new ArrayList();
+
+            foreach(IMessage msg in retrived)
+            {
+                temp.Add(new Message(msg)); // We need to translate the retured message object to our message to avid problems
+            }
+
+            RamMessages = temp;
         }
 
 
@@ -93,7 +114,7 @@ namespace ISE182_project.Layers.BusinessLogic
             messages.Sort(new MessageComparatorByDate());
         }
 
-        //Update the stored in disk mesages after changing ram
+        //Update the stored in disk messages after changing ram
         private static void Update()
         {
             RamMessages = RamMessages; //So the set atribulte will activate to ask to save to disk

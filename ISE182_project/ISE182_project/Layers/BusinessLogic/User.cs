@@ -33,10 +33,31 @@ namespace ISE182_project.Layers.BusinessLogic
             _nickName = nickName;
         }
 
+        //A constractor of User class
+        public User(string nickName, int GroupID)
+        {
+            if (Group_ID != GroupID)
+                throw new ArgumentException("You cant register to another group!");
+
+            _nickName = nickName;
+        }
+
         //Send a new message to the chatroom and save it
         public void send(string msg, string URL)
         {
-            MessageService.SaveMessage(Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg));
+            IMessage message;
+
+            try
+            {
+                 message = Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg);
+            }
+            catch
+            {
+                throw new Exception("Server was not found!");
+            }
+
+            IMessage Translated = new Message(message); //Traslated to our message' to be able to serialize
+            MessageService.SaveMessage(Translated);
         }
 
         //logout from the server

@@ -55,6 +55,21 @@ namespace ISE182_project.Layers.BusinessLogic
             get { return _sender.NickName; }
         }
 
+        //A constractor of message class
+        public Message(Guid g_id, DateTime receivingTime, IUser sender, string body)
+        {
+            if (g_id == null | receivingTime == null | sender == null | body == null)
+                throw new ArgumentException("Can't recive a null as am argument!");
+
+            _g_id = g_id;
+            _receivingTime = receivingTime;
+            _sender = sender;
+            _body = body;
+        }
+
+        //A copy constractor
+        public Message(IMessage msg) : this(msg.Id, msg.Date, new User(msg.UserName, int.Parse(msg.GroupID)), msg.MessageContent) { }
+
         //Edit the message's body
         public void editBody(string newBody)
         {
