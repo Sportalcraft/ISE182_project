@@ -48,7 +48,7 @@ namespace ISE182_project.Layers.LoggingLayer
         //can be used to put a statwe with nethis was entered for debugging
         private static string MethodStart(string methodName, string className)
         {
-            return "The method " + methodName + " in class " + className + " was started ";
+            return Developer("The method " + methodName + " in class " + className + " was started ");
         }
 
         //Unused code. For now....
