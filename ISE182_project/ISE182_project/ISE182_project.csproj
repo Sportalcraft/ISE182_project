@@ -58,6 +58,7 @@
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
     <Compile Include="Layers\CommunicationLayer\IUser.cs" />
     <Compile Include="Layers\BusinessLogic\MessageComparatorByDate.cs" />
+    <Compile Include="Layers\LoggingLayer\Logger.cs" />
     <Compile Include="Layers\PersistentLayer\MessageSerializationService.cs" />
     <Compile Include="Layers\BusinessLogic\MessageService.cs" />
     <Compile Include="Layers\PersistentLayer\SerializationService.cs" />
@@ -68,10 +69,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="log4net.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Layers\LoggingLayey\" />
     <Folder Include="Layers\PresentationLayer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
