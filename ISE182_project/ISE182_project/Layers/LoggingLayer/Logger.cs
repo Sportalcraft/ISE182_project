@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,40 +16,39 @@ namespace ISE182_project.Layers.LoggingLayer
     {
         private static readonly ILog log = LogManager.GetLogger("SEprojectLogger"); // Holds the logger
 
+
+
         //Getter to the logger
         public static ILog Log
         {
             get { return log; }
         }
 
-        //Put a referece at the begennig of the message - Developer :
-        public static void Developer(string toLog, string level)
+        //can be used to put a referece at the begennig of the message - Developer :
+        public static string Developer(string logMessage)
         {
-            LogByLevel("Developer : " + toLog, level);
-        } 
+            return "Developer : " + logMessage;
+        }
 
-        //Put a referece at the begennig of the message - Maintenance :
-        public static void Maintenance(string toLog, string level)
+        //can be used to put a referece at the begennig of the message - Maintenance :
+        public static string Maintenance(string logMessage)
         {
-            LogByLevel("Maintenance : " + toLog, level);
+            return "Maintenance : " + logMessage;
+        }
+
+        //can be used to put a statwe with nethis was entered for debugging
+        public static string MethodStart(MethodBase method)
+        {
+            return MethodStart(method.ToString(), method.DeclaringType.Name);
         }
 
 
-        //--------------------------------------
+        //--------------------------------------   
 
-        // logg a message accirdinf to a givven level
-        private static void LogByLevel(string toLog, string level)
+        //can be used to put a statwe with nethis was entered for debugging
+        private static string MethodStart(string methodName, string className)
         {
-            switch (level)
-            {
-                case "Debug": Log.Debug(toLog); break;
-                case "Info":  Log.Info(toLog);  break;
-                case "Warn":  Log.Warn(toLog);  break;
-                case "Error": Log.Error(toLog); break;
-                case "Fatal": Log.Fatal(toLog); break;
-
-                default: Developer("Tried to log " + toLog + " in unknow level of " + level, "Info"); break;
-            }
+            return Developer("The method " + methodName + " in class " + className + " was started ");
         }
 
         //Unused code. For now....

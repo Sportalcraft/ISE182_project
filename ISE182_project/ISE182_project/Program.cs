@@ -6,8 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
-
+using System.Reflection;
 
 namespace MileStoneClient
 {
@@ -18,13 +17,13 @@ namespace MileStoneClient
             //Exciptions on english
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
-            //ChatRoom.register("Tal");
-            //ChatRoom.login("Tal");
-            Logger.Log.Debug("DEBUG log");
-            Logger.Log.Info("INFO log");
-            Logger.Log.Warn("WARN log");
-            Logger.Log.Error("ERROR log");
-            Logger.Log.Fatal("FATAL log");
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+              //ChatRoom.register("Tal");
+              ChatRoom.login("Tal");
+              ChatRoom.send("Hello world!");
+
+
 
             Console.ReadKey();
         }
