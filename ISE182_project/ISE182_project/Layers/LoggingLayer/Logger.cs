@@ -8,7 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = true)]
+
 
 namespace ISE182_project.Layers.LoggingLayer
 {
@@ -16,7 +17,7 @@ namespace ISE182_project.Layers.LoggingLayer
     {
         private static readonly ILog log = LogManager.GetLogger("SEprojectLogger"); // Holds the logger
 
-
+       
 
         //Getter to the logger
         public static ILog Log
