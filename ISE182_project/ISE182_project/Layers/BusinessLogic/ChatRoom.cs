@@ -68,9 +68,10 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException("Must login first to send messages!");
 
             if (!Message.isValid(body)) // The message is valid
-                throw new ArgumentException("the Message is not valid!");
+                throw new ArgumentException("The Message is not valid!");
 
             LoggedinUser.send(body, URL);
+            SaveLast10FromServer(); //reciving the last sent 10 messages
         }
 
         //retrive and sace the last meseges from server

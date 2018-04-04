@@ -45,19 +45,17 @@ namespace ISE182_project.Layers.BusinessLogic
         //Send a new message to the chatroom and save it
         public void send(string msg, string URL)
         {
-            IMessage message;
-
             try
             {
-                 message = Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg);
+                Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg);
             }
             catch
             {
                 throw new Exception("Server was not found!");
             }
 
-            IMessage Translated = new Message(message); //Traslated to our message' to be able to serialize
-            MessageService.SaveMessage(Translated);
+            //IMessage Translated = new Message(message); //Traslated to our message' to be able to serialize
+            //MessageService.SaveMessage(Translated);
         }
 
         //logout from the server

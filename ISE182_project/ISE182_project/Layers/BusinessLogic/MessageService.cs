@@ -39,14 +39,6 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
-
-        //save a single message to the RAM
-        public static void SaveMessage(IMessage msg)
-        {
-            RamMessages.Add(msg);
-            Update();
-        }
-
         //Edid message and save to the RAM and disk
         public static void EditMessage(IMessage editedMessage)
         {
@@ -108,6 +100,8 @@ namespace ISE182_project.Layers.BusinessLogic
 
         //-----------------------------------------------------------------
 
+        #region private methods
+
         //Sort a message List by the time
         private static void sort(ArrayList messages)
         {
@@ -119,6 +113,14 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             RamMessages = RamMessages; //So the set atribulte will activate to ask to save to disk
         }
+
+        //Unused - save a single message to the RAM
+        private static void SaveMessage(IMessage msg)
+        {
+            RamMessages.Add(msg);
+            Update();
+        }
+        #endregion
 
     }
 }
