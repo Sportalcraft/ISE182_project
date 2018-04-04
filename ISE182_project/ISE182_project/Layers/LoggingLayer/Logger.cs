@@ -37,10 +37,11 @@ namespace ISE182_project.Layers.LoggingLayer
             return "Maintenance : " + logMessage;
         }
 
-        //can be used to put a statwe with nethis was entered for debugging
+        //can be used to put a state whem a method was entered for debugging
         public static string MethodStart(MethodBase method)
         {
             return MethodStart(method.ToString(), method.DeclaringType.Name);
+            // Or : return MethodStart(method.Name, method.DeclaringType.Name);
         }
 
 

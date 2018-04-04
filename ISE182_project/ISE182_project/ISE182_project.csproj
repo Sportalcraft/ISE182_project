@@ -65,6 +65,9 @@
     <Compile Include="Layers\BusinessLogic\User.cs" />
     <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
     <Compile Include="Layers\BusinessLogic\UserService.cs" />
+    <Compile Include="Layers\PresentationLayer\CLI.cs" />
+    <Compile Include="Layers\PresentationLayer\MessageCLI.cs" />
+    <Compile Include="Layers\PresentationLayer\UserCLI.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +80,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Layers\PresentationLayer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
