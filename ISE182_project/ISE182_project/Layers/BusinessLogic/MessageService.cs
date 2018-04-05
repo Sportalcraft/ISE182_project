@@ -1,10 +1,12 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +18,9 @@ namespace ISE182_project.Layers.BusinessLogic
         private static ArrayList _ramMessages; // Store a coppy of the messages in the ram for quick acces
 
         //Getter and setter to the messages stored in the ram
-        public static ArrayList RamMessages
+        private static ArrayList RamMessages
         {
-             private set
+             set
             {
                 if (_ramMessages == null) // There is no stored messages
                 {
@@ -33,10 +35,18 @@ namespace ISE182_project.Layers.BusinessLogic
             get
             {
                 if (_ramMessages == null) // Deserialize messages to the ram if not there alrady
+                {
                     _ramMessages = MessageSerializationService.deserialize();
+                }
 
                 return _ramMessages;
             }
+        }
+
+        //Initiating the ram's saves from messages stored in the disk
+        public static void start()
+        {
+            Update();
         }
 
         //Edid message and save to the RAM and disk
@@ -51,11 +61,35 @@ namespace ISE182_project.Layers.BusinessLogic
             Update();
         }
 
+        //return all the messages from a certain user
+        public static ArrayList AllMessagesFromUser(User user)
+        {
+            ArrayList toreturn = new ArrayList();
+            IUser temp;
+
+            foreach (IMessage msg in RamMessages)
+            {
+                temp = new User(msg.UserName, int.Parse(msg.GroupID)); // Message sender
+
+                if (user.Equals(temp)) // if the same sender as the givven one
+                {
+                    toreturn.Add(msg);
+                }
+            }
+
+            return toreturn;
+        }
+
         //return the last n saved messages
         public static ArrayList lastNmesages(int amount)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (amount > RamMessages.Count)
+            {
+                Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));               
                 amount = RamMessages.Count;
+            }
 
             ArrayList toReturn = new ArrayList(amount);
 

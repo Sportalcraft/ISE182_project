@@ -17,9 +17,9 @@ namespace ISE182_project.Layers.BusinessLogic
         private static ArrayList _ramUsers; // Store a coppy of the users in the ram for quick acces
 
         //Getter and setter to the users stored in the ram
-        public static ArrayList RamUsers
+        private static ArrayList RamUsers
         {
-            private set
+            set
             {
                 if (_ramUsers == null) //there is ni stored messages
                 {
@@ -37,6 +37,12 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 return _ramUsers;
             }
+        }
+
+        //Initiating the ram's saves from users stored in the disk
+        public static void start()
+        {
+            Update();
         }
 
         //Add a new user to the users list

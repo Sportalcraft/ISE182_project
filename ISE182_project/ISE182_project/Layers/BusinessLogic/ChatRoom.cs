@@ -12,10 +12,9 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class hanel the chatroom
     static class ChatRoom
     {
+        private const string URL = @"http://localhost/";              // The url addres of the server at home
         //private const string URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
-        private const string URL = @"http://localhost/"; // The url addres of the server at home
         private static IUser _loggedinUser;                           // Current logged in user
-
 
 
         //Geter and setter to the current user
@@ -25,11 +24,30 @@ namespace ISE182_project.Layers.BusinessLogic
             set { _loggedinUser = value; }
         }
 
+        //Initiating the ram's saves from disk
+        public static void start()
+        {
+            UserService.start();    // Initiating mesaages on ram
+            MessageService.start(); // Initiating users on ram
+        }
+
+        //exit the program
+        public static void exist()
+        {
+            if (LoggedinUser != null)
+                logout(); //logout first
+
+            Environment.Exit(1); //Exiting
+        }
+
         #region User
 
         // register a user to the server
         public static void register(string nickname)
         {
+            if (LoggedinUser != null) //Already logged In
+                throw new ArgumentException("Alrady loggedin!");
+
             UserService.register(new User(nickname));
         }
 
@@ -87,9 +105,9 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive all the messages
-        public static ArrayList requestAllMessages()
+        public static ArrayList requestAllMessagesfromUser(string nickName, int GroupID)
         {
-            return MessageService.RamMessages;
+            return MessageService.AllMessagesFromUser(new User(nickName, GroupID));
         }
 
         #endregion

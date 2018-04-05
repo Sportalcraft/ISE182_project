@@ -55,11 +55,20 @@ namespace ISE182_project.Layers.BusinessLogic
             get { return _sender.NickName; }
         }
 
+        //Getter to the sender nuckname
+        private IUser Sender
+        {
+            get { return _sender; }
+        }
+
         //A constractor of message class
         public Message(Guid g_id, DateTime receivingTime, IUser sender, string body)
         {
             if (g_id == null | receivingTime == null | sender == null | body == null)
                 throw new ArgumentException("Can't recive a null as am argument!");
+
+            if(!isValid(body))
+                throw new ArgumentException("Message is too long!");
 
             _g_id = g_id;
             _receivingTime = receivingTime;
@@ -103,7 +112,7 @@ namespace ISE182_project.Layers.BusinessLogic
         public override string ToString()
         {
             return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
-                "\nSender : NickName - " + UserName + " Group ID - " + GroupID + "\nMessage Body :\n" + MessageContent;
+                "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
         }
     }
 }
