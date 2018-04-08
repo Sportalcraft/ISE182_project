@@ -1,7 +1,9 @@
-﻿  using ISE182_project.Layers.CommunicationLayer;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +42,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             get { return _body; }
 
-            set
+            private set
             {
                 if (!isValid(value))
                     throw new ArgumentException("the Message is not valid!");
@@ -49,7 +51,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
-        //Getter to the sender nuckname
+        //Getter to the sender nickname
         public string UserName
         {
             get { return _sender.NickName; }
@@ -64,11 +66,17 @@ namespace ISE182_project.Layers.BusinessLogic
         //A constractor of message class
         public Message(Guid g_id, DateTime receivingTime, IUser sender, string body)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (g_id == null | receivingTime == null | sender == null | body == null)
-                throw new ArgumentException("Can't recive a null as am argument!");
+            {
+                Logger.Log.Error(Logger.Maintenance("recived a null as an argument"));
+            }
 
             if(!isValid(body))
-                throw new ArgumentException("Message is too long!");
+            {
+                Logger.Log.Error(Logger.Maintenance("recived an illegal message body as an argument"));
+            }
 
             _g_id = g_id;
             _receivingTime = receivingTime;
@@ -77,22 +85,34 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //A copy constractor
-        public Message(IMessage msg) : this(msg.Id, msg.Date, new User(msg.UserName, int.Parse(msg.GroupID)), msg.MessageContent) { }
-
-        //Edit the message's body
-        public void editBody(string newBody)
+        public Message(IMessage msg) : this(msg.Id, msg.Date, new User(msg.UserName, int.Parse(msg.GroupID)), msg.MessageContent)
         {
-            if (!isValid(newBody))
-                throw new ArgumentException("the Message is not valid!");
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
 
-            MessageContent = newBody;
-            MessageService.EditMessage(this);
+        //Edit the message's body. return if it was done successfully
+        public bool editBody(string newBody)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if (!isValid(newBody))
+            {
+                Logger.Log.Error(Logger.Maintenance("recived an illegal message body as an argument"));
+                return false;
+            }
+
+            MessageContent = newBody; //edit the body
+            return true;
         }
 
         //Cheak if the body is valid
         public static bool isValid(string body)
         {
-            return body.Length < 150;
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return body != null &&
+                body.Length < 150 &
+                !body.Equals("");
         }
 
 
@@ -100,6 +120,8 @@ namespace ISE182_project.Layers.BusinessLogic
         // Two mesages are equals if they both have the same guid
         public override bool Equals(object obj)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (!(obj is IMessage))
                 return false;
 
@@ -111,6 +133,8 @@ namespace ISE182_project.Layers.BusinessLogic
         //return a string tat represent the message
         public override string ToString()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
                 "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
         }

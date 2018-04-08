@@ -46,32 +46,58 @@ namespace ISE182_project.Layers.BusinessLogic
         //Initiating the ram's saves from messages stored in the disk
         public static void start()
         {
-            Update();
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            SetRAM();
         }
 
-        //Edid message and save to the RAM and disk
-        public static void EditMessage(IMessage editedMessage)
+        //Edid message by guid and save to the RAM and disk
+        public static void EditMessage(Guid ID, string newBody)
         {
-            foreach(Message msg in RamMessages)
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if (ID == null) 
             {
-                if (msg.Equals(editedMessage))
-                    msg.MessageContent = editedMessage.MessageContent;
+                Logger.Log.Error(Logger.Maintenance("recived a null guid to look fo a certain message"));
+                return;
             }
 
-            Update();
+            if(!Message.isValid(newBody))
+            {
+                Logger.Log.Error(Logger.Maintenance("recived an illegal message body to edit"));
+                return;
+            }
+
+            //A dummy message to use in the .equals
+            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
+
+            foreach (Message msg in RamMessages)
+            {
+                if (msg.Equals(dummy))
+                    msg.editBody(newBody);
+            }
+
+            UpdateDisk();
         }
 
         //return all the messages from a certain user
-        public static ArrayList AllMessagesFromUser(User user)
+        public static ArrayList AllMessagesFromUser(IUser user)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             ArrayList toreturn = new ArrayList();
             IUser temp;
+
+            if (user == null)
+            {
+                Logger.Log.Error(Logger.Maintenance("recived a null user mto look for. returning empty list"));
+                return toreturn;
+            }       
 
             foreach (IMessage msg in RamMessages)
             {
                 temp = new User(msg.UserName, int.Parse(msg.GroupID)); // Message sender
 
-                if (user.Equals(temp)) // if the same sender as the givven one
+                if (user.Equals(temp)) // if the same sender as the given one
                 {
                     toreturn.Add(msg);
                 }
@@ -85,13 +111,19 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
+            if (amount < 0)
+            {
+                Logger.Log.Error(Logger.Maintenance("User requested a negative number of mesaages"));
+                amount = 0;
+            }
+
             if (amount > RamMessages.Count)
             {
                 Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));               
                 amount = RamMessages.Count;
             }
 
-            ArrayList toReturn = new ArrayList(amount);
+            ArrayList toReturn = new ArrayList();
 
             for (int i = RamMessages.Count - amount; i < RamMessages.Count; i++)
             {
@@ -102,15 +134,25 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Get the last 20 messages stored in RAM
-        public static ArrayList last20Mesages(int amount)
+        public static ArrayList last20Mesages()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return lastNmesages(20);
         }
 
-        //retrive and save the last 10 meseges from server
+        //retrive and save the last 10 meseges from server.
         public static void SaveLast10FromServer(string url)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             List<IMessage> retrived;
+
+            if(url ==null || url.Equals(""))
+            {
+                Logger.Log.Error(Logger.Maintenance("Recived an illegal url"));
+                return;
+            }
 
             try
             {
@@ -118,7 +160,8 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch
             {
-                throw new Exception("Server was not found!");
+                Logger.Log.Fatal(Logger.Maintenance("Server was not found!"));
+                return;
             }
 
             ArrayList temp = new ArrayList();
@@ -139,20 +182,31 @@ namespace ISE182_project.Layers.BusinessLogic
         //Sort a message List by the time
         private static void sort(ArrayList messages)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             messages.Sort(new MessageComparatorByDate());
         }
 
         //Update the stored in disk messages after changing ram
-        private static void Update()
+        private static void UpdateDisk()
         {
-            RamMessages = RamMessages; //So the set atribulte will activate to ask to save to disk
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            RamMessages = new ArrayList(); //So the set atribulte will activate to ask to save to disk
+        }
+
+        //Setting the ram, if null
+        private static void SetRAM()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            ICollection temp = RamMessages; //So the get atribulte will activate to ask to draw from disk
         }
 
         //Unused - save a single message to the RAM
         private static void SaveMessage(IMessage msg)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             RamMessages.Add(msg);
-            Update();
+            UpdateDisk();
         }
         #endregion
 

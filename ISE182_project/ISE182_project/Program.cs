@@ -14,18 +14,15 @@ namespace MileStoneClient
     {
         static void Main(string[] args)
         {
-            //Exciptions on english
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            SetUp();
 
-            //Handle all the ecxeption that was no cocaught
-            //AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
-
+            ChatRoom.start(ChatRoom.Place.Home); 
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             //ChatRoom.register("Tal");
             ChatRoom.login("Tal");
-            //ChatRoom.send("Hello world!1");
+            ChatRoom.send("Hello world!1");
             //ChatRoom.send("Hello world!2");
             //ChatRoom.send("Hello world!3");
             //ChatRoom.send("Hello world!4");
@@ -52,6 +49,15 @@ namespace MileStoneClient
             Console.ReadKey();
         }
 
+        static void SetUp()
+        {
+            //Exciptions on english
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
+            //Handle all the ecxeption that was no cocaught
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+        }
+
         //This methond handle all the unhendled exceptions
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
@@ -65,7 +71,7 @@ namespace MileStoneClient
 
             Console.WriteLine("Press any key to exist");
             Console.ReadKey();
-            ChatRoom.exist(); //exit the program
+            ChatRoom.exit(); //exit the program
         }
     }
 }

@@ -53,6 +53,8 @@ namespace ISE182_project.Layers.LoggingLayer
             return Developer("The method " + methodName + " in class " + className + " was started ");
         }
 
+        // -----------------------------------------------------------------
+
         //Unused code. For now....
         private static ILog GetLogger([CallerFilePath]string filename = "")
         {
