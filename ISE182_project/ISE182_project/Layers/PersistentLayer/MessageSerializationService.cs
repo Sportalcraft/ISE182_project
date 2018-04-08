@@ -14,12 +14,12 @@ namespace ISE182_project.Layers.PersistentLayer
     {
         private const string MESSAGE_LIST = "Messages.bin"; // The file name to save the mesages
 
-        // serialize a *sorted* list of messages
-        public static void serialize(ArrayList messages)
+        // serialize a *sorted* list of messages. return if it was done successfully
+        public static bool serialize(ArrayList messages)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            SerializationService.serialize(messages, MESSAGE_LIST);
+            return SerializationService.serialize(messages, MESSAGE_LIST);
         }
 
         //Deserialize all messages from the disk

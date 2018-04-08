@@ -1,8 +1,10 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +23,14 @@ namespace ISE182_project.Layers.BusinessLogic
         // Positive number stand for x > y
         public int Compare(object x, object y) 
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if (x == null || !(x is IMessage) | y == null || !(y is IMessage)) 
+            {
+                Logger.Log.Fatal(Logger.Maintenance("Message compartor reciven illegal argument. returning 0."));
+                return 0;
+            }
+
             IMessage msg1 = (IMessage)x;
             IMessage msg2 = (IMessage)y;
 

@@ -16,12 +16,12 @@ namespace ISE182_project.Layers.PersistentLayer
     {
         private const string USERS_LIST = "Users.bin"; // The file name to save the users
 
-        //Serialze a list of users
-        public static void serialize(ArrayList users)
+        //Serialze a list of users. return if it was done successfully
+        public static bool serialize(ArrayList users)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            SerializationService.serialize(users, USERS_LIST);
+            return SerializationService.serialize(users, USERS_LIST);
         }
 
         //Deserialize all users from the disk

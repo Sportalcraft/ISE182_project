@@ -15,13 +15,14 @@ namespace ISE182_project.Layers.PersistentLayer
     static class SerializationService
     {
 
-        //Serialize an object into afile in  the given file name
-        public static void serialize(object toSerialize, string fileName)
+        //Serialize an object into afile in  the given file name. return if it was done successfully
+        public static bool serialize(object toSerialize, string fileName)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             Stream stream = File.Open(fileName, FileMode.OpenOrCreate);
             BinaryFormatter formater = new BinaryFormatter();
+            bool succeed = true;
 
             try
             {
@@ -30,11 +31,14 @@ namespace ISE182_project.Layers.PersistentLayer
             catch
             {
                 Logger.Log.Error(Logger.Developer("Failed to serialize to " + fileName));
+                succeed = false;
             }
             finally
             {
                 stream.Close();
             }
+
+            return succeed;
         }
 
         //deserialze an object from the given file name
