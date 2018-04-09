@@ -64,13 +64,13 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if(!Message.isValid(msg))
+            if (!Message.isValid(msg))
             {
                 Logger.Log.Error(Logger.Maintenance("recived an illegal message to send"));
                 return;
             }
 
-            if(URL == null || URL.Equals(""))
+            if (URL == null || URL.Equals(""))
             {
                 Logger.Log.Error(Logger.Maintenance("recived an illegal url"));
                 return;
@@ -90,7 +90,7 @@ namespace ISE182_project.Layers.BusinessLogic
         public void logout()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            Logger.Log.Info(Logger.Maintenance("The user " + NickName + " (GroupID : " + Group_ID  + ") loggedout."));
+            Logger.Log.Info(Logger.Maintenance("The user " + NickName + " (GroupID : " + Group_ID + ") loggedout."));
         }
 
         // Cheack if two users are equals.

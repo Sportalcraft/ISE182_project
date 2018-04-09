@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISE182_project.Layers.CommunicationLayer
+namespace ISE182_project.Layers.BusinessLogic
 {
     interface IUser
     {
