@@ -44,10 +44,14 @@ namespace ISE182_project.Layers.BusinessLogic
 
             private set
             {
-                if (!isValid(value))
-                    throw new ArgumentException("the Message is not valid!");
-
-                _body = value;
+                if (isValid(value))
+                {
+                    _body = value;
+                }
+                else
+                {
+                    Logger.Log.Error(Logger.Maintenance("The user tried to edit a message with invalid content"));
+                }            
             }
         }
 
@@ -71,11 +75,16 @@ namespace ISE182_project.Layers.BusinessLogic
             if (g_id == null | receivingTime == null | sender == null | body == null)
             {
                 Logger.Log.Error(Logger.Maintenance("recived a null as an argument"));
+
+                throw new ArgumentNullException();
             }
 
             if(!isValid(body))
             {
-                Logger.Log.Error(Logger.Maintenance("recived an illegal message body as an argument"));
+                string error = "recived an illegal message body as an argument";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             _g_id = g_id;
@@ -90,19 +99,12 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
 
-        //Edit the message's body. return if it was done successfully
-        public bool editBody(string newBody)
+        //Edit the message's body.
+        public void editBody(string newBody)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (!isValid(newBody))
-            {
-                Logger.Log.Error(Logger.Maintenance("recived an illegal message body as an argument"));
-                return false;
-            }
-
             MessageContent = newBody; //edit the body
-            return true;
         }
 
         //Cheak if the body is valid
@@ -110,9 +112,9 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return body != null &&
-                body.Length < 150 &
-                !body.Equals("");
+            return body != null &&  // Not null
+                body.Length < 150 & // Less then 150 characters
+                !body.Equals("");   // Atleast 1 charcter
         }
 
 

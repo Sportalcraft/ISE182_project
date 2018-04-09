@@ -39,7 +39,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (nickName == null || nickName.Equals(""))
             {
-                Logger.Log.Error(Logger.Maintenance("The client tried to register with illegal nickname"));
+                string error = "The client tried to register with illegal nickname";
+                Logger.Log.Fatal(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             _nickName = nickName;
@@ -54,6 +57,14 @@ namespace ISE182_project.Layers.BusinessLogic
             if (GroupID != GROUP_ID)
             {
                 Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created"));
+            }
+
+            if (GroupID < 0) 
+            {
+                string error = "User constractor recived illefal groupID";
+                Logger.Log.Fatal(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             _groupID = GroupID;
