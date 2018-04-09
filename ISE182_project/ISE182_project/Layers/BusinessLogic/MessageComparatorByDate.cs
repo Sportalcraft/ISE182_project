@@ -27,7 +27,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (x == null || !(x is IMessage) | y == null || !(y is IMessage)) 
             {
-                Logger.Log.Fatal(Logger.Maintenance("Message compartor reciven illegal argument. returning 0."));
+                Logger.Log.Fatal(Logger.Maintenance("Message comparator recived illegal arguments. returning 0."));
                 return 0;
             }
 
