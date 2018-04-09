@@ -1,5 +1,4 @@
-﻿using ISE182_project.Layers.CommunicationLayer;
-using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -158,12 +157,12 @@ namespace ISE182_project.Layers.BusinessLogic
             MessageService.SaveLast10FromServer(URL);
         }
 
-        // Receive the last n messages
-        public static ArrayList requestMessages(int number)
+        // Receive the last 20 messages
+        public static ArrayList request20Messages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.lastNmesages(number);
+            return requestMessages(20);
         }
 
         // Receive all the messages
@@ -178,6 +177,17 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             return MessageService.AllMessagesFromUser(new User(nickName, GroupID));
+        }
+
+
+        // ----------------------------------------------------------
+
+        // Receive the last n messages
+        private static ArrayList requestMessages(int number)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.lastNmesages(number);
         }
 
         #endregion

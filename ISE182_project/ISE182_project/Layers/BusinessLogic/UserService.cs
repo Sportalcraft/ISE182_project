@@ -1,5 +1,4 @@
-﻿using ISE182_project.Layers.CommunicationLayer;
-using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
@@ -53,7 +52,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (user == null) 
+            if (user == null)
             {
                 Logger.Log.Error(Logger.Maintenance("recived a null user for registration"));
                 return;

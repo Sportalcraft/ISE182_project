@@ -14,15 +14,20 @@ namespace MileStoneClient
     {
         static void Main(string[] args)
         {
-            SetUp();
+            //Exciptions on english
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
-            ChatRoom.start(ChatRoom.Place.Home); 
+            //Handle all the ecxeption that was no cocaught
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            ChatRoom.start(ChatRoom.Place.Home); 
+            
 
             //ChatRoom.register("Tal");
             ChatRoom.login("Tal");
-            ChatRoom.send("Hello world!1");
+            //ChatRoom.send("Hello world!1");
             //ChatRoom.send("Hello world!2");
             //ChatRoom.send("Hello world!3");
             //ChatRoom.send("Hello world!4");
@@ -49,18 +54,12 @@ namespace MileStoneClient
             Console.ReadKey();
         }
 
-        static void SetUp()
-        {
-            //Exciptions on english
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-
-            //Handle all the ecxeption that was no cocaught
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
-        }
 
         //This methond handle all the unhendled exceptions
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             ConsoleColor colorBefore = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
 

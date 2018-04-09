@@ -91,7 +91,7 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 Logger.Log.Error(Logger.Maintenance("recived a null user mto look for. returning empty list"));
                 return toreturn;
-            }       
+            }
 
             foreach (IMessage msg in RamMessages)
             {
