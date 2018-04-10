@@ -69,6 +69,7 @@
     <Compile Include="Layers\PresentationLayer\MessageCLI.cs" />
     <Compile Include="Layers\PresentationLayer\UserCLI.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Tester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
