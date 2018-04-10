@@ -55,28 +55,23 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (ID == null) 
-            {
-                Logger.Log.Error(Logger.Maintenance("recived a null guid to look fo a certain message"));
-                return;
-            }
-
-            if(!Message.isValid(newBody))
-            {
-                Logger.Log.Error(Logger.Maintenance("recived an illegal message body to edit"));
-                return;
-            }
-
             //A dummy message to use in the .equals
             IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
 
             foreach (Message msg in RamMessages)
             {
                 if (msg.Equals(dummy))
+                {
                     msg.editBody(newBody);
+                    UpdateDisk();
+                    return;
+                }
             }
 
-            UpdateDisk();
+            string error = "Could not found a message with the ruqusted guid of " + ID;
+            Logger.Log.Error(Logger.Maintenance(error));
+
+            throw new KeyNotFoundException(error);
         }
 
         //return all the messages from a certain user
@@ -86,12 +81,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
             ArrayList toreturn = new ArrayList();
             IUser temp;
-
-            if (user == null)
-            {
-                Logger.Log.Error(Logger.Maintenance("recived a null user mto look for. returning empty list"));
-                return toreturn;
-            }
 
             foreach (IMessage msg in RamMessages)
             {
@@ -113,8 +102,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (amount < 0)
             {
-                Logger.Log.Error(Logger.Maintenance("User requested a negative number of mesaages"));
-                amount = 0;
+                string error = "User requested a negative number of mesaages";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentOutOfRangeException(error);
             }
 
             if (amount > RamMessages.Count)
@@ -150,8 +141,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if(url ==null || url.Equals(""))
             {
-                Logger.Log.Error(Logger.Maintenance("Recived an illegal url"));
-                return;
+                string error = "Recived an illegal url";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             try
@@ -160,8 +153,10 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch
             {
-                Logger.Log.Fatal(Logger.Maintenance("Server was not found!"));
-                return;
+                string error = "Server was not found!";
+                Logger.Log.Fatal(Logger.Maintenance(error));
+
+                throw;
             }
 
             ArrayList temp = new ArrayList();

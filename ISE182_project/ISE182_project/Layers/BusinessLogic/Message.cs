@@ -44,14 +44,15 @@ namespace ISE182_project.Layers.BusinessLogic
 
             private set
             {
-                if (isValid(value))
+                if (!isValid(value))
                 {
-                    _body = value;
+                    string error = "The user tried to edit a message with invalid content";
+                    Logger.Log.Error(Logger.Maintenance(error));
+
+                    throw new ArgumentException(error);            
                 }
-                else
-                {
-                    Logger.Log.Error(Logger.Maintenance("The user tried to edit a message with invalid content"));
-                }            
+
+                _body = value; // edit content
             }
         }
 

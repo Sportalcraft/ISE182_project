@@ -56,7 +56,7 @@ namespace ISE182_project.Layers.PersistentLayer
             }
             catch
             {
-                Logger.Log.Error(Logger.Developer("Failed to deserialized from " + fileName));
+                Logger.Log.Error(Logger.Developer("Failed to deserialized from " + fileName + " returning null."));
                 derialized = null;
             }
             finally
