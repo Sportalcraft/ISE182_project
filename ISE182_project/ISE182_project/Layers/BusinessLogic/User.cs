@@ -54,17 +54,17 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (GroupID != GROUP_ID)
-            {
-                Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created"));
-            }
-
-            if (GroupID < 0) 
+            if (GroupID < 0)
             {
                 string error = "User constractor recived illefal groupID";
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw new ArgumentException(error);
+            }
+
+            if (GroupID != GROUP_ID)
+            {
+                Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created"));
             }
 
             _groupID = GroupID;
@@ -77,14 +77,18 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (!Message.isValid(msg))
             {
-                Logger.Log.Error(Logger.Maintenance("recived an illegal message to send"));
-                return;
+                string error = "The message the user requsted to send is illegal";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             if (URL == null || URL.Equals(""))
             {
-                Logger.Log.Error(Logger.Maintenance("recived an illegal url"));
-                return;
+                string error = "The url the user tried to send to is illegal";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
             }
 
             try
@@ -93,7 +97,10 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch
             {
-                Logger.Log.Fatal(Logger.Maintenance("Server was not found!"));
+                string error = "Server was not found!";
+                Logger.Log.Fatal(Logger.Maintenance(error));
+
+                throw;
             }
         }
 

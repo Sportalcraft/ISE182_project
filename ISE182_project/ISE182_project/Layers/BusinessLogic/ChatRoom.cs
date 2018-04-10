@@ -18,7 +18,6 @@ namespace ISE182_project.Layers.BusinessLogic
         private static Place _location;                                   // The location of the client
         private static IUser _loggedinUser;                               // Current logged in user
 
-
         #region General
 
         //The location of the client
@@ -33,10 +32,19 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             get
             {
-                if(_location == Place.Home)
-                    return HOME_URL;
-                else
-                    return BGU_URL;
+                switch (_location)
+                {
+                    case Place.Home: return HOME_URL;
+                    case Place.University: return BGU_URL;
+                    default:
+                        {                      
+                            string error = "recived unknown enum value.";
+                            Logger.Log.Fatal(Logger.Developer(error));
+
+                            throw new ArgumentOutOfRangeException(error);
+                        }
+                }
+ 
             }
         }
 
@@ -73,21 +81,23 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region User
 
+        // return if tere is an loggedin user
+        public static bool isLoggedIn()
+        {
+            return LoggedinUser != null;
+        }
+
         // register a user to the server
         public static void register(string nickname)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (nickname == null || nickname.Equals("")) //Illegal name
+            if (isLoggedIn()) //Already logged In
             {
-                Logger.Log.Error(Logger.Maintenance("A user tried to register with an illegal name"));
-                return;
-            }
+                string error = "A user tried to register while loggedin to: " + LoggedinUser;
+                Logger.Log.Error(Logger.Maintenance(error));
 
-            if (LoggedinUser != null) //Already logged In
-            {
-                Logger.Log.Error(Logger.Maintenance("A user tried to register while loggedin to : " + LoggedinUser));
-                return;
+                throw new InvalidOperationException(error);
             }
 
             UserService.register(new User(nickname)); //register
@@ -98,24 +108,22 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (nickname == null || nickname.Equals("")) //Illigal name
-            {
-                Logger.Log.Error(Logger.Maintenance("A user tried to register with an illegal name"));
-                return;
-            }
-
             IUser user = new User(nickname);
 
-            if (LoggedinUser != null) //Already logged In
+            if (isLoggedIn()) //Already logged In
             {
-                Logger.Log.Error(Logger.Maintenance("A user tried to login while loggedin to : " + LoggedinUser));
-                return;
+                string error = "A user tried to login while loggedin to: " + LoggedinUser;
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
             }
 
             if (!UserService.canLogIn(user)) //Was regusterd
             {
-                Logger.Log.Error(Logger.Maintenance("A user tried to login to a not register account"));
-                return;
+                string error = "A user tried to login to a not register account";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
             }
 
             LoggedinUser = user; //log in
@@ -127,10 +135,12 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (LoggedinUser == null) //There is no logged in userer
+            if (!isLoggedIn()) //There is no logged in userer
             {
-                Logger.Log.Error(Logger.Maintenance("A user tried to logout without being logedin to a user"));
-                return;
+                string error = "A user tried to logout without being logedin to a user";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
             }
 
             LoggedinUser.logout();
@@ -170,12 +180,6 @@ namespace ISE182_project.Layers.BusinessLogic
         public static ArrayList requestAllMessagesfromUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            if (nickName == null || nickName.Equals("") | GroupID < 0) //Illigal name
-            {
-                Logger.Log.Error(Logger.Maintenance("A user requested mesages frm illegal account, returning an empty list"));
-                return new ArrayList();
-            }
 
             return MessageService.AllMessagesFromUser(new User(nickName, GroupID));
         }
