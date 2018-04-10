@@ -30,8 +30,15 @@ namespace ISE182_project.Layers.BusinessLogic
                     throw new ArgumentNullException(error);
                 }
 
-                MergeTwoArrays.mergeIntoFirst(_ramUsers, value); // Merging to avoid duplication
-                UserSerializationService.serialize(_ramUsers);   // Serialize the new list
+                MergeTwoArrays.mergeIntoFirst(_ramUsers, value);      // Merging to avoid duplication
+
+                if (!UserSerializationService.serialize(_ramUsers))   // Serialize the new list
+                {
+                    string error = "faild to serialize users";
+                    Logger.Log.Fatal(Logger.Maintenance(error));
+
+                    throw new IOException(error);
+                }
             }
 
             get

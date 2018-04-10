@@ -156,6 +156,14 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
+            if(!isLoggedIn())
+            {
+                string error = "You cant send a message without login first!";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
+            }
+
             LoggedinUser.send(body, URL); // Sending
             SaveLast10FromServer();       // reciving the last sent 10 messages
         }

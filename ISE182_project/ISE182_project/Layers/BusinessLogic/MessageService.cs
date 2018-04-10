@@ -30,9 +30,16 @@ namespace ISE182_project.Layers.BusinessLogic
                     throw new NullReferenceException(error);
                 }
 
-                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // merging to avoid duplication
-                sort(_ramMessages);                                  // sorting
-                MessageSerializationService.serialize(_ramMessages); // serialize the new list
+                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);      // merging to avoid duplication
+                sort(_ramMessages);                                      // sorting
+
+                if (!MessageSerializationService.serialize(_ramMessages)) // serialize the new list
+                {
+                    string error = "faild to serialize messages";
+                    Logger.Log.Fatal(Logger.Maintenance(error));
+
+                    throw new IOException(error);
+                }
             }
 
             get
@@ -142,7 +149,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             List<IMessage> retrived;
 
-            if(url ==null || url.Equals(""))
+            if (url == null || url.Equals(""))
             {
                 string error = "Recived an illegal url";
                 Logger.Log.Error(Logger.Maintenance(error));
