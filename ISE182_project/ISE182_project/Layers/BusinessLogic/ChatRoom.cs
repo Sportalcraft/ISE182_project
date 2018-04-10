@@ -18,6 +18,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private static Place _location;                                   // The location of the client
         private static IUser _loggedinUser;                               // Current logged in user
 
+
         #region General
 
         //The location of the client
