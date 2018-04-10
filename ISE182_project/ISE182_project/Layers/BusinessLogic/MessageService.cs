@@ -24,7 +24,10 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 if (_ramMessages == null) // There is no stored messages
                 {
-                    _ramMessages = value;
+                    string error = "the messages on the ram has not been initialize!";
+                    Logger.Log.Fatal(Logger.Maintenance(error));
+
+                    throw new NullReferenceException(error);
                 }
 
                 MergeTwoArrays.mergeIntoFirst(_ramMessages, value);  // merging to avoid duplication
