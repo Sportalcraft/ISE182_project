@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,23 +10,35 @@ namespace ISE182_project.Layers.PresentationLayer
 {
     class CLI
     {
-        // Will most likely have a ChatRoom property in order to call the required Methods
-        //private static List<ConsoleKey> validKeys = { ConsoleKey.A, };
+        private static CLI instance;
+        // CLI implemented as a singleton
 
-        public CLI()
+        private CLI()
+        {
+            ChatRoom.start(ChatRoom.Place.University);
+        }
+        public static CLI Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new CLI();
+                return instance;
+            }
+        }
+        // initialize(): used in order to initialize the CLI, introducing the user to the chat room instructions and allows him to interect with the relevant menu
+        public void initialize()
         {
             Console.WriteLine("Hello, welcome to our ChatRoom!");
             menuNotification();
-        }
-        public void initialize()
-        {
-            while (true) {
+            while (true) { // This loop allows moving between menus without calling them multiple times in different methods
             while (!ChatRoom.isLoggedIn())
                 entranceManager();
             while (ChatRoom.isLoggedIn())
                 selectionMenu();
             }
         }
+        // This menu handels a client which isn't logged-in in the chat room
         private void entranceManager()
         {
             Console.WriteLine("In order to use our services, please login first. If you don't have a user, please register first:");
@@ -40,12 +53,13 @@ namespace ISE182_project.Layers.PresentationLayer
                     login();
                 else if (selected.Key == ConsoleKey.B)
                     register();
-                else if (selected.Key == ConsoleKey.C) // Placement needs to be changed
+                else if (selected.Key == ConsoleKey.C)
                     exitFunction();
                 else
                     menuNotification();
             }
         }
+        // This menu handels a client has logged-in
         private void selectionMenu()
         {
             Console.WriteLine("Please select your desired option:");
@@ -69,31 +83,44 @@ namespace ISE182_project.Layers.PresentationLayer
             else
                 menuNotification();
         }
-        //private bool checkKeyValidity(ConsoleKey key)
-        //{
-
-        //}
+        // Trying to retrieve last 10 messages from server, reponds accordingly if the attempt was successful or not
         private void retrieveMessages()
         {
-            ChatRoom.SaveLast10FromServer();
-            Console.WriteLine("The 10 last messages were retrieved");
+            try {
+                ChatRoom.SaveLast10FromServer();
+                boldingText("The 10 last messages were retrieved", ConsoleColor.Cyan);
+            }
+            catch(Exception e)
+            {
+                boldingText(e.Message, ConsoleColor.Red);
+            }
         }
+        // Trying to display last 20 messages from server, reponds accordingly if the attempt was successful or not
         private void display20Messages()
         {
+            try
+            {
             boldingText("20 Last Messages:", ConsoleColor.Cyan);
-            ChatRoom.request20Messages().ToString();
+            arrayPrinter(ChatRoom.request20Messages());
+            }
+            catch
+            {
+                boldingText("Wasn't able to display the last 20 messages", ConsoleColor.Red);
+            }
         }
+        // Trying to display all retrieved messages of a certain user, reponds accordingly if the attempt was successful or not
         private void displayUserMessages()
         {
             bool parametersReceived = false;
-            int groupID = -1;
+            int groupID = -1; 
             Console.Write("Please enter the user's username in order to see all of his messages: ");
             string username = Console.ReadLine();
+            // Checking groupID's validety - the relevant function in the logic-layer recieves int, therefore we must check it here.
             while (!parametersReceived)
             {
                 Console.Write("Please enter the user's groupID in order to see all of his messages: ");
                 string groupIDstring = Console.ReadLine();
-                try
+                try // Only if the user's input was an int, the while loop will end
                 {
                         groupID = int.Parse(groupIDstring);
                         parametersReceived = true;
@@ -102,60 +129,99 @@ namespace ISE182_project.Layers.PresentationLayer
                 {
                 }
             }
-            boldingText(username + "'s messages are:", ConsoleColor.Cyan);
-            ChatRoom.requestAllMessagesfromUser(username, groupID).ToString();
+            try
+            {
+                ArrayList array = ChatRoom.requestAllMessagesfromUser(username, groupID); // An array of username's messages
+                if (array.Count == 0)
+                {
+                    boldingText(username + "'s has no messages", ConsoleColor.Cyan);
+                }
+                else
+                {
+                    boldingText(username + "'s messages are:", ConsoleColor.Cyan);
+                    arrayPrinter(ChatRoom.requestAllMessagesfromUser(username, groupID));
+                }
+            }
+            catch(Exception e)
+            {
+                boldingText(e.Message, ConsoleColor.Red);
+            }
 
         }
+        // This function allows a user to send a new message, only if under 150chars.
         private void writeMessage()
         {
-            Console.Write("Please insert your text: ");
+            Console.Write("Please insert your text (No more than 150 characters: ");
             string body = Console.ReadLine();
-            ChatRoom.send(body);
+            try
+            {
+                ChatRoom.send(body);
+                boldingText("Message was successfully sent!", ConsoleColor.Green);
+            }
+            catch(Exception e)
+            {
+                boldingText(e.Message, ConsoleColor.Red);
+            }
         }
+        // Handles login-out
         private void logoutFunction()
         {
             ChatRoom.logout();
             boldingText("You have successfully logged out", ConsoleColor.Green);
         }
+        // A message that pops-up when a user is pressing irrelevant keys (Instructions for menus)
         private void menuNotification()
         {
-            Console.WriteLine("While facing a menu, press the requested key in order to select the option you desire.");
+            boldingText("While facing a menu, press the requested key in order to select the option you desire.", ConsoleColor.Red);
         }
-        private void boldingText(string text, ConsoleColor color) // Displayes the text in red color
+        private void boldingText(string text, ConsoleColor color) // Displayes the text in the requested color
         {
             Console.ForegroundColor = color;
             Console.WriteLine(text);
             Console.ResetColor();
         }
+        // Handles login-in
         private void login()
         {
             Console.Write("In order to login, please enter your username and press <Enter>: ");
             string username = Console.ReadLine();
             try {
-            ChatRoom.login(username); // Calling login function
+            ChatRoom.login(username);
+                boldingText("You have successfully logged-in", ConsoleColor.Green);
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                boldingText(e.Message, ConsoleColor.Red);
             }
         }
+        // Handles registration
         private void register()
         {
             Console.Write("In order to register, please select a username and press <Enter>: ");
             string username = Console.ReadLine();
             try
             {
-                ChatRoom.register(username); // Calling register function
+                ChatRoom.register(username);
+                boldingText("You have successfully registered, pls login now", ConsoleColor.Green);
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                boldingText(e.Message, ConsoleColor.Red);
             }
         }
+        // Handles exit request
         private void exitFunction()
         {
-            // Inserting all new masseges into server might occure here, if needed
-            Environment.Exit(0);
+            ChatRoom.exit();
+        }
+        // An easy way to print the relevant array received from tha ChatRoom class
+        private void arrayPrinter(ArrayList array)
+        {
+            foreach (object o in array)
+            {
+                Console.WriteLine(o.ToString());
+                Console.WriteLine("\\==================================\\");
+            }
         }
     }
 }

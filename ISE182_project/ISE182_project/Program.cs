@@ -24,10 +24,9 @@ namespace MileStoneClient
 
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ChatRoom.start(ChatRoom.Place.Home);
-
+            CLI.Instance.initialize();
             //Add code here
-           
+
             Console.ReadKey();
         }
 
