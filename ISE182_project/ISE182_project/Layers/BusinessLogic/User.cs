@@ -64,7 +64,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (GroupID != GROUP_ID)
             {
-                Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created"));
+                Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created : NickName - " + nickName + " (GrouoID  : " + GroupID + ")" ));
             }
 
             _groupID = GroupID;
