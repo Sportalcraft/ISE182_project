@@ -56,7 +56,7 @@
     <Compile Include="Layers\BusinessLogic\Message.cs" />
     <Compile Include="Layers\CommunicationLayer\Communication.cs" />
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
-    <Compile Include="Layers\CommunicationLayer\IUser.cs" />
+    <Compile Include="Layers\BusinessLogic\IUser.cs" />
     <Compile Include="Layers\BusinessLogic\MessageComparatorByDate.cs" />
     <Compile Include="Layers\LoggingLayer\Logger.cs" />
     <Compile Include="Layers\PersistentLayer\MessageSerializationService.cs" />
@@ -69,18 +69,26 @@
     <Compile Include="Layers\PresentationLayer\MessageCLI.cs" />
     <Compile Include="Layers\PresentationLayer\UserCLI.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Tester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="ClassDiagrams\BusinessLogicDiagram.cd" />
+    <None Include="ClassDiagrams\CommunicationLayerDiagram.cd" />
+    <None Include="ClassDiagrams\PresentationLayerDiagram.cd" />
+    <None Include="ClassDiagrams\PresistentLayerDiagram.cd" />
     <None Include="log4net.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="ClassDiagrams\LoggingLayerDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Design\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

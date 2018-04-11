@@ -25,10 +25,12 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (x == null || !(x is IMessage) | y == null || !(y is IMessage)) 
+            if (!(x is IMessage) | !(y is IMessage)) 
             {
-                Logger.Log.Fatal(Logger.Maintenance("Message comparator recived illegal arguments. returning 0."));
-                return 0;
+                string error = "Message comparator recived illegal arguments.";
+                Logger.Log.Fatal(Logger.Maintenance(error));
+
+                throw new ArgumentNullException(error);
             }
 
             IMessage msg1 = (IMessage)x;

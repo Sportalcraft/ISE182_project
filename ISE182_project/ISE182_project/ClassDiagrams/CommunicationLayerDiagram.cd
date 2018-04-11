@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ISE182_project.Layers.CommunicationLayer.Communication">
+    <Position X="2.75" Y="1" Width="1.5" />
+    <NestedTypes>
+      <Class Name="ISE182_project.Layers.CommunicationLayer.Communication.SimpleHTTPClient" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Layers\CommunicationLayer\Communication.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="ISE182_project.Layers.CommunicationLayer.Communication.CommunicationMessage" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Layers\CommunicationLayer\Communication.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="ISE182_project.Layers.CommunicationLayer.Communication.Request" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Layers\CommunicationLayer\Communication.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAgAAAEAAAAAAAABAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Layers\CommunicationLayer\Communication.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="ISE182_project.Layers.CommunicationLayer.IMessage">
+    <Position X="1" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAABAAAAAAAEAAAAAAAAAAAAAAABAQAAAAAAAAA=</HashCode>
+      <FileName>Layers\CommunicationLayer\IMessage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

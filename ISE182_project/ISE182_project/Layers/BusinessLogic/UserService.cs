@@ -1,5 +1,4 @@
-﻿using ISE182_project.Layers.CommunicationLayer;
-using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
@@ -25,11 +24,21 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 if (_ramUsers == null) //there is ni stored messages
                 {
-                    _ramUsers = value;
+                    string error = "recived a null user for registration";
+                    Logger.Log.Error(Logger.Maintenance(error));
+
+                    throw new ArgumentNullException(error);
                 }
 
-                MergeTwoArrays.mergeIntoFirst(_ramUsers, value); // Merging to avoid duplication
-                UserSerializationService.serialize(_ramUsers);   // Serialize the new list
+                MergeTwoArrays.mergeIntoFirst(_ramUsers, value);      // Merging to avoid duplication
+
+                if (!UserSerializationService.serialize(_ramUsers))   // Serialize the new list
+                {
+                    string error = "faild to serialize users";
+                    Logger.Log.Fatal(Logger.Maintenance(error));
+
+                    throw new IOException(error);
+                }
             }
 
             get
@@ -53,16 +62,20 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (user == null) 
+            if (user == null)
             {
-                Logger.Log.Error(Logger.Maintenance("recived a null user for registration"));
-                return;
+                string error = "recived a null user for registration";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentNullException(error);
             }
 
             if (!canRegister(user)) //cheak if this nicknake is taken
             {
-                Logger.Log.Error(Logger.Maintenance("client tried to register with an alreadt existing user"));
-                return;
+                string error = "client tried to register with an already existing user";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
             }
 
             RamUsers.Add(user);
@@ -76,8 +89,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (user == null)
             {
-                Logger.Log.Error(Logger.Maintenance("recived a null user for registration"));
-                return false;
+                string error = "recived a null user for registration";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentNullException(error);
             }
 
             return !RamUsers.Contains(user);
@@ -90,8 +105,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (user == null)
             {
-                Logger.Log.Error(Logger.Maintenance("recived a null user for login"));
-                return false;
+                string error = "recived a null user for login";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentNullException(error);
             }
 
             return RamUsers.Contains(user);

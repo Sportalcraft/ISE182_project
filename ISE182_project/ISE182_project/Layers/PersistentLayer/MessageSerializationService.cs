@@ -31,7 +31,7 @@ namespace ISE182_project.Layers.PersistentLayer
 
             if (temp == null)
             {
-                Logger.Log.Warn(Logger.Developer("deserialized null messefes list from " + MESSAGE_LIST + ", returning an empty Arraylist"));
+                Logger.Log.Warn(Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST + ", returning an empty Arraylist"));
                 return new ArrayList();
             }
 

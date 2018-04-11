@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.BusinessLogic;
+﻿using ISE182_project;
+using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.CommunicationLayer;
 using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
@@ -14,53 +15,27 @@ namespace MileStoneClient
     {
         static void Main(string[] args)
         {
-            SetUp();
-
-            ChatRoom.start(ChatRoom.Place.Home); 
-
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            //ChatRoom.register("Tal");
-            ChatRoom.login("Tal");
-            ChatRoom.send("Hello world!1");
-            //ChatRoom.send("Hello world!2");
-            //ChatRoom.send("Hello world!3");
-            //ChatRoom.send("Hello world!4");
-            //ChatRoom.send("Hello world!5");
-
-            ChatRoom.logout();
-
-            //ChatRoom.register("Me");
-            //ChatRoom.login("Me");
-            //ChatRoom.send("Hey!1");
-            //ChatRoom.send("Hey!2");
-            //ChatRoom.send("Hey!3");
-            //ChatRoom.send("Hey!4");
-            //ChatRoom.send("Hey!5");
-
-            ICollection messages = ChatRoom.requestAllMessagesfromUser("Me", 32);
-
-            foreach (IMessage msg in messages)
-            {
-                Console.WriteLine(msg);
-                Console.WriteLine();
-            }
-
-            Console.ReadKey();
-        }
-
-        static void SetUp()
-        {
             //Exciptions on english
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
             //Handle all the ecxeption that was no cocaught
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+            //AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+
+
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            ChatRoom.start(ChatRoom.Place.Home);
+
+            //Add code here
+           
+            Console.ReadKey();
         }
+
 
         //This methond handle all the unhendled exceptions
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             ConsoleColor colorBefore = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
 

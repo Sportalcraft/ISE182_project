@@ -12,6 +12,7 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class have one method to merge two arrylists into the first one, without duplication
     static class MergeTwoArrays
     {
+
         // Merge two ArrayLists to the first one without duplication
         public static void mergeIntoFirst(ArrayList array1, ArrayList array2)
         {
@@ -19,8 +20,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if(array1==null | array2==null)
             {
-                Logger.Log.Error(Logger.Maintenance("Can't merge a null array"));
-                return;
+                string error = "Can't merge a null array";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentNullException(error);
             }
 
             if (array1 == array2)
