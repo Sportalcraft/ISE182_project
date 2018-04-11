@@ -23,13 +23,12 @@ namespace MileStoneClient
 
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ChatRoom.start(ChatRoom.Place.Home);
+            ChatRoom.start(ChatRoom.Place.University);
 
             //Add code here
            
             Console.ReadKey();
         }
-
 
         //This methond handle all the unhendled exceptions
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
