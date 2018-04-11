@@ -143,7 +143,14 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             Console.Write("In order to register, please select a username and press <Enter>: ");
             string username = Console.ReadLine();
-            ChatRoom.register(username); // Calling register function
+            try
+            {
+                ChatRoom.register(username); // Calling register function
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
         private void exitFunction()
         {
