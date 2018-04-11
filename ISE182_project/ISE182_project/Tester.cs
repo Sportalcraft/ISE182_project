@@ -8,14 +8,35 @@ using System.Threading.Tasks;
 
 namespace ISE182_project
 {
+    // Test our Code
     class Tester
     {
+        #region Public Testers
+
         public void run()
         {
             //TestUser();
             //TestMessage();
             Console.WriteLine("This test was run succesfully, some method won't work the second time, due to the persistent layer.\nNo test were done now");
         }
+
+        public void testUniversityConection()
+        {
+            try
+            {
+                ChatRoom.register("Tal");
+            }
+            catch
+            {
+
+            }
+
+            ChatRoom.login("Tal");
+
+            ChatRoom.send("This us My Message");
+        }
+
+        #endregion
 
         #region singletone
 
@@ -35,7 +56,7 @@ namespace ISE182_project
 
         #endregion
 
-        #region Testers
+        #region Private Testers
 
         private void TestUser()
         {
