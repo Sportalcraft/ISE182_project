@@ -9,33 +9,33 @@ namespace ISE182_project.Layers.PresentationLayer
 {
     class CLI
     {
-        private bool userLoggedIn;
-        private ConsoleKeyInfo selected;
         // Will most likely have a ChatRoom property in order to call the required Methods
         //private static List<ConsoleKey> validKeys = { ConsoleKey.A, };
 
         public CLI()
         {
-            this.userLoggedIn = false;
             Console.WriteLine("Hello, welcome to our ChatRoom!");
             menuNotification();
         }
         public void initialize()
         {
-            while (this.userLoggedIn != true)
+            while (true) {
+            while (!ChatRoom.isLoggedIn())
                 entranceManager();
-            while (this.userLoggedIn == true)
+            while (ChatRoom.isLoggedIn())
                 selectionMenu();
+            }
         }
         private void entranceManager()
         {
             Console.WriteLine("In order to use our services, please login first. If you don't have a user, please register first:");
             Console.WriteLine("a) Login");
             Console.WriteLine("b) Register");
-            boldingText("c) Exit ChatRoom");
-            while (this.userLoggedIn != true)
+            boldingText("c) Exit ChatRoom", ConsoleColor.Red);
+            while (!ChatRoom.isLoggedIn())
             {
-                this.selected = Console.ReadKey();
+                ConsoleKeyInfo selected = Console.ReadKey();
+                Console.WriteLine();
                 if (selected.Key == ConsoleKey.A)
                     login();
                 else if (selected.Key == ConsoleKey.B)
@@ -49,18 +49,22 @@ namespace ISE182_project.Layers.PresentationLayer
         private void selectionMenu()
         {
             Console.WriteLine("Please select your desired option:");
-            Console.WriteLine("a) Retrive 10 massages from the server");
-            Console.WriteLine("b) Display massages");
-            Console.WriteLine("c) Write a new massage");
-            Console.WriteLine("d) Logout - allows exiting from the ChatRoom");
-            this.selected = Console.ReadKey();
+            Console.WriteLine("a) Retrieve 10 messages from the server");
+            Console.WriteLine("b) Display 20 messages");
+            Console.WriteLine("c) Display user's messages");
+            Console.WriteLine("d) Write a new message");
+            Console.WriteLine("e) Logout - allows exiting from the ChatRoom");
+            ConsoleKeyInfo selected = Console.ReadKey();
+            Console.WriteLine();
             if (selected.Key == ConsoleKey.A)
-                retriveMassages();
+                retrieveMessages();
             else if (selected.Key == ConsoleKey.B)
-                displayMassages();
+                display20Messages();
             else if (selected.Key == ConsoleKey.C)
-                writeMassage();
+                displayUserMessages();
             else if (selected.Key == ConsoleKey.D)
+                writeMessage();
+            else if (selected.Key == ConsoleKey.E)
                 logoutFunction();
             else
                 menuNotification();
@@ -69,29 +73,57 @@ namespace ISE182_project.Layers.PresentationLayer
         //{
 
         //}
-        private void retriveMassages()
+        private void retrieveMessages()
         {
-            throw new NotImplementedException();
+            ChatRoom.SaveLast10FromServer();
+            Console.WriteLine("The 10 last messages were retrieved");
         }
-        private void displayMassages()
+        private void display20Messages()
         {
-            throw new NotImplementedException();
+            boldingText("20 Last Messages:", ConsoleColor.Cyan);
+            ChatRoom.request20Messages().ToString();
         }
-        private void writeMassage()
+        private void displayUserMessages()
         {
-            throw new NotImplementedException();
+            bool parametersReceived = false;
+            int groupID = -1;
+            Console.Write("Please enter the user's username in order to see all of his messages: ");
+            string username = Console.ReadLine();
+            while (!parametersReceived)
+            {
+                Console.Write("Please enter the user's groupID in order to see all of his messages: ");
+                string groupIDstring = Console.ReadLine();
+                try
+                {
+                        groupID = int.Parse(groupIDstring);
+                        parametersReceived = true;
+                }
+                catch
+                {
+                }
+            }
+            boldingText(username + "'s messages are:", ConsoleColor.Cyan);
+            ChatRoom.requestAllMessagesfromUser(username, groupID).ToString();
+
+        }
+        private void writeMessage()
+        {
+            Console.Write("Please insert your text: ");
+            string body = Console.ReadLine();
+            ChatRoom.send(body);
         }
         private void logoutFunction()
         {
-            throw new NotImplementedException();
+            ChatRoom.logout();
+            boldingText("You have successfully logged out", ConsoleColor.Green);
         }
         private void menuNotification()
         {
             Console.WriteLine("While facing a menu, press the requested key in order to select the option you desire.");
         }
-        private void boldingText(string text) // Displayes the text in red color
+        private void boldingText(string text, ConsoleColor color) // Displayes the text in red color
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = color;
             Console.WriteLine(text);
             Console.ResetColor();
         }
@@ -99,19 +131,19 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             Console.Write("In order to login, please enter your username and press <Enter>: ");
             string username = Console.ReadLine();
-            Console.Write("Please enter your password and press <Enter>: ");
-            string password = Console.ReadLine();
-            // Calling login function
-            this.userLoggedIn = true; // this.userLoggedIn = bool returned from login function
+            try {
+            ChatRoom.login(username); // Calling login function
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
         private void register()
         {
             Console.Write("In order to register, please select a username and press <Enter>: ");
             string username = Console.ReadLine();
-            Console.Write("Please enter a password and press <Enter>: ");
-            string password = Console.ReadLine();
-            // Calling register function
-            this.userLoggedIn = true; // this.userLoggedIn = bool returned from register function
+            ChatRoom.register(username); // Calling register function
         }
         private void exitFunction()
         {

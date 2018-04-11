@@ -3,6 +3,7 @@ using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.CommunicationLayer;
 using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
+using ISE182_project.Layers.PresentationLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,8 +24,9 @@ namespace MileStoneClient
 
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ChatRoom.start(ChatRoom.Place.Home);
-
+            ChatRoom.start(ChatRoom.Place.University);
+            CLI c = new CLI();
+            c.initialize();
             //Add code here
            
             Console.ReadKey();

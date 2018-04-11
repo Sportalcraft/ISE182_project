@@ -66,8 +66,6 @@
     <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
     <Compile Include="Layers\BusinessLogic\UserService.cs" />
     <Compile Include="Layers\PresentationLayer\CLI.cs" />
-    <Compile Include="Layers\PresentationLayer\MessageCLI.cs" />
-    <Compile Include="Layers\PresentationLayer\UserCLI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tester.cs" />
   </ItemGroup>

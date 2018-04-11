@@ -202,7 +202,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
             return MessageService.lastNmesages(number);
         }
-
         #endregion
     }
 }
