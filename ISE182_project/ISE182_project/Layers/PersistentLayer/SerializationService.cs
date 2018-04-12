@@ -38,7 +38,7 @@ namespace ISE182_project.Layers.PersistentLayer
                 stream.Close();
             }
 
-            return succeed;
+            return succeed ;
         }
 
         //deserialze an object from the given file name
