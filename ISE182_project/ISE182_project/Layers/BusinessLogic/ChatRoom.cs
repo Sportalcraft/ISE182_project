@@ -16,7 +16,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private const string HOME_URL = @"http://localhost/";             // The url addres of the server at home
         private const string BGU_URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
         private static Place _location;                                   // The location of the client
-        private static IUser _loggedinUser ;                               // Current logged in user
+        private static IUser _loggedinUser;                               // Current logged in user
 
         #region General
 
