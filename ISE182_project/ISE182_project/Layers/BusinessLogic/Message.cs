@@ -14,7 +14,7 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represen a message in the chatroom
     class Message : IMessage
     {
-        private Guid _g_id;              // The unique idetifier of the message
+        private Guid _guid;              // The unique idetifier of the message
         private DateTime _receivingTime; // The time the server received the message
         private IUser _sender;           // The sender user
         private string _body;            // The message’s content
@@ -34,7 +34,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter to the guid
         public Guid Id
         {
-            get { return _g_id; }
+            get { return _guid; }
         }
 
         //Getter to the content of the message
@@ -69,11 +69,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //A constractor of message class
-        public Message(Guid g_id, DateTime receivingTime, IUser sender, string body)
+        public Message(Guid guid, DateTime receivingTime, IUser sender, string body)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (g_id == null | receivingTime == null | sender == null | body == null)
+            if (guid == null | receivingTime == null | sender == null | body == null)
             {
                 Logger.Log.Error(Logger.Maintenance("recived a null as an argument"));
 
@@ -88,7 +88,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentException(error);
             }
 
-            _g_id = g_id;
+            _guid = guid;
             _receivingTime = receivingTime;
             _sender = sender;
             _body = body;
