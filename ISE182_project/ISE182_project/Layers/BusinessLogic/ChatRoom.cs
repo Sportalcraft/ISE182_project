@@ -70,7 +70,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (LoggedinUser != null)
+            if (isLoggedIn())
                 logout(); //logout first
 
             Logger.Log.Info(Logger.Maintenance("The client closed the program"));
