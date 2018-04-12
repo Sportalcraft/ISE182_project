@@ -15,7 +15,7 @@ namespace ISE182_project.Layers.PresentationLayer
 
         private CLI()
         {
-            ChatRoom.start(ChatRoom.Place.University);
+            ChatRoom.start(ChatRoom.Place.Home);
         }
         public static CLI Instance
         {
@@ -103,9 +103,9 @@ namespace ISE182_project.Layers.PresentationLayer
             boldingText("20 Last Messages:", ConsoleColor.Cyan);
             arrayPrinter(ChatRoom.request20Messages());
             }
-            catch
+            catch (Exception e)
             {
-                boldingText("Wasn't able to display the last 20 messages", ConsoleColor.Red);
+                boldingText(e.Message, ConsoleColor.Red);
             }
         }
         // Trying to display all retrieved messages of a certain user, reponds accordingly if the attempt was successful or not
@@ -134,7 +134,7 @@ namespace ISE182_project.Layers.PresentationLayer
                 ArrayList array = ChatRoom.requestAllMessagesfromUser(username, groupID); // An array of username's messages
                 if (array.Count == 0)
                 {
-                    boldingText(username + "'s has no messages", ConsoleColor.Cyan);
+                    boldingText(username + " have no messages", ConsoleColor.Cyan);
                 }
                 else
                 {
@@ -166,8 +166,17 @@ namespace ISE182_project.Layers.PresentationLayer
         // Handles login-out
         private void logoutFunction()
         {
-            ChatRoom.logout();
-            boldingText("You have successfully logged out", ConsoleColor.Green);
+            try
+            {
+                ChatRoom.logout();
+                boldingText("You have successfully logged out", ConsoleColor.Green);
+            }
+            catch(Exception e)
+            {
+                boldingText(e.Message, ConsoleColor.Red);
+            }
+            
+          
         }
         // A message that pops-up when a user is pressing irrelevant keys (Instructions for menus)
         private void menuNotification()
