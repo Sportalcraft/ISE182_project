@@ -134,14 +134,6 @@ namespace ISE182_project.Layers.BusinessLogic
             return toReturn;
         }
 
-        //Get the last 20 messages stored in RAM
-        public static ArrayList last20Mesages()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return lastNmesages(20);
-        }
-
         //retrive and save the last 10 meseges from server.
         public static void SaveLast10FromServer(string url)
         {
