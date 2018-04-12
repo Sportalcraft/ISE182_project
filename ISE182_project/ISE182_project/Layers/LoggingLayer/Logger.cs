@@ -44,6 +44,11 @@ namespace ISE182_project.Layers.LoggingLayer
             // Or : return MethodStart(method.Name, method.DeclaringType.Name);
         }
 
+        //can be used to put a referece at the begennig of the message - Server :
+        public static string Server(string logMessage)
+        {
+            return "Server : " + logMessage;
+        }
 
         //--------------------------------------   
 
