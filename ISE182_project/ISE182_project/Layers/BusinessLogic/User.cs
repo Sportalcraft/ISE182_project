@@ -39,7 +39,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (nickName == null || nickName.Equals(""))
             {
-                string error = "The client tried to register with illegal nickname";
+                string error = "The client tried to use illegal nickname";
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw new ArgumentException(error);

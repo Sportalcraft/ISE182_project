@@ -112,9 +112,13 @@ namespace ISE182_project.Layers.PresentationLayer
         private void displayUserMessages()
         {
             bool parametersReceived = false;
-            int groupID = -1; 
-            Console.Write("Please enter the user's username in order to see all of his messages: ");
-            string username = Console.ReadLine();
+            int groupID = -1;
+            string username = "";
+            while (username.Equals(""))
+            {
+                Console.Write("Please enter the user's username in order to see all of his messages: ");
+                username = Console.ReadLine();
+            }
             // Checking groupID's validety - the relevant function in the logic-layer recieves int, therefore we must check it here.
             while (!parametersReceived)
             {
