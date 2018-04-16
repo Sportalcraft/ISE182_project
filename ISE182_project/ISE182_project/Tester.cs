@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project
 {
-    // Test our Code - reusable
+    // Test our Code
     class Tester
     {
         #region Public Testers
