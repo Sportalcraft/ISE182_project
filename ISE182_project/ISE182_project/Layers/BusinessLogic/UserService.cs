@@ -15,10 +15,10 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the useres stored in RAM
     class UserService
     {
-        private static ArrayList _ramUsers; // Store a coppy of the users in the ram for quick acces
+        private static ICollection<IUser> _ramUsers; // Store a coppy of the users in the ram for quick acces
 
         //Getter and setter to the users stored in the ram
-        private static ArrayList RamUsers
+        private static ICollection<IUser> RamUsers
         {
             set
             {
@@ -26,11 +26,11 @@ namespace ISE182_project.Layers.BusinessLogic
                 {
                     string error = "recived a null user for registration";
                     Logger.Log.Error(Logger.Maintenance(error));
-
-                    throw new ArgumentNullException(error);
+                    _ramUsers = new List<IUser>();
+                    //throw new ArgumentNullException(error);
                 }
 
-                MergeTwoArrays.mergeIntoFirst(_ramUsers, value);      // Merging to avoid duplication
+                MergeTwoCollections.mergeIntoFirst(_ramUsers, value);      // Merging to avoid duplication
 
                 if (!UserSerializationService.serialize(_ramUsers))   // Serialize the new list
                 {
@@ -44,7 +44,7 @@ namespace ISE182_project.Layers.BusinessLogic
             get
             {
                 if (_ramUsers == null)
-                    _ramUsers = UserSerializationService.deserialize(); // Deserialize users to the ram if not there alrady
+                    _ramUsers = UserSerializationService.deserialize<IUser>(); // Deserialize users to the ram if not there alrady
 
                 return _ramUsers;
             }
@@ -123,14 +123,14 @@ namespace ISE182_project.Layers.BusinessLogic
         private static void UpdateDisk()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            RamUsers = new ArrayList(); //So the set atribulte will activate to ask to save to disk
+            RamUsers = new List<IUser>(); //So the set atribulte will activate to ask to save to disk
         }
 
         //Setting the ram, if null
         private static void SetRAM()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ICollection temp = RamUsers; //So the get atribulte will activate to ask to draw from disk
+            ICollection<IUser> temp = RamUsers; //So the get atribulte will activate to ask to draw from disk
         }
 
         #endregion

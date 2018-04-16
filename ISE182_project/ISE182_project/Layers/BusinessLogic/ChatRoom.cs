@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -177,7 +178,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive the last 20 messages
-        public static ArrayList request20Messages()
+        public static ICollection<IMessage> request20Messages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -185,18 +186,18 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive all the messages
-        public static ArrayList requestAllMessagesfromUser(string nickName, int GroupID)
+        public static ICollection<IMessage> requestAllMessagesfromUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.AllMessagesFromUser(new User(nickName, GroupID));
+            return MessageService.FilterByUser(new User(nickName, GroupID));
         }
 
 
         // ----------------------------------------------------------
 
         // Receive the last n messages
-        private static ArrayList requestMessages(int number)
+        private static ICollection<IMessage> requestMessages(int number)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 

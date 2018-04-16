@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,7 +16,7 @@ namespace ISE182_project.Layers.PersistentLayer
         private const string MESSAGE_LIST = "Messages.bin"; // The file name to save the mesages
 
         // serialize a *sorted* list of messages. return if it was done successfully
-        public static bool serialize(ArrayList messages)
+        public static bool serialize<T>(ICollection<T> messages)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -23,16 +24,18 @@ namespace ISE182_project.Layers.PersistentLayer
         }
 
         //Deserialize all messages from the disk
-        public static ArrayList deserialize()
+        public static ICollection<T> deserialize<T>()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ArrayList temp = (ArrayList)SerializationService.deserialize(MESSAGE_LIST);
+            ICollection<T> temp = (ICollection<T>)SerializationService.deserialize(MESSAGE_LIST);
 
             if (temp == null)
             {
-                Logger.Log.Warn(Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST + ", returning an empty Arraylist"));
-                return new ArrayList();
+                string error = Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST + ", returning an empty list");
+                Logger.Log.Warn(error);
+
+                throw new IOException(error);
             }
 
             return temp;

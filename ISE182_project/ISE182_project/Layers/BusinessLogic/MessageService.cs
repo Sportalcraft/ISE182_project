@@ -15,10 +15,10 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the messages stored in RAM
     static class MessageService
     {
-        private static ArrayList _ramMessages; // Store a coppy of the messages in the ram for quick acces
+        private static ICollection<IMessage> _ramMessages; // Store a coppy of the messages in the ram for quick acces
 
         //Getter and setter to the messages stored in the ram
-        private static ArrayList RamMessages
+        private static ICollection<IMessage> RamMessages
         {
              set
             {
@@ -30,15 +30,15 @@ namespace ISE182_project.Layers.BusinessLogic
                     throw new NullReferenceException(error);
                 }
 
-                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);      // merging to avoid duplication
-                sort(_ramMessages);                                      // sorting
+                MergeTwoCollections.mergeIntoFirst(_ramMessages, value);// merging to avoid duplication
+                sort(_ramMessages,Sort.Time, false);               // sorting
 
                 if (!MessageSerializationService.serialize(_ramMessages)) // serialize the new list
                 {
                     string error = "faild to serialize messages";
-                    Logger.Log.Fatal(Logger.Maintenance(error));
-
-                    throw new IOException(error);
+                    Logger.Log.Warn(Logger.Maintenance(error));
+                    _ramMessages = new List<IMessage>();
+                    //throw new IOException(error);
                 }
             }
 
@@ -46,7 +46,7 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 if (_ramMessages == null) // Deserialize messages to the ram if not there alrady
                 {
-                    _ramMessages = MessageSerializationService.deserialize();
+                    _ramMessages = MessageSerializationService.deserialize<IMessage>();
                 }
 
                 return _ramMessages;
@@ -59,6 +59,66 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             SetRAM();
         }
+
+        #region Filter
+
+        //recive all the messages from a certain user
+        public static ICollection<IMessage> FilterByUser(IUser user)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return (ICollection<IMessage>)RamMessages.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID))));
+        }
+
+        //recive all the messages from a certain group
+        public static ICollection<IMessage> FilterByGroup(int groupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return (ICollection<IMessage>)RamMessages.Where(msg => int.Parse(msg.GroupID) == groupID);
+        }
+
+        #endregion
+
+        #region Sort
+
+        //Sort a message List by the time
+        public static void sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if(descending)
+            {
+                switch (SortBy)
+                {
+                    case Sort.Time: messages.OrderByDescending(msg => msg.Date); return;
+                    case Sort.Nickname: messages.OrderByDescending(msg => msg.UserName); return;
+                    case Sort.GroupNickTime: messages.OrderByDescending(msg => msg.UserName).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date); return;
+                }
+            }
+
+            switch(SortBy)
+            {
+                case Sort.Time: messages.OrderBy(msg => msg.Date); return;
+                case Sort.Nickname: messages.OrderBy(msg => msg.UserName); return;
+                case Sort.GroupNickTime: messages.OrderBy(msg => msg.UserName).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date); return;
+            }
+
+            string error = "The sorting methid failed";
+            Logger.Log.Fatal(Logger.Maintenance(error));
+
+            throw new InvalidOperationException(error);
+        }
+
+        //Sort options
+        public enum Sort
+        {
+            Time,
+            Nickname,
+            GroupNickTime
+        }
+
+        #endregion
 
         //Edid message by guid and save to the RAM and disk
         public static void EditMessage(Guid ID, string newBody)
@@ -84,29 +144,8 @@ namespace ISE182_project.Layers.BusinessLogic
             throw new KeyNotFoundException(error);
         }
 
-        //return all the messages from a certain user
-        public static ArrayList AllMessagesFromUser(IUser user)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            ArrayList toreturn = new ArrayList();
-            IUser temp;
-
-            foreach (IMessage msg in RamMessages)
-            {
-                temp = new User(msg.UserName, int.Parse(msg.GroupID)); // Message sender
-
-                if (user.Equals(temp)) // if the same sender as the given one
-                {
-                    toreturn.Add(msg);
-                }
-            }
-
-            return toreturn;
-        }
-
         //return the last n saved messages
-        public static ArrayList lastNmesages(int amount)
+        public static ICollection<IMessage> lastNmesages(int amount)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -124,14 +163,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 amount = RamMessages.Count;
             }
 
-            ArrayList toReturn = new ArrayList();
-
-            for (int i = RamMessages.Count - amount; i < RamMessages.Count; i++)
-            {
-                toReturn.Add(RamMessages[i]);
-            }
-
-            return toReturn;
+            return (ICollection<IMessage>)RamMessages.Reverse().Take(amount).Reverse();
         }
 
         //retrive and save the last 10 meseges from server.
@@ -161,7 +193,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw;
             }
 
-            ArrayList temp = new ArrayList();
+            ICollection<IMessage> temp = new List<IMessage>();
 
             foreach(IMessage msg in retrived)
             {
@@ -176,25 +208,18 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region private methods
 
-        //Sort a message List by the time
-        private static void sort(ArrayList messages)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            messages.Sort(new MessageComparatorByDate());
-        }
-
         //Update the stored in disk messages after changing ram
         private static void UpdateDisk()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            RamMessages = new ArrayList(); //So the set atribulte will activate to ask to save to disk
+            RamMessages = new LinkedList<IMessage>(); //So the set atribulte will activate to ask to save to disk
         }
 
         //Setting the ram, if null
         private static void SetRAM()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ICollection temp = RamMessages; //So the get atribulte will activate to ask to draw from disk
+            ICollection<IMessage> temp = RamMessages; //So the get atribulte will activate to ask to draw from disk
         }
 
         //Unused - save a single message to the RAM
