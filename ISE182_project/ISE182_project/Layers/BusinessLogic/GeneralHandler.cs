@@ -21,7 +21,7 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 if (_ramData == null) //there is ni stored messages
                 {
-                    string error = "ram data was nor initialized!";
+                    string error = "ram data was not initialized!";
                     Logger.Log.Error(Logger.Maintenance(error));
 
                     throw new InvalidOperationException(error);

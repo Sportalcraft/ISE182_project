@@ -49,8 +49,8 @@ namespace ISE182_project.Layers.BusinessLogic
                     throw new ArgumentNullException(error);
                 }
 
-                sort(value, Sort.Time, false); // sorting
-                RamData = value;
+                ICollection<IMessage> temp = sort(value, Sort.Time, false); // sorting
+                RamData = temp;
             }
 
             get { return RamData; }
@@ -63,7 +63,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return (ICollection<IMessage>)RamMessages.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID))));
+            return RamMessages.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
         }
 
         //recive all the messages from a certain group
@@ -71,7 +71,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return (ICollection<IMessage>)RamMessages.Where(msg => int.Parse(msg.GroupID) == groupID);
+            return RamMessages.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
         }
 
         #endregion
@@ -79,7 +79,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Sort
 
         //Sort a message List by the time
-        public void sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        public ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -87,17 +87,17 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 switch (SortBy)
                 {
-                    case Sort.Time: messages.OrderByDescending(msg => msg.Date); return;
-                    case Sort.Nickname: messages.OrderByDescending(msg => msg.UserName); return;
-                    case Sort.GroupNickTime: messages.OrderByDescending(msg => msg.UserName).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date); return;
+                    case Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList(); 
+                    case Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
+                    case Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.UserName).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
                 }
             }
 
             switch (SortBy)
             {
-                case Sort.Time: messages.OrderBy(msg => msg.Date); return;
-                case Sort.Nickname: messages.OrderBy(msg => msg.UserName); return;
-                case Sort.GroupNickTime: messages.OrderBy(msg => msg.UserName).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date); return;
+                case Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
+                case Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
+                case Sort.GroupNickTime: return messages.OrderBy(msg => msg.UserName).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
             }
 
             string error = "The sorting methid failed";
@@ -135,7 +135,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 amount = RamMessages.Count;
             }
 
-            return (ICollection<IMessage>)RamMessages.Reverse().Take(amount).Reverse();
+            return RamMessages.Reverse().Take(amount).Reverse().ToList();
         }
 
         //retrive and save the last 10 meseges from server.

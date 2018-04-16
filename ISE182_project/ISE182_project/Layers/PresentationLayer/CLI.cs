@@ -11,9 +11,10 @@ namespace ISE182_project.Layers.PresentationLayer
 {
     class CLI
     {
-        private static CLI instance;
         // CLI implemented as a singleton
+        private static CLI instance;
 
+        // CLI implemented as a singleton
         private CLI()
         {
             ChatRoom.start(ChatRoom.Place.Home);
@@ -102,7 +103,7 @@ namespace ISE182_project.Layers.PresentationLayer
             try
             {
             boldingText("20 Last Messages:", ConsoleColor.Cyan);
-            arrayPrinter(ChatRoom.request20Messages());
+            Printer(ChatRoom.request20Messages());
             }
             catch (Exception e)
             {
@@ -144,7 +145,7 @@ namespace ISE182_project.Layers.PresentationLayer
                 else
                 {
                     boldingText(username + "'s messages are:", ConsoleColor.Cyan);
-                    arrayPrinter(list);
+                    Printer(list);
                 }
             }
             catch(Exception e)
@@ -229,7 +230,7 @@ namespace ISE182_project.Layers.PresentationLayer
             ChatRoom.exit();
         }
         // An easy way to print the relevant lists received from tha ChatRoom class
-        private void arrayPrinter<T>(ICollection<T> list)
+        private void Printer<T>(ICollection<T> list)
         {
             foreach (object o in list)
             {
