@@ -5,14 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.CommunicationLayer;
 
 namespace ISE182_project.Layers.PresentationLayer
 {
     class CLI
     {
-        private static CLI instance;
         // CLI implemented as a singleton
+        private static CLI instance;
 
+        // CLI implemented as a singleton
         private CLI()
         {
             ChatRoom.start(ChatRoom.Place.University);
@@ -101,7 +103,7 @@ namespace ISE182_project.Layers.PresentationLayer
             try
             {
             boldingText("20 Last Messages:", ConsoleColor.Cyan);
-            arrayPrinter(ChatRoom.request20Messages());
+            Printer(ChatRoom.request20Messages());
             }
             catch (Exception e)
             {
@@ -135,15 +137,15 @@ namespace ISE182_project.Layers.PresentationLayer
             }
             try
             {
-                ArrayList array = ChatRoom.requestAllMessagesfromUser(username, groupID); // An array of username's messages
-                if (array.Count == 0)
+                ICollection<IMessage> list = ChatRoom.requestAllMessagesfromUser(username, groupID); // An array of username's messages
+                if (list.Count == 0)
                 {
                     boldingText(username + " have no messages", ConsoleColor.Cyan);
                 }
                 else
                 {
                     boldingText(username + "'s messages are:", ConsoleColor.Cyan);
-                    arrayPrinter(ChatRoom.requestAllMessagesfromUser(username, groupID));
+                    Printer(list);
                 }
             }
             catch(Exception e)
@@ -227,10 +229,10 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             ChatRoom.exit();
         }
-        // An easy way to print the relevant array received from tha ChatRoom class
-        private void arrayPrinter(ArrayList array)
+        // An easy way to print the relevant lists received from tha ChatRoom class
+        private void Printer<T>(ICollection<T> list)
         {
-            foreach (object o in array)
+            foreach (object o in list)
             {
                 Console.WriteLine(o.ToString());
                 Console.WriteLine("\\==================================\\");

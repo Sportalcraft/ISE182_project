@@ -13,52 +13,31 @@ namespace ISE182_project.Layers.BusinessLogic
 {
 
     //This class manege the useres stored in RAM
-    class UserService
+    class UserService : GeneralHandler<IUser>
     {
-        private static ArrayList _ramUsers; // Store a coppy of the users in the ram for quick acces
+        #region singletone
 
-        //Getter and setter to the users stored in the ram
-        private static ArrayList RamUsers
+        //private ctor
+        private UserService() { }
+
+        private static UserService _instence; // the instence
+
+        // instemce getter
+        public static UserService Instence
         {
-            set
-            {
-                if (_ramUsers == null) //there is ni stored messages
-                {
-                    string error = "recived a null user for registration";
-                    Logger.Log.Error(Logger.Maintenance(error));
-
-                    throw new ArgumentNullException(error);
-                }
-
-                MergeTwoArrays.mergeIntoFirst(_ramUsers, value);      // Merging to avoid duplication
-
-                if (!UserSerializationService.serialize(_ramUsers))   // Serialize the new list
-                {
-                    string error = "faild to serialize users";
-                    Logger.Log.Fatal(Logger.Maintenance(error));
-
-                    throw new IOException(error);
-                }
-            }
-
             get
             {
-                if (_ramUsers == null)
-                    _ramUsers = UserSerializationService.deserialize(); // Deserialize users to the ram if not there alrady
+                if (_instence == null)
+                    _instence = new UserService();
 
-                return _ramUsers;
+                return _instence;
             }
         }
 
-        //Initiating the ram's saves from users stored in the disk
-        public static void start()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            SetRAM();
-        }
+        #endregion
 
         //Add a new user to the users list
-        public static void register(IUser user)
+        public void register(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -78,12 +57,12 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            RamUsers.Add(user);
+            RamData.Add(user);
             UpdateDisk();
         }
 
         //cheak if a user can register
-        public static bool canRegister(IUser user)
+        public bool canRegister(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -95,11 +74,11 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return !RamUsers.Contains(user);
+            return !RamData.Contains(user);
         }
 
         //cheak if a user can login
-        public static bool canLogIn(IUser user)
+        public bool canLogIn(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -111,26 +90,24 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return RamUsers.Contains(user);
+            return RamData.Contains(user);
         }
 
 
         //-----------------------------------------------------------
 
-        #region private methods
+        #region overrding methods
 
-        //Update the stored in disk users after changing ram
-        private static void UpdateDisk()
+        protected override ICollection<IUser> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            RamUsers = new ArrayList(); //So the set atribulte will activate to ask to save to disk
+            return UserSerializationService.deserialize<IUser>();
         }
 
-        //Setting the ram, if null
-        private static void SetRAM()
+        protected override bool serialize(ICollection<IUser> _ramData)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ICollection temp = RamUsers; //So the get atribulte will activate to ask to draw from disk
+            return UserSerializationService.serialize(RamData);
         }
 
         #endregion

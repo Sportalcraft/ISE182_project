@@ -20,12 +20,15 @@ namespace MileStoneClient
             System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
 
             //Handle all the ecxeption that was no cocaught
-            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
-
+            //AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
+       
 
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            CLI.Instance.initialize();
-            //Add code here
+
+            //CLI.Instance.initialize();
+
+            ChatRoom.start(ChatRoom.Place.Home);
+            Tester.Instence.run();
 
             Console.ReadKey();
         }

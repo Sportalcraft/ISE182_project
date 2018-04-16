@@ -1,4 +1,5 @@
 ﻿using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.CommunicationLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,9 +16,23 @@ namespace ISE182_project
 
         public void run()
         {
-            //TestUser();
-            //TestMessage();
-            Console.WriteLine("This test was run succesfully, some method won't work the second time, due to the persistent layer.\nNo test were done now");
+            Console.WriteLine("Welcome to the tester.\nThis tester will take 1-2 minutes to end due to time delaytion before sending messages,\nto make sure they are all sent on a difrrent time.\nPlease be patient and wait until 'Test finished' will be printed, or until an exception trown");
+            boldingText("WARNING : it is best to NOT run this at the unuversity, though it should be ok.\nDon't take that risk", ConsoleColor.Red);
+            Console.WriteLine("Press any key to start the tester, or close the program");
+            Console.ReadKey();
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            TestUser();
+            Console.WriteLine();
+            Console.WriteLine();
+            TestMessage();
+            Console.WriteLine();
+            Console.WriteLine();
+
+            boldingText("Passed all tests!", ConsoleColor.Green);
+            boldingText("Test Finished", ConsoleColor.Cyan);
         }
 
         public void testUniversityConection()
@@ -61,16 +76,27 @@ namespace ISE182_project
         private void TestUser()
         {
             registerTest();
+            Console.WriteLine();
             LogInTest();
+            Console.WriteLine();
             logoutTest();
+            Console.WriteLine();
+
+            boldingText("Passed User tests!", ConsoleColor.Green);
         }
 
         private void TestMessage()
         {
             sendTest();
+            Console.WriteLine();
             last20Test();
-            SortMessageTest();
+            Console.WriteLine();
+            SortTimeMessageTest();
+            Console.WriteLine();
             requestFromTest();
+            Console.WriteLine();
+
+            boldingText("Passed Message tests!", ConsoleColor.Green);
         }
 
         #endregion
@@ -80,21 +106,22 @@ namespace ISE182_project
         private void registerTest()
         {
             bool passed = true;
+            string UserName = RandomString(8);
 
-            ChatRoom.register("Yossi");
+            ChatRoom.register(UserName);
 
             try
             {
-                ChatRoom.register("Yossi");
+                ChatRoom.register(UserName);
                 passed = false;
             }
             catch
             {
-                Console.WriteLine("Passed registration!");
-                return;
+                //Good
             }
+
             if (!passed)
-                throw new InvalidOperationException("registerd an existing user!");
+                throw new Exception("registerd an existing user!");
             passed = true;
 
             try
@@ -108,7 +135,7 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("registerd with empty string!");
+                throw new Exception("registerd with empty string!");
             passed = true;
 
             try
@@ -122,7 +149,7 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("registerd with null!");
+                throw new Exception("registerd with null!");
             passed = true;
 
             Console.WriteLine("Passed registration!");
@@ -131,18 +158,28 @@ namespace ISE182_project
         private void LogInTest()
         {
             bool passed = true;
+            string UserName = "Yossi";
 
             if (ChatRoom.isLoggedIn())
-                throw new InvalidOperationException("Already loggedin");
-
-            ChatRoom.login("Yossi");
-
-            if (!ChatRoom.isLoggedIn())
-                throw new InvalidOperationException("falid to loggin");
+                throw new Exception("Already loggedin");
 
             try
             {
-                ChatRoom.login("Yossi");
+                ChatRoom.register(UserName);
+            }
+            catch
+            {
+
+            }
+
+            ChatRoom.login(UserName);
+
+            if (!ChatRoom.isLoggedIn())
+                throw new Exception("falid to loggin");
+
+            try
+            {
+                ChatRoom.login(UserName);
                 passed = false;
             }
             catch
@@ -151,7 +188,7 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("login while loggedin!");
+                throw new Exception("login while loggedin!");
             passed = true;
 
             try
@@ -165,7 +202,7 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("loggedin with empty string!");
+                throw new Exception("loggedin with empty string!");
             passed = true;
 
             try
@@ -179,12 +216,12 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("loggedin with null!");
+                throw new Exception("loggedin with null!");
             passed = true;
 
             try
             {
-                ChatRoom.login("nbgknbtroig reofmefnrkgnrpfcj ewriob tobjrwpgj rteoigjvwp");
+                ChatRoom.login(RandomString(15));
                 passed = false;
             }
             catch
@@ -193,7 +230,7 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("loggedin with not registerd user!");
+                throw new Exception("loggedin with not registerd user!");
             passed = true;
 
             Console.WriteLine("Passed loggin!");
@@ -202,14 +239,17 @@ namespace ISE182_project
         private void logoutTest()
         {
             bool passed = true;
+            string UserName = "Yossi";
+
+            LogIn(UserName);
 
             if (!ChatRoom.isLoggedIn())
-                throw new InvalidOperationException("loggedin first!");
+                throw new Exception("loggedin first!");
 
             ChatRoom.logout();
 
             if (ChatRoom.isLoggedIn())
-                throw new InvalidOperationException("didn't loggedout!");
+                throw new Exception("didn't loggedout!");
 
             try
             {
@@ -222,12 +262,12 @@ namespace ISE182_project
             }
 
             if (!passed)
-                throw new InvalidOperationException("logout while loggedout!");
+                throw new Exception("logout while loggedout!");
             passed = true;
 
             Console.WriteLine("Passed logout!");
         }
-        
+
         #endregion
 
         #region Message Testing
@@ -235,6 +275,10 @@ namespace ISE182_project
         private void sendTest()
         {
             bool passed = true;
+            string UserName = "Yossi";
+
+            LogIn(UserName);
+
 
             try
             {
@@ -245,6 +289,7 @@ namespace ISE182_project
             {
                 //Good
             }
+
             if (!passed)
                 throw new Exception("message must be atleast 1 character!");
             passed = true;
@@ -258,8 +303,9 @@ namespace ISE182_project
             {
                 //Good
             }
+
             if (!passed)
-                throw new Exception("message must be atleast 1 character!");
+                throw new Exception("messagecan't be null!");
             passed = true;
 
             try
@@ -286,14 +332,17 @@ namespace ISE182_project
                 for (int i = 1; i <= 30; i++)
                 {
                     message = "Message #" + i;
-
+                    System.Threading.Thread.Sleep(1000);
                     ChatRoom.send(message);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                //Good
+                passed = false;
+                boldingText(e.Message, ConsoleColor.Blue);
+                Console.ReadKey();
             }
+
             if (!passed)
                 throw new Exception("faild sending a message!");
             passed = true;
@@ -304,18 +353,18 @@ namespace ISE182_project
         private void last20Test()
         {
             string message;
+            string UserName = "Yossi";
 
-            ChatRoom.login("Yossi");
+            LogIn(UserName);
 
             for (int i = 0; i < 30; i++)
             {
                 message = "" + i;
                 ChatRoom.send(message);
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(1001);
             }
 
-            ArrayList last20 = ChatRoom.request20Messages();
-
+            IMessage[] last20 = ChatRoom.request20Messages().ToArray();
 
             for (int i = 0; i < 20; i++)
             {
@@ -328,28 +377,30 @@ namespace ISE182_project
             Console.WriteLine("Passed last20 test!");
         }
 
-        private void SortMessageTest()
+        private void SortTimeMessageTest()
         {
-            ArrayList last20 = ChatRoom.request20Messages();
-            ArrayList last20copy = (ArrayList)last20.Clone();
-            Random rnd = new Random();
-            ArrayList UnSorted = new ArrayList();
+           ArrayList last20 = new ArrayList(ChatRoom.request20Messages().ToArray());
+           ArrayList last20copy = last20.Clone() as ArrayList;
+           Random rnd = new Random();
+           ICollection<IMessage> UnSorted = new List<IMessage>();
             int rando;
 
             while (last20.Count != 0)
             {
                 rando = rnd.Next(0, last20.Count);
 
-                UnSorted.Add(last20[rando]);
+                UnSorted.Add(last20[rando] as IMessage);
                 last20.RemoveAt(rando);
             }
 
-            //MessageService.sort(UnSorted); // need to return to private method later
+            UnSorted = MessageService.Instence.sort(UnSorted, MessageService.Sort.Time, false);
+
+            IMessage[] NotSorted = UnSorted.ToArray();
 
             for (int i = 0; i < 20; i++)
             {
-                if (!((Message)last20copy[i]).Equals((Message)UnSorted[i]))
-                    throw new Exception("Falod to sort!");
+                if (!(last20copy[i] as IMessage).Equals(NotSorted[i] as IMessage))
+                    throw new Exception("Falid to sortmessage by their time!");
             }
 
             Console.WriteLine("Passed sort test!");
@@ -357,24 +408,33 @@ namespace ISE182_project
 
         private void requestFromTest()
         {
-            ArrayList temp;
-            string USER = "Cat";
+            ICollection<IMessage> temp;
+            string UserName = RandomString(10);
 
-            temp = ChatRoom.requestAllMessagesfromUser(USER, 32);
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch
+            {
+
+            }
+
+            temp = ChatRoom.requestAllMessagesfromUser(UserName, 32);
 
             if (temp.Count != 0)
                 throw new Exception("nedd to be emty arry!");
 
-            ChatRoom.register(USER);
+            ChatRoom.register(UserName);
 
-            temp = ChatRoom.requestAllMessagesfromUser(USER, 32);
+            temp = ChatRoom.requestAllMessagesfromUser(UserName, 32);
 
             if (temp.Count != 0)
                 throw new Exception("nedd to be emty arry!");
 
-            ChatRoom.login(USER);
+            ChatRoom.login(UserName);
 
-            temp = ChatRoom.requestAllMessagesfromUser(USER, 32);
+            temp = ChatRoom.requestAllMessagesfromUser(UserName, 32);
 
             if (temp.Count != 0)
                 throw new Exception("nedd to be emty arry!");
@@ -382,19 +442,67 @@ namespace ISE182_project
 
             for (int i = 0; i < 30; i++)
             {
-                ChatRoom.send(USER + " #" + i);
+                ChatRoom.send(UserName + " #" + i);
                 System.Threading.Thread.Sleep(1000);
             }
 
-            ArrayList sent = ChatRoom.requestAllMessagesfromUser(USER, 32);
+            IMessage[] sent = ChatRoom.requestAllMessagesfromUser(UserName, 32).ToArray();
 
             for (int i = 0; i < 30; i++)
             {
-                if (!((Message)sent[i]).MessageContent.Equals(USER + " #" + i))
+                if (!(sent[i] as IMessage).MessageContent.Equals(UserName + " #" + i))
                     throw new Exception("Didn't recved message correctly!");
             }
 
             Console.WriteLine("Passed request reom test!");
+        }
+
+        #endregion
+
+        #region helpers
+
+        private static string RandomString(int length)
+        {
+            Random random = new Random();
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        private static void LogIn(string UserName)
+        {
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                ChatRoom.register(UserName);
+            }
+            catch
+            {
+
+            }
+
+            try
+            {
+                ChatRoom.login(UserName);
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void boldingText(string text, ConsoleColor color) 
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
 
         #endregion

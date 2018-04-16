@@ -13,100 +13,111 @@ using System.Threading.Tasks;
 namespace ISE182_project.Layers.BusinessLogic
 {
     //This class manege the messages stored in RAM
-    static class MessageService
+     class MessageService : GeneralHandler<IMessage>
     {
-        private static ArrayList _ramMessages; // Store a coppy of the messages in the ram for quick acces
+         #region singletone
 
-        //Getter and setter to the messages stored in the ram
-        private static ArrayList RamMessages
+        //private ctor
+        private MessageService() { }
+
+        private static MessageService _instence; // the instence
+
+        // instemce getter
+        public static MessageService Instence
         {
-             set
-            {
-                if (_ramMessages == null) // There is no stored messages
-                {
-                    string error = "the messages on the ram has not been initialize!";
-                    Logger.Log.Fatal(Logger.Maintenance(error));
-
-                    throw new NullReferenceException(error);
-                }
-
-                MergeTwoArrays.mergeIntoFirst(_ramMessages, value);      // merging to avoid duplication
-                sort(_ramMessages);                                      // sorting
-
-                if (!MessageSerializationService.serialize(_ramMessages)) // serialize the new list
-                {
-                    string error = "faild to serialize messages";
-                    Logger.Log.Fatal(Logger.Maintenance(error));
-
-                    throw new IOException(error);
-                }
-            }
-
             get
             {
-                if (_ramMessages == null) // Deserialize messages to the ram if not there alrady
-                {
-                    _ramMessages = MessageSerializationService.deserialize();
-                }
+                if (_instence == null)
+                    _instence = new MessageService();
 
-                return _ramMessages;
+                return _instence;
             }
         }
 
-        //Initiating the ram's saves from messages stored in the disk
-        public static void start()
+        #endregion
+
+        //Getter and setter to the messages stored in the ram
+        private ICollection<IMessage> RamMessages
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            SetRAM();
-        }
-
-        //Edid message by guid and save to the RAM and disk
-        public static void EditMessage(Guid ID, string newBody)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            //A dummy message to use in the .equals
-            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
-
-            foreach (Message msg in RamMessages)
+            set
             {
-                if (msg.Equals(dummy))
+                if(value == null)
                 {
-                    msg.editBody(newBody);
-                    UpdateDisk();
-                    return;
+                    string error = "recived null value for messages";
+                    Logger.Log.Error(Logger.Maintenance(error));
+
+                    throw new ArgumentNullException(error);
                 }
+
+                ICollection<IMessage> temp = sort(value, Sort.Time, false); // sorting
+                RamData = temp;
             }
 
-            string error = "Could not found a message with the ruqusted guid of " + ID;
-            Logger.Log.Error(Logger.Maintenance(error));
-
-            throw new KeyNotFoundException(error);
+            get { return RamData; }
         }
 
-        //return all the messages from a certain user
-        public static ArrayList AllMessagesFromUser(IUser user)
+        #region Filter
+
+        //recive all the messages from a certain user
+        public ICollection<IMessage> FilterByUser(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ArrayList toreturn = new ArrayList();
-            IUser temp;
+            return RamMessages.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
+        }
 
-            foreach (IMessage msg in RamMessages)
+        //recive all the messages from a certain group
+        public ICollection<IMessage> FilterByGroup(int groupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return RamMessages.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
+        }
+
+        #endregion
+
+        #region Sort
+
+        //Sort a message List by the time
+        public ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if (descending)
             {
-                temp = new User(msg.UserName, int.Parse(msg.GroupID)); // Message sender
-
-                if (user.Equals(temp)) // if the same sender as the given one
+                switch (SortBy)
                 {
-                    toreturn.Add(msg);
+                    case Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList(); 
+                    case Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
+                    case Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.UserName).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
                 }
             }
 
-            return toreturn;
+            switch (SortBy)
+            {
+                case Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
+                case Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
+                case Sort.GroupNickTime: return messages.OrderBy(msg => msg.UserName).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
+            }
+
+            string error = "The sorting methid failed";
+            Logger.Log.Fatal(Logger.Maintenance(error));
+
+            throw new InvalidOperationException(error);
         }
+
+        //Sort options
+        public enum Sort
+        {
+            Time,
+            Nickname,
+            GroupNickTime
+        }
+
+        #endregion
 
         //return the last n saved messages
-        public static ArrayList lastNmesages(int amount)
+        public ICollection<IMessage> lastNmesages(int amount)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -120,22 +131,15 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (amount > RamMessages.Count)
             {
-                Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));               
+                Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));
                 amount = RamMessages.Count;
             }
 
-            ArrayList toReturn = new ArrayList();
-
-            for (int i = RamMessages.Count - amount; i < RamMessages.Count; i++)
-            {
-                toReturn.Add(RamMessages[i]);
-            }
-
-            return toReturn;
+            return RamMessages.Reverse().Take(amount).Reverse().ToList();
         }
 
         //retrive and save the last 10 meseges from server.
-        public static void SaveLast10FromServer(string url)
+        public void SaveLast10FromServer(string url)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -161,9 +165,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw;
             }
 
-            ArrayList temp = new ArrayList();
+            ICollection<IMessage> temp = new List<IMessage>();
 
-            foreach(IMessage msg in retrived)
+            foreach (IMessage msg in retrived)
             {
                 temp.Add(new Message(msg)); // We need to translate the retured message object to our message to avid problems
             }
@@ -171,40 +175,61 @@ namespace ISE182_project.Layers.BusinessLogic
             RamMessages = temp;
         }
 
-
         //-----------------------------------------------------------------
 
-        #region private methods
+        #region override methods
 
-        //Sort a message List by the time
-        private static void sort(ArrayList messages)
+        // deserialize messages
+        protected override ICollection<IMessage> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            messages.Sort(new MessageComparatorByDate());
+            return MessageSerializationService.deserialize<IMessage>();
         }
 
-        //Update the stored in disk messages after changing ram
-        private static void UpdateDisk()
+        // serialize messages
+        protected override bool serialize(ICollection<IMessage> _ramData)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            RamMessages = new ArrayList(); //So the set atribulte will activate to ask to save to disk
+            return MessageSerializationService.serialize(RamMessages);
         }
 
-        //Setting the ram, if null
-        private static void SetRAM()
+        #endregion
+
+        #region Unused code
+
+        //Edid message by guid and save to the RAM and disk
+        private void EditMessage(Guid ID, string newBody)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            ICollection temp = RamMessages; //So the get atribulte will activate to ask to draw from disk
+
+            //A dummy message to use in the .equals
+            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
+
+            foreach (Message msg in RamMessages)
+            {
+                if (msg.Equals(dummy))
+                {
+                    msg.editBody(newBody);
+                    UpdateDisk();
+                    return;
+                }
+            }
+
+            string error = "Could not found a message with the ruqusted guid of " + ID;
+            Logger.Log.Error(Logger.Maintenance(error));
+
+            throw new KeyNotFoundException(error);
         }
 
-        //Unused - save a single message to the RAM
-        private static void SaveMessage(IMessage msg)
+        // save a single message to the RAM
+        private void SaveMessage(IMessage msg)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             RamMessages.Add(msg);
             UpdateDisk();
         }
+
         #endregion
 
     }

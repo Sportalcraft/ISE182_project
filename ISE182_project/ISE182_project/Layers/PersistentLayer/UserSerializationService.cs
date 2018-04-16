@@ -17,7 +17,7 @@ namespace ISE182_project.Layers.PersistentLayer
         private const string USERS_LIST = "Users.bin"; // The file name to save the users
 
         //Serialze a list of users. return if it was done successfully
-        public static bool serialize(ArrayList users)
+        public static bool serialize<T>(ICollection<T> users)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -25,16 +25,18 @@ namespace ISE182_project.Layers.PersistentLayer
         }
 
         //Deserialize all users from the disk
-        public static ArrayList deserialize()
+        public static ICollection<T> deserialize<T>()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ArrayList temp = (ArrayList)SerializationService.deserialize(USERS_LIST);
+            ICollection<T> temp = (ICollection<T>)SerializationService.deserialize(USERS_LIST);
 
             if (temp == null)
             {
-                Logger.Log.Warn(Logger.Developer("deserialized null users list from " + USERS_LIST + ", returning an empty Arraylist"));
-                return new ArrayList();
+                string error = Logger.Developer("deserialized null users list from " + USERS_LIST);
+                Logger.Log.Warn(error);
+
+                return null;
             }
 
             return temp;

@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,8 +61,8 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            UserService.start();    // Initiating mesaages on ram
-            MessageService.start(); // Initiating users on ram
+            UserService.Instence.start();    // Initiating mesaages on ram
+            MessageService.Instence.start(); // Initiating users on ram
             _location = location;   // Set the location
         }
 
@@ -100,7 +101,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            UserService.register(new User(nickname)); //register
+            UserService.Instence.register(new User(nickname)); //register
         }
 
         // logIn an existing user to the server
@@ -118,7 +119,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            if (!UserService.canLogIn(user)) //Was regusterd
+            if (!UserService.Instence.canLogIn(user)) //Was regusterd
             {
                 string error = "A user tried to login to a not register account";
                 Logger.Log.Error(Logger.Maintenance(error));
@@ -173,11 +174,11 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            MessageService.SaveLast10FromServer(URL);
+            MessageService.Instence.SaveLast10FromServer(URL);
         }
 
         // Receive the last 20 messages
-        public static ArrayList request20Messages()
+        public static ICollection<IMessage> request20Messages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -185,22 +186,22 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive all the messages
-        public static ArrayList requestAllMessagesfromUser(string nickName, int GroupID)
+        public static ICollection<IMessage> requestAllMessagesfromUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.AllMessagesFromUser(new User(nickName, GroupID));
+            return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
 
         // ----------------------------------------------------------
 
         // Receive the last n messages
-        private static ArrayList requestMessages(int number)
+        private static ICollection<IMessage> requestMessages(int number)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.lastNmesages(number);
+            return MessageService.Instence.lastNmesages(number);
         }
         #endregion
     }
