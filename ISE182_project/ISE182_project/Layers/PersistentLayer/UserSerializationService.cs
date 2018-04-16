@@ -33,10 +33,10 @@ namespace ISE182_project.Layers.PersistentLayer
 
             if (temp == null)
             {
-                string error = "deserialized null users list from " + USERS_LIST + ", returning an empty list";
-                Logger.Log.Warn(Logger.Developer(error));
+                string error = Logger.Developer("deserialized null users list from " + USERS_LIST);
+                Logger.Log.Warn(error);
 
-                throw new IOException(error);
+                return null;
             }
 
             return temp;

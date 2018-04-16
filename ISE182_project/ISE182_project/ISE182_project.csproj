@@ -52,18 +52,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Layers\BusinessLogic\ChatRoom.cs" />
+    <Compile Include="Layers\BusinessLogic\GeneralHandler.cs" />
     <Compile Include="Layers\BusinessLogic\MergeTwoCollections.cs" />
     <Compile Include="Layers\BusinessLogic\Message.cs" />
+    <Compile Include="Layers\BusinessLogic\MessageService.cs" />
+    <Compile Include="Layers\BusinessLogic\UserService.cs" />
     <Compile Include="Layers\CommunicationLayer\Communication.cs" />
     <Compile Include="Layers\CommunicationLayer\IMessage.cs" />
     <Compile Include="Layers\BusinessLogic\IUser.cs" />
     <Compile Include="Layers\LoggingLayer\Logger.cs" />
     <Compile Include="Layers\PersistentLayer\MessageSerializationService.cs" />
-    <Compile Include="Layers\BusinessLogic\MessageService.cs" />
     <Compile Include="Layers\PersistentLayer\SerializationService.cs" />
     <Compile Include="Layers\BusinessLogic\User.cs" />
     <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
-    <Compile Include="Layers\BusinessLogic\UserService.cs" />
     <Compile Include="Layers\PresentationLayer\CLI.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

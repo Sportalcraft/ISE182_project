@@ -61,8 +61,8 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            UserService.start();    // Initiating mesaages on ram
-            MessageService.start(); // Initiating users on ram
+            UserService.Instence.start();    // Initiating mesaages on ram
+            MessageService.Instence.start(); // Initiating users on ram
             _location = location;   // Set the location
         }
 
@@ -101,7 +101,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            UserService.register(new User(nickname)); //register
+            UserService.Instence.register(new User(nickname)); //register
         }
 
         // logIn an existing user to the server
@@ -119,7 +119,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            if (!UserService.canLogIn(user)) //Was regusterd
+            if (!UserService.Instence.canLogIn(user)) //Was regusterd
             {
                 string error = "A user tried to login to a not register account";
                 Logger.Log.Error(Logger.Maintenance(error));
@@ -174,7 +174,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            MessageService.SaveLast10FromServer(URL);
+            MessageService.Instence.SaveLast10FromServer(URL);
         }
 
         // Receive the last 20 messages
@@ -190,7 +190,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.FilterByUser(new User(nickName, GroupID));
+            return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
 
@@ -201,7 +201,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.lastNmesages(number);
+            return MessageService.Instence.lastNmesages(number);
         }
         #endregion
     }

@@ -32,10 +32,10 @@ namespace ISE182_project.Layers.PersistentLayer
 
             if (temp == null)
             {
-                string error = Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST + ", returning an empty list");
+                string error = Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST);
                 Logger.Log.Warn(error);
 
-                throw new IOException(error);
+                return null;
             }
 
             return temp;
