@@ -16,7 +16,7 @@ namespace ISE182_project.Layers.PresentationLayer
 
         private CLI()
         {
-            ChatRoom.start(ChatRoom.Place.Home);
+            ChatRoom.start(ChatRoom.Place.University);
         }
         public static CLI Instance
         {
