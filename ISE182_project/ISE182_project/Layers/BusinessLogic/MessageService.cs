@@ -183,7 +183,7 @@ namespace ISE182_project.Layers.BusinessLogic
         protected override ICollection<IMessage> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.deserialize<IMessage>();
+            return MessageSerializationService.deserialize();
         }
 
         // serialize messages

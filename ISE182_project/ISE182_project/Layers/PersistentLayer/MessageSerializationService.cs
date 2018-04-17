@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace ISE182_project.Layers.PersistentLayer
         private const string MESSAGE_LIST = "Messages.bin"; // The file name to save the mesages
 
         // serialize a *sorted* list of messages. return if it was done successfully
-        public static bool serialize<T>(ICollection<T> messages)
+        public static bool serialize(ICollection<IMessage> messages)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -24,11 +25,11 @@ namespace ISE182_project.Layers.PersistentLayer
         }
 
         //Deserialize all messages from the disk
-        public static ICollection<T> deserialize<T>()
+        public static ICollection<IMessage> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection<T> temp = (ICollection<T>)SerializationService.deserialize(MESSAGE_LIST);
+            ICollection<IMessage> temp = SerializationService.deserialize(MESSAGE_LIST) as ICollection<IMessage>;
 
             if (temp == null)
             {

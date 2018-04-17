@@ -101,7 +101,7 @@ namespace ISE182_project.Layers.BusinessLogic
         protected override ICollection<IUser> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return UserSerializationService.deserialize<IUser>();
+            return UserSerializationService.deserialize();
         }
 
         protected override bool serialize(ICollection<IUser> _ramData)

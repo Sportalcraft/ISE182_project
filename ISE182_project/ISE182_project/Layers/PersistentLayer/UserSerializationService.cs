@@ -1,4 +1,5 @@
-﻿using ISE182_project.Layers.LoggingLayer;
+﻿using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace ISE182_project.Layers.PersistentLayer
         private const string USERS_LIST = "Users.bin"; // The file name to save the users
 
         //Serialze a list of users. return if it was done successfully
-        public static bool serialize<T>(ICollection<T> users)
+        public static bool serialize(ICollection<IUser> users)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -25,11 +26,11 @@ namespace ISE182_project.Layers.PersistentLayer
         }
 
         //Deserialize all users from the disk
-        public static ICollection<T> deserialize<T>()
+        public static ICollection<IUser> deserialize()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection<T> temp = (ICollection<T>)SerializationService.deserialize(USERS_LIST);
+            ICollection <IUser> temp = SerializationService.deserialize(USERS_LIST) as ICollection<IUser>;
 
             if (temp == null)
             {
