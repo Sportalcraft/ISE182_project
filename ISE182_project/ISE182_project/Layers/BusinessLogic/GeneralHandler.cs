@@ -28,6 +28,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 }
 
                 MergeTwoCollections.mergeIntoFirst(_ramData, value); // Merging to avoid duplication
+                _ramData = DefaultSort(_ramData);
 
                 if (!serialize(_ramData)) // Serialize the new list
                 {
@@ -70,6 +71,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
         //serialize data
         protected abstract bool serialize(ICollection<T> _ramData);
+
+        //Sort the data
+        protected abstract ICollection<T> DefaultSort(ICollection<T> Data);
+
 
         //-----------------------------------------------------------
 

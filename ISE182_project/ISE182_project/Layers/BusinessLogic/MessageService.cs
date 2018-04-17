@@ -36,26 +36,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        //Getter and setter to the messages stored in the ram
-        private ICollection<IMessage> RamMessages
-        {
-            set
-            {
-                if(value == null)
-                {
-                    string error = "recived null value for messages";
-                    Logger.Log.Error(Logger.Maintenance(error));
-
-                    throw new ArgumentNullException(error);
-                }
-
-                ICollection<IMessage> temp = sort(value, Sort.Time, false); // sorting
-                RamData = temp;
-            }
-
-            get { return RamData; }
-        }
-
         #region Filter
 
         //recive all the messages from a certain user
@@ -63,7 +43,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return RamMessages.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
+            return RamData.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
         }
 
         //recive all the messages from a certain group
@@ -71,7 +51,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return RamMessages.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
+            return RamData.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
         }
 
         #endregion
@@ -129,13 +109,13 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentOutOfRangeException(error);
             }
 
-            if (amount > RamMessages.Count)
+            if (amount > RamData.Count)
             {
                 Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));
-                amount = RamMessages.Count;
+                amount = RamData.Count;
             }
 
-            return RamMessages.Reverse().Take(amount).Reverse().ToList();
+            return RamData.Reverse().Take(amount).Reverse().ToList();
         }
 
         //retrive and save the last 10 meseges from server.
@@ -172,7 +152,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 temp.Add(new Message(msg)); // We need to translate the retured message object to our message to avid problems
             }
 
-            RamMessages = temp;
+            RamData = temp;
         }
 
         //-----------------------------------------------------------------
@@ -190,7 +170,13 @@ namespace ISE182_project.Layers.BusinessLogic
         protected override bool serialize(ICollection<IMessage> _ramData)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.serialize(RamMessages);
+            return MessageSerializationService.serialize(RamData);
+        }
+
+        //Sorting by time
+        protected override ICollection<IMessage> DefaultSort(ICollection<IMessage> Data)
+        {
+            return sort(Data, Sort.Time, false);
         }
 
         #endregion
@@ -205,7 +191,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //A dummy message to use in the .equals
             IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
 
-            foreach (Message msg in RamMessages)
+            foreach (Message msg in RamData)
             {
                 if (msg.Equals(dummy))
                 {
@@ -226,7 +212,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            RamMessages.Add(msg);
+            RamData.Add(msg);
             UpdateDisk();
         }
 

@@ -110,6 +110,11 @@ namespace ISE182_project.Layers.BusinessLogic
             return UserSerializationService.serialize(RamData);
         }
 
+        protected override ICollection<IUser> DefaultSort(ICollection<IUser> Data)
+        {
+            return Data; // No defult sorting mechanisem, For now....
+        }
+
         #endregion
     }
 }

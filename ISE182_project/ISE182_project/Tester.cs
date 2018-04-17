@@ -93,7 +93,11 @@ namespace ISE182_project
             Console.WriteLine();
             SortTimeMessageTest();
             Console.WriteLine();
-            requestFromTest();
+            NickSorting();
+            Console.WriteLine();
+            UserFilterTest();
+            Console.WriteLine();
+            GroupFilterTest();
             Console.WriteLine();
 
             boldingText("Passed Message tests!", ConsoleColor.Green);
@@ -332,8 +336,8 @@ namespace ISE182_project
                 for (int i = 1; i <= 30; i++)
                 {
                     message = "Message #" + i;
-                    System.Threading.Thread.Sleep(1000);
                     ChatRoom.send(message);
+                    System.Threading.Thread.Sleep(1000);
                 }
             }
             catch (Exception e)
@@ -403,10 +407,73 @@ namespace ISE182_project
                     throw new Exception("Falid to sortmessage by their time!");
             }
 
+            UnSorted = MessageService.Instence.sort(UnSorted, MessageService.Sort.Time, true);
+
+            NotSorted = UnSorted.ToArray();
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (!(last20copy[i] as IMessage).Equals(NotSorted[19-i] as IMessage))
+                    throw new Exception("Falid to sortmessage by their time desending!");
+            }
+
             Console.WriteLine("Passed sort test!");
         }
 
-        private void requestFromTest()
+        private void NickSorting()
+        {
+            string[] namestarts = new string[] { "zzzzz", "aaaa", "abcde", "qqqqq", "bacc", "th", "m", "udssss", "yy", "f" };
+            string UserName;
+            string[] returnedNames;
+
+            for (int i = 0; i < namestarts.Length; i++)
+            {
+                UserName = namestarts[i] + RandomString(7);
+                LogIn(UserName);
+                ChatRoom.send("Hello world");
+                System.Threading.Thread.Sleep(1001);
+            }
+
+            IMessage[] temp = MessageService.Instence.lastNmesages(namestarts.Length).ToArray();
+            IMessage[] mesgs = MessageService.Instence.sort(temp, MessageService.Sort.Nickname, false).ToArray();
+
+            returnedNames = new string[mesgs.Length];
+
+            for (int i = 0; i < mesgs.Length; i++)
+            {
+                returnedNames[i] = mesgs[i].UserName;
+            }
+
+            Array.Sort(returnedNames);
+
+            for (int i = 0; i < returnedNames.Length; i++)
+            {
+                if (!returnedNames[i].Equals(mesgs[i].UserName))
+                    throw new Exception("Failed tio sort by nick name!");
+            }
+
+             mesgs = MessageService.Instence.sort(temp, MessageService.Sort.Nickname, true).ToArray();
+
+            returnedNames = new string[mesgs.Length];
+
+            for (int i = 0; i < mesgs.Length; i++)
+            {
+                returnedNames[i] = mesgs[i].UserName;
+            }
+
+            Array.Sort(returnedNames);
+            returnedNames = returnedNames.Reverse().ToArray();
+
+            for (int i = 0; i < returnedNames.Length; i++)
+            {
+                if (!returnedNames[i].Equals(mesgs[i].UserName))
+                    throw new Exception("Failed to sort by nick name desending!");
+            }
+
+            Console.WriteLine("Passed sort by nickname!");
+        }
+
+        private void UserFilterTest()
         {
             ICollection<IMessage> temp;
             string UserName = RandomString(10);
@@ -454,7 +521,36 @@ namespace ISE182_project
                     throw new Exception("Didn't recved message correctly!");
             }
 
-            Console.WriteLine("Passed request reom test!");
+            Console.WriteLine("Passed filter by user!");
+        }
+
+        private void GroupFilterTest()
+        {
+            IMessage[] temp;
+            string UserName;
+
+            for(int i = 0; i<30; i++)
+            {
+                UserName = RandomString(16);
+
+                LogIn(UserName);
+                
+                ChatRoom.send("GroupFilterTest #" + i);
+
+                int a = 0;
+                System.Threading.Thread.Sleep(1001);
+
+            }
+        
+            temp = MessageService.Instence.FilterByGroup(32).Reverse().Take(30).Reverse().ToArray();
+
+            for (int i = 0; i < 30; i++)
+            {
+                if (!(temp[i] as IMessage).MessageContent.Equals("GroupFilterTest #" + i))
+                    throw new Exception("Didn't recved message correctly!");
+            }
+
+            Console.WriteLine("Passed filter by group!");
         }
 
         #endregion
