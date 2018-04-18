@@ -66,11 +66,12 @@ namespace ISE182_project.Layers.BusinessLogic
             SetRAM();
         }
 
+
         //desierilse data 
         protected abstract ICollection<T> deserialize();
 
         //serialize data
-        protected abstract bool serialize(ICollection<T> _ramData);
+        protected abstract bool serialize(ICollection<T> Data);
 
         //Sort the data
         protected abstract ICollection<T> DefaultSort(ICollection<T> Data);

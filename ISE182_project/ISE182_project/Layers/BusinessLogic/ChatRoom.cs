@@ -185,7 +185,22 @@ namespace ISE182_project.Layers.BusinessLogic
             return requestMessages(20);
         }
 
-        // Receive all the messages
+        #region Sort
+
+        //Sort a message List by the time
+        public static ICollection<IMessage> sort(ICollection<IMessage> messages, MessageService.Sort SortBy, bool descending)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.Instence.sort(messages, SortBy, descending);
+
+        }
+
+        #endregion
+
+        #region Filter
+
+        // Receive all the messages from a certain user
         public static ICollection<IMessage> requestAllMessagesfromUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
@@ -193,6 +208,31 @@ namespace ISE182_project.Layers.BusinessLogic
             return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
+        // Receive all the messages from a certain user from a certain collection
+        public static ICollection<IMessage> GetMessagesfromUser(ICollection<IMessage> messages, string nickName, int GroupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.Instence.FilterByUser(new User(nickName, GroupID), messages);
+        }
+
+        // Receive all the messages from a certain group
+        public static ICollection<IMessage> requestAllMessagesfromGroup(int GroupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.Instence.FilterByGroup(GroupID);
+        }
+
+        // Receive all the messages from a certain group from a certain collection
+        public static ICollection<IMessage> GetMessagesfromGroup(ICollection<IMessage> messages, int GroupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.Instence.FilterByGroup(GroupID, messages);
+        }
+
+        #endregion
 
         // ----------------------------------------------------------
 

@@ -104,7 +104,7 @@ namespace ISE182_project.Layers.BusinessLogic
             return UserSerializationService.deserialize();
         }
 
-        protected override bool serialize(ICollection<IUser> _ramData)
+        protected override bool serialize(ICollection<IUser> Data)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             return UserSerializationService.serialize(RamData);
@@ -112,6 +112,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         protected override ICollection<IUser> DefaultSort(ICollection<IUser> Data)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             return Data; // No defult sorting mechanisem, For now....
         }
 
