@@ -36,6 +36,8 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
+        #region functionalities
+
         #region Filter
 
         //recive all the messages from a certain user
@@ -83,7 +85,7 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 switch (SortBy)
                 {
-                    case Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList(); 
+                    case Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList();
                     case Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
                     case Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
                 }
@@ -112,7 +114,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        #region General
 
         //return the last n saved messages
         public ICollection<IMessage> lastNmesages(int amount)
@@ -136,12 +137,13 @@ namespace ISE182_project.Layers.BusinessLogic
             return RamData.Reverse().Take(amount).Reverse().ToList();
         }
 
-        //retrive and save the last 10 meseges from server.
-        public void SaveLast10FromServer(string url)
+        //retrive and save the last 10 meseges from server. and return the new nessages that were not originaly in the ram
+        public ICollection<IMessage> SaveLast10FromServer(string url)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            List<IMessage> retrived;
+            List<IMessage> retrived, newData;
+            IMessage newMessage;
 
             if (url == null || url.Equals(""))
             {
@@ -163,14 +165,18 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw;
             }
 
-            ICollection<IMessage> temp = new List<IMessage>();
+            newData = new List<IMessage>();
 
             foreach (IMessage msg in retrived)
             {
-                temp.Add(new Message(msg)); // We need to translate the retured message object to our message to avid problems
+                newMessage = new Message(msg); // We need to translate the retured message object to our message to avid problems
+
+                if (!RamData.Contains(newMessage))
+                    newData.Add(newMessage);
             }
 
-            RamData = temp;
+            RamData = newData;
+            return newData;
         }
 
         #endregion

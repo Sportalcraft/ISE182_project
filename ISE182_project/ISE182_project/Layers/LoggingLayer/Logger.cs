@@ -15,15 +15,15 @@ namespace ISE182_project.Layers.LoggingLayer
 {
     static class Logger
     {
-        private static readonly ILog log = LogManager.GetLogger("SEprojectLogger"); // Holds the logger
-
-       
+        private static readonly ILog log = LogManager.GetLogger("SEprojectLogger"); // Holds the logger  
 
         //Getter to the logger
         public static ILog Log
         {
             get { return log; }
         }
+
+        #region referece adders
 
         //can be used to put a referece at the begennig of the message - Developer :
         public static string Developer(string logMessage)
@@ -37,6 +37,12 @@ namespace ISE182_project.Layers.LoggingLayer
             return "Maintenance : " + logMessage;
         }
 
+        //can be used to put a referece at the begennig of the message - Server :
+        public static string Server(string logMessage)
+        {
+            return "Server : " + logMessage;
+        }
+
         //can be used to put a state whem a method was entered for debugging
         public static string MethodStart(MethodBase method)
         {
@@ -44,13 +50,11 @@ namespace ISE182_project.Layers.LoggingLayer
             // Or : return MethodStart(method.Name, method.DeclaringType.Name);
         }
 
-        //can be used to put a referece at the begennig of the message - Server :
-        public static string Server(string logMessage)
-        {
-            return "Server : " + logMessage;
-        }
+        #endregion
 
         //--------------------------------------   
+
+        #region private metods
 
         //can be used to put a statwe with nethis was entered for debugging
         private static string MethodStart(string methodName, string className)
@@ -58,12 +62,16 @@ namespace ISE182_project.Layers.LoggingLayer
             return Developer("The method " + methodName + " in class " + className + " was started ");
         }
 
-        // -----------------------------------------------------------------
+        #endregion
+
+        #region Unused Code
 
         //Unused code. For now....
         private static ILog GetLogger([CallerFilePath]string filename = "")
         {
             return LogManager.GetLogger(filename);
         }
+
+        #endregion
     }
 }

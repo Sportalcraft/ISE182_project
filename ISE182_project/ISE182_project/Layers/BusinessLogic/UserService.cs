@@ -36,6 +36,8 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
+        #region functionalities
+
         //Add a new user to the users list
         public void register(IUser user)
         {
@@ -60,6 +62,10 @@ namespace ISE182_project.Layers.BusinessLogic
             RamData.Add(user);
             UpdateDisk();
         }
+
+        #endregion
+
+        #region Validation
 
         //cheak if a user can register
         public bool canRegister(IUser user)
@@ -93,6 +99,7 @@ namespace ISE182_project.Layers.BusinessLogic
             return RamData.Contains(user);
         }
 
+        #endregion
 
         //-----------------------------------------------------------
 

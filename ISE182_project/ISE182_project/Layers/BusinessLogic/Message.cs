@@ -19,6 +19,8 @@ namespace ISE182_project.Layers.BusinessLogic
         private IUser _sender;           // The sender user
         private string _body;            // The message’s content
 
+        #region Getters & Setters
+
         //Getter to the reciving time
         public DateTime Date
         {
@@ -68,6 +70,10 @@ namespace ISE182_project.Layers.BusinessLogic
             get { return _sender; }
         }
 
+        #endregion
+
+        #region Ctors
+
         //A constractor of message class
         public Message(Guid guid, DateTime receivingTime, IUser sender, string body)
         {
@@ -100,13 +106,9 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
 
-        //Edit the message's body.
-        public void editBody(string newBody)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        #endregion
 
-            MessageContent = newBody; //edit the body
-        }
+        #region functionalities
 
         //Cheak if the body is valid
         public static bool isValid(string body)
@@ -118,6 +120,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 !body.Equals("");   // Atleast 1 charcter
         }
 
+        #endregion
+
+        #region ToString & Equals
 
         // Cheack if two messages are equals.
         // Two mesages are equals if they both have the same guid
@@ -141,5 +146,21 @@ namespace ISE182_project.Layers.BusinessLogic
             return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
                 "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
         }
+
+        #endregion
+
+        //-----------------------------------------------
+
+        #region Unused Code
+
+        //Edit the message's body.
+        public void editBody(string newBody)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            MessageContent = newBody; //edit the body
+        }
+
+        #endregion
     }
 }

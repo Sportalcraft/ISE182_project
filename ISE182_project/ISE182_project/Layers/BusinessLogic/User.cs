@@ -19,6 +19,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private int _groupID;            // The Group ID of the user
         private string _nickName;        // The nickName chosen by the user
 
+        #region Getters & Setters
 
         //Getter to the nickname
         public string NickName
@@ -31,6 +32,10 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             get { return _groupID; }
         }
+
+        #endregion
+
+        #region Ctors
 
         //The constractor of User class
         public User(string nickName)
@@ -69,6 +74,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             _groupID = GroupID;
         }
+
+        #endregion
+
+        #region functionalities
 
         //Send a new message to the chatroom and save it
         public void send(string msg, string URL)
@@ -111,6 +120,10 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Info(Logger.Maintenance("The user " + NickName + " (GroupID : " + Group_ID + ") loggedout."));
         }
 
+        #endregion
+
+        #region ToString & Equals
+
         // Cheack if two users are equals.
         // Two useres are equaks if they both have the same group ID and the same nicknake
         public override bool Equals(object obj)
@@ -130,5 +143,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             return "NickName : " + NickName + ", Group ID : " + Group_ID;
         }
+
+        #endregion
     }
 }

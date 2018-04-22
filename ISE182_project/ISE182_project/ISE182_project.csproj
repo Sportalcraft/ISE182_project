@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="Layers\BusinessLogic\ChatRoom.cs" />
     <Compile Include="Layers\BusinessLogic\GeneralHandler.cs" />
-    <Compile Include="Layers\BusinessLogic\MergeTwoCollections.cs" />
     <Compile Include="Layers\BusinessLogic\Message.cs" />
     <Compile Include="Layers\BusinessLogic\MessageService.cs" />
     <Compile Include="Layers\BusinessLogic\UserService.cs" />

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="ISE182_project.Layers.PresentationLayer.CLI">
-    <Position X="6.5" Y="1.5" Width="2" />
+    <Position X="1" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAgEAAACAAAABAAAAkAAEEAAhDgAAAAQQAAAAAAEAA=</HashCode>
+      <HashCode>AAAgEQAAAAAAABAAAAkAAEEAAhDgAAAAQQAAAAAAEAA=</HashCode>
       <FileName>Layers\PresentationLayer\CLI.cs</FileName>
     </TypeIdentifier>
   </Class>

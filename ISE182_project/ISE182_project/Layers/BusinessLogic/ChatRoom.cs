@@ -169,12 +169,12 @@ namespace ISE182_project.Layers.BusinessLogic
             SaveLast10FromServer();       // reciving the last sent 10 messages
         }
 
-        //retrive and sace the last meseges from server
-        public static void SaveLast10FromServer()
+        //retrive and sace the last meseges from server and retun the new messages tha were added
+        public static ICollection<IMessage> SaveLast10FromServer()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            MessageService.Instence.SaveLast10FromServer(URL);
+            return MessageService.Instence.SaveLast10FromServer(URL);
         }
 
         // Receive the last 20 messages
@@ -182,7 +182,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return requestMessages(20);
+            return requestNMessages(20);
         }
 
         #region Sort
@@ -209,7 +209,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive all the messages from a certain user from a certain collection
-        public static ICollection<IMessage> GetMessagesfromUser(ICollection<IMessage> messages, string nickName, int GroupID)
+        public static ICollection<IMessage> requestMessagesfromUser(ICollection<IMessage> messages, string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -225,7 +225,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // Receive all the messages from a certain group from a certain collection
-        public static ICollection<IMessage> GetMessagesfromGroup(ICollection<IMessage> messages, int GroupID)
+        public static ICollection<IMessage> requestMessagesfromGroup(ICollection<IMessage> messages, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -234,10 +234,14 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
+        #endregion
+
         // ----------------------------------------------------------
 
+        #region private Methods
+
         // Receive the last n messages
-        private static ICollection<IMessage> requestMessages(int number)
+        private static ICollection<IMessage> requestNMessages(int number)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 

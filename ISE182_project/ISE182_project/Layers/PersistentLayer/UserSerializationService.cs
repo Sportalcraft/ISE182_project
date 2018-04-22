@@ -13,7 +13,7 @@ namespace ISE182_project.Layers.PersistentLayer
 {
 
     //This class enable serializtion and deserializtion of users to the disk
-    class UserSerializationService
+    static class UserSerializationService
     {
         private const string USERS_LIST = "Users.bin"; // The file name to save the users
 
@@ -30,17 +30,7 @@ namespace ISE182_project.Layers.PersistentLayer
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection <IUser> temp = SerializationService.deserialize(USERS_LIST) as ICollection<IUser>;
-
-            if (temp == null)
-            {
-                string error = Logger.Developer("deserialized null users list from " + USERS_LIST);
-                Logger.Log.Warn(error);
-
-                return null;
-            }
-
-            return temp;
+            return SerializationService.deserialize(USERS_LIST) as ICollection<IUser>;
         }
     }
 }

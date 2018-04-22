@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ISE182_project.Layers.PersistentLayer
 {
     //This class enable serializtion and deserializtion of messages to the disk
-    class MessageSerializationService
+     static class MessageSerializationService
     {
         private const string MESSAGE_LIST = "Messages.bin"; // The file name to save the mesages
 
@@ -29,17 +29,7 @@ namespace ISE182_project.Layers.PersistentLayer
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection<IMessage> temp = SerializationService.deserialize(MESSAGE_LIST) as ICollection<IMessage>;
-
-            if (temp == null)
-            {
-                string error = Logger.Developer("deserialized null messeges list from " + MESSAGE_LIST);
-                Logger.Log.Warn(error);
-
-                return null;
-            }
-
-            return temp;
+            return SerializationService.deserialize(MESSAGE_LIST) as ICollection<IMessage>;
         }
     }
 }

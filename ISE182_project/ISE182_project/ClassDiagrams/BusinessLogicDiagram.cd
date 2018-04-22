@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="ISE182_project.Layers.BusinessLogic.ChatRoom">
-    <Position X="4.5" Y="0.75" Width="2.25" />
+    <Position X="5" Y="0.75" Width="2.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -13,49 +13,41 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAQAAAAAAAQgAgAEAAAAABACACAAAAgSAAACAAEAA=</HashCode>
+      <HashCode>AAAAcAAAAAgAQgAgAEAAABABECACAAAAgSAAACAAEgA=</HashCode>
       <FileName>Layers\BusinessLogic\ChatRoom.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ISE182_project.Layers.BusinessLogic.MergeTwoArrays">
-    <Position X="2.5" Y="0.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Layers\BusinessLogic\MergeTwoArrays.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ISE182_project.Layers.BusinessLogic.Message">
-    <Position X="7" Y="0.75" Width="2" />
+    <Position X="7.75" Y="0.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAQCAAEBAAAACAAEgIAEAAAAAAAAAAABAQCAAAAIEAA=</HashCode>
       <FileName>Layers\BusinessLogic\Message.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="ISE182_project.Layers.BusinessLogic.MessageComparatorByDate">
-    <Position X="7" Y="5.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
-      <FileName>Layers\BusinessLogic\MessageComparatorByDate.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
   <Class Name="ISE182_project.Layers.BusinessLogic.MessageService">
-    <Position X="2.25" Y="2.5" Width="2" />
+    <Position X="2.5" Y="0.75" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="ISE182_project.Layers.BusinessLogic.MessageService.Sort" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Layers\BusinessLogic\MessageService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAEAAAABgQEAAAAAAMAACAAAAAAIQAEAIAAA=</HashCode>
+      <HashCode>AIAEAAEAAEAAQABAAEAAIAAAEAAAAAAAQAAAAAAIAAA=</HashCode>
       <FileName>Layers\BusinessLogic\MessageService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ISE182_project.Layers.BusinessLogic.UserService">
     <Position X="0.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAQAAAAAAAAAAgQAAAAAAAABAAAAABAQIAEAAAAAA=</HashCode>
+      <HashCode>AAAEAAEAAAAAQAAAAAAAIAAAABAAAAABQQAAAAAAAAA=</HashCode>
       <FileName>Layers\BusinessLogic\UserService.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ISE182_project.Layers.BusinessLogic.User">
-    <Position X="9.5" Y="3" Width="1.5" />
+    <Position X="0.5" Y="4.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ACAIAAAAAAAAQAAEgAAAAAAAAAACAAEAIAAAAgAAAAA=</HashCode>
       <FileName>Layers\BusinessLogic\User.cs</FileName>
@@ -63,7 +55,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="ISE182_project.Layers.BusinessLogic.IUser">
-    <Position X="9.5" Y="0.75" Width="1.5" />
+    <Position X="2.75" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAQAAAAAAAAAAAAAACAAEAAAAAAAAAAAA=</HashCode>
       <FileName>Layers\BusinessLogic\IUser.cs</FileName>
