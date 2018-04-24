@@ -42,7 +42,7 @@ namespace MileStoneClient
             Console.ForegroundColor = ConsoleColor.Red;
 
             //Log a fatal mesaage
-            Logger.Log.Fatal(Logger.Maintenance("something went wrong from unknown reason"), (Exception)e.ExceptionObject);
+            Logger.Log.Fatal(Logger.Maintenance("something went wrong from unknown reason"), e.ExceptionObject as Exception);
 
             Console.ForegroundColor = colorBefore;
 

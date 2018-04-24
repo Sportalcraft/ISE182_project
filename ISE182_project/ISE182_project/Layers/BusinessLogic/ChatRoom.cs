@@ -170,11 +170,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //retrive and sace the last meseges from server and retun the new messages tha were added
-        public static ICollection<IMessage> SaveLast10FromServer()
+        public static void SaveLast10FromServer()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.SaveLast10FromServer(URL);
+            MessageService.Instence.SaveLast10FromServer(URL);
         }
 
         // Receive the last 20 messages

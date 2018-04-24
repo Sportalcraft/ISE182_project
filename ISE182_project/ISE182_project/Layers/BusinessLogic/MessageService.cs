@@ -138,12 +138,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //retrive and save the last 10 meseges from server. and return the new nessages that were not originaly in the ram
-        public ICollection<IMessage> SaveLast10FromServer(string url)
+        public void SaveLast10FromServer(string url)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            List<IMessage> retrived, newData;
-            IMessage newMessage;
+            List<IMessage> retrived, newData = new List<IMessage>(); ;
 
             if (url == null || url.Equals(""))
             {
@@ -163,20 +162,14 @@ namespace ISE182_project.Layers.BusinessLogic
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw;
-            }
-
-            newData = new List<IMessage>();
+            } 
 
             foreach (IMessage msg in retrived)
             {
-                newMessage = new Message(msg); // We need to translate the retured message object to our message to avid problems
-
-                if (!RamData.Contains(newMessage))
-                    newData.Add(newMessage);
+                newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
             }
 
             RamData = newData;
-            return newData;
         }
 
         #endregion
