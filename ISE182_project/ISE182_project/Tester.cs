@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project
 {
-    // Test our Code a
+    // Test our Code
     class Tester
     {
         #region Public Testers
@@ -37,16 +37,7 @@ namespace ISE182_project
 
         public void testUniversityConection()
         {
-            try
-            {
-                ChatRoom.register("Tal");
-            }
-            catch
-            {
-
-            }
-
-            ChatRoom.login("Tal");
+            LogIn("TestUser");
 
             ChatRoom.send("This us My Message");
         }

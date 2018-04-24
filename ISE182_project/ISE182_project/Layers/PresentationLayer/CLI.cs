@@ -33,11 +33,12 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             Console.WriteLine("Hello, welcome to our ChatRoom!");
             menuNotification();
-            while (true) { // This loop allows moving between menus without calling them multiple times in different methods
-            while (!ChatRoom.isLoggedIn())
-                entranceManager();
-            while (ChatRoom.isLoggedIn())
-                selectionMenu();
+            while (true)
+            { // This loop allows moving between menus without calling them multiple times in different methods
+                while (!ChatRoom.isLoggedIn())
+                    entranceManager();
+                while (ChatRoom.isLoggedIn())
+                    selectionMenu();
             }
         }
         // This menu handels a client which isn't logged-in in the chat room
@@ -88,11 +89,12 @@ namespace ISE182_project.Layers.PresentationLayer
         // Trying to retrieve last 10 messages from server, reponds accordingly if the attempt was successful or not
         private void retrieveMessages()
         {
-            try {
+            try
+            {
                 ChatRoom.SaveLast10FromServer();
                 boldingText("The 10 last messages were retrieved", ConsoleColor.Cyan);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
@@ -102,8 +104,8 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             try
             {
-            boldingText("20 Last Messages:", ConsoleColor.Cyan);
-            Printer(ChatRoom.request20Messages());
+                boldingText("20 Last Messages:", ConsoleColor.Cyan);
+                Printer(ChatRoom.request20Messages());
             }
             catch (Exception e)
             {
@@ -128,8 +130,8 @@ namespace ISE182_project.Layers.PresentationLayer
                 string groupIDstring = Console.ReadLine();
                 try // Only if the user's input was an int, the while loop will end
                 {
-                        groupID = int.Parse(groupIDstring);
-                        parametersReceived = true;
+                    groupID = int.Parse(groupIDstring);
+                    parametersReceived = true;
                 }
                 catch
                 {
@@ -148,7 +150,7 @@ namespace ISE182_project.Layers.PresentationLayer
                     Printer(list);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
@@ -164,7 +166,7 @@ namespace ISE182_project.Layers.PresentationLayer
                 ChatRoom.send(body);
                 boldingText("Message was successfully sent!", ConsoleColor.Green);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
@@ -177,12 +179,12 @@ namespace ISE182_project.Layers.PresentationLayer
                 ChatRoom.logout();
                 boldingText("You have successfully logged out", ConsoleColor.Green);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
-            
-          
+
+
         }
         // A message that pops-up when a user is pressing irrelevant keys (Instructions for menus)
         private void menuNotification()
@@ -200,11 +202,12 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             Console.Write("In order to login, please enter your username and press <Enter>: ");
             string username = Console.ReadLine();
-            try {
-            ChatRoom.login(username);
+            try
+            {
+                ChatRoom.login(username);
                 boldingText("You have successfully logged-in", ConsoleColor.Green);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
@@ -219,7 +222,7 @@ namespace ISE182_project.Layers.PresentationLayer
                 ChatRoom.register(username);
                 boldingText("You have successfully registered, pls login now", ConsoleColor.Green);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 boldingText(e.Message, ConsoleColor.Red);
             }
