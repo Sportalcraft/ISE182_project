@@ -89,7 +89,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // register a user to the server
-        public static void register(string nickname)
+        public static void register(string nickname, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -101,15 +101,15 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            UserService.Instence.register(new User(nickname)); //register
+            UserService.Instence.register(new User(nickname,GroupID)); //register
         }
 
         // logIn an existing user to the server
-        public static void login(string nickname)
+        public static void login(string nickname, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            IUser user = new User(nickname);
+            IUser user = new User(nickname, GroupID);
 
             if (isLoggedIn()) //Already logged In
             {

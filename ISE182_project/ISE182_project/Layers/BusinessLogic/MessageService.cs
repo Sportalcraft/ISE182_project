@@ -209,7 +209,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             //A dummy message to use in the .equals
-            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy"), "Dummy");
+            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy",0), "Dummy");
 
             foreach (Message msg in RamData)
             {

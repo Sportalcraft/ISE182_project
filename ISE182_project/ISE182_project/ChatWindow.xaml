@@ -5,11 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ISE182_project"
         mc:Ignorable="d"
-        Title="ChatWindow" Height="300" Width="570">
+        Title="ChatWindow" Height="420" Width="700">
     <Grid>
-        <ListBox HorizontalAlignment="Left" Height="210" Margin="140,20,0,0" VerticalAlignment="Top" Width="410"/>
-        <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="475,231,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click"/>
-        <TextBox HorizontalAlignment="Left" Height="20" Margin="140,231,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="335"/>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFDEDEDE" Offset="0"/>
+                <GradientStop Color="LightGray" Offset="1"/>
+                <GradientStop Color="#FF979797" Offset="0.73"/>
+                <GradientStop Color="#FFC7C7C7" Offset="0.383"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <ListBox HorizontalAlignment="Left" Height="320" Margin="160,20,0,0" VerticalAlignment="Top" Width="505"/>
+        <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="590,345,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE2E2E2" Offset="0"/>
+                    <GradientStop Color="#FFE2E2E2" Offset="1"/>
+                    <GradientStop Color="#FFC5C5C5" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="160,345,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430"/>
+        <Grid HorizontalAlignment="Left" Height="75" Margin="20,40,0,0" VerticalAlignment="Top" Width="140">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE8E8E8" Offset="0"/>
+                    <GradientStop Color="#FFE8E8E8" Offset="1"/>
+                    <GradientStop Color="White" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Grid.Background>
 
+            <Label Content="User Info" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
+            <Label Content="Username: " Height="25" Width="60" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="10"/>
+            <Label Content="GroupID:" Height="25" Width="60" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" FontSize="10"/>
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="80" Margin="20,162,0,0" VerticalAlignment="Top" Width="140">
+            <CheckBox Content="Filter By" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
+        </Grid>
+        <Button Name="logoutButton" Content="Logout" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="140" Height="20" FontWeight="Bold" Click="logoutButton_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFFF5454" Offset="0"/>
+                    <GradientStop Color="#FFFF5454" Offset="1"/>
+                    <GradientStop Color="#FFBD3F3F" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
     </Grid>
 </Window>

@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers;
 
 namespace ISE182_project
 {
@@ -27,6 +29,11 @@ namespace ISE182_project
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void logoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChatRoom.logout();
         }
     }
 }

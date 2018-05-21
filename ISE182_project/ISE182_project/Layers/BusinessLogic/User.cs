@@ -14,7 +14,6 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represent a user in the chatroom
     class User : IUser
     {
-        private const int GROUP_ID = 32; // Our group ID from the registration sheet
 
         private int _groupID;            // The Group ID of the user
         private string _nickName;        // The nickName chosen by the user
@@ -37,11 +36,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region Ctors
 
-        //The constractor of User class
-        public User(string nickName)
+        //A constractor of User class
+        public User(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
             if (nickName == null || nickName.Equals(""))
             {
                 string error = "The client tried to use illegal nickname";
@@ -49,16 +47,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw new ArgumentException(error);
             }
-
             _nickName = nickName;
-            _groupID = GROUP_ID;
-        }
-
-        //A constractor of User class
-        public User(string nickName, int GroupID) : this(nickName)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
             if (GroupID < 0)
             {
                 string error = "User constractor recived illefal groupID";
@@ -66,12 +55,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw new ArgumentException(error);
             }
-
-            if (GroupID != GROUP_ID)
-            {
-                Logger.Log.Warn(Logger.Maintenance("An instance of a user of a different group was created : NickName - " + nickName + " (GrouoID  : " + GroupID + ")" ));
-            }
-
             _groupID = GroupID;
         }
 
