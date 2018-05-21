@@ -10,27 +10,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ISE182_project
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ChatWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ChatWindow : Window
     {
-        public MainWindow()
+        public ChatWindow()
         {
             InitializeComponent();
         }
 
-        private void userHandlerButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void exitButton_Click(object sender, RoutedEventArgs e)
+        private void sendButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
