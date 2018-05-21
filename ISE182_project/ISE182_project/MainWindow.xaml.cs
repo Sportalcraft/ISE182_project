@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.PresentationLayer;
 using ISE182_project.Layers;
 
 namespace ISE182_project
@@ -24,6 +25,9 @@ namespace ISE182_project
     {
         public MainWindow()
         {
+            ObservableObject _main = new ObservableObject();
+            this.DataContext = _main;
+
             ChatRoom.start(ChatRoom.Place.Home);
             InitializeComponent();
         }

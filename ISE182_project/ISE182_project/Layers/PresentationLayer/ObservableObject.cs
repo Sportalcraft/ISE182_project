@@ -13,11 +13,29 @@ namespace ISE182_project.Layers.PresentationLayer
 {
     class ObservableObject : INotifyPropertyChanged
     {
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool mainWindowLoginRadio;
+        public bool MainWindowLoginRadio
+        {
+            get
+            {
+                return this.mainWindowLoginRadio;
+            }
+            set
+            {
+                if(!this.mainWindowLoginRadio)
+                {
+                    this.mainWindowLoginRadio = value;
+                    OnPropertyChanged();
+                }
+            }
         }
     }
 }

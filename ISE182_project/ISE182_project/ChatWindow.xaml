@@ -25,7 +25,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <TextBox HorizontalAlignment="Left" Height="20" Margin="180,346,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="445"/>
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="180,346,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="445" VerticalContentAlignment="Center"/>
         <Grid HorizontalAlignment="Left" Height="75" Margin="20,40,0,0" VerticalAlignment="Top" Width="160">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
