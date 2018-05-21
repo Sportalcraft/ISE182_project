@@ -103,11 +103,11 @@ namespace ISE182_project
             bool passed = true;
             string UserName = RandomString(8);
 
-            ChatRoom.register(UserName);
+            ChatRoom.register(UserName,32);
 
             try
             {
-                ChatRoom.register(UserName);
+                ChatRoom.register(UserName,32);
                 passed = false;
             }
             catch
@@ -121,7 +121,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.register("");
+                ChatRoom.register("",32);
                 passed = false;
             }
             catch
@@ -135,7 +135,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.register(null);
+                ChatRoom.register(null,32);
                 passed = false;
             }
             catch
@@ -160,21 +160,21 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.register(UserName);
+                ChatRoom.register(UserName,32);
             }
             catch
             {
 
             }
 
-            ChatRoom.login(UserName);
+            ChatRoom.login(UserName,32);
 
             if (!ChatRoom.isLoggedIn())
                 throw new Exception("falid to loggin");
 
             try
             {
-                ChatRoom.login(UserName);
+                ChatRoom.login(UserName,32);
                 passed = false;
             }
             catch
@@ -188,7 +188,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.login("");
+                ChatRoom.login("",32);
                 passed = false;
             }
             catch
@@ -202,7 +202,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.login(null);
+                ChatRoom.login(null,32);
                 passed = false;
             }
             catch
@@ -216,7 +216,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.login(RandomString(15));
+                ChatRoom.login(RandomString(15),32);
                 passed = false;
             }
             catch
@@ -483,14 +483,14 @@ namespace ISE182_project
             if (temp.Count != 0)
                 throw new Exception("nedd to be emty arry!");
 
-            ChatRoom.register(UserName);
+            ChatRoom.register(UserName,32);
 
             temp = ChatRoom.requestAllMessagesfromUser(UserName, 32);
 
             if (temp.Count != 0)
                 throw new Exception("nedd to be emty arry!");
 
-            ChatRoom.login(UserName);
+            ChatRoom.login(UserName,32);
 
             temp = ChatRoom.requestAllMessagesfromUser(UserName, 32);
 
@@ -568,7 +568,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.register(UserName);
+                ChatRoom.register(UserName,32);
             }
             catch
             {
@@ -577,7 +577,7 @@ namespace ISE182_project
 
             try
             {
-                ChatRoom.login(UserName);
+                ChatRoom.login(UserName,32);
             }
             catch
             {

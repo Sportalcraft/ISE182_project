@@ -204,7 +204,7 @@ namespace ISE182_project.Layers.PresentationLayer
             string username = Console.ReadLine();
             try
             {
-                ChatRoom.login(username);
+                ChatRoom.login(username,32);
                 boldingText("You have successfully logged-in", ConsoleColor.Green);
             }
             catch (Exception e)
@@ -219,7 +219,7 @@ namespace ISE182_project.Layers.PresentationLayer
             string username = Console.ReadLine();
             try
             {
-                ChatRoom.register(username);
+                ChatRoom.register(username,32);
                 boldingText("You have successfully registered, pls login now", ConsoleColor.Green);
             }
             catch (Exception e)

@@ -34,6 +34,8 @@ namespace ISE182_project
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             ChatRoom.logout();
+            MainWindow main = new MainWindow();
+            main.Show();
         }
     }
 }
