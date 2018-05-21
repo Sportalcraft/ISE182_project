@@ -36,6 +36,7 @@ namespace ISE182_project
             ChatRoom.logout();
             MainWindow main = new MainWindow();
             main.Show();
+            this.Hide();
         }
     }
 }

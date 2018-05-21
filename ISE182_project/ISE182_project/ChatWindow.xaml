@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ISE182_project"
         mc:Ignorable="d"
-        Title="ChatWindow" Height="420" Width="700">
+        Title="ChatWindow" Height="420" Width="735">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -15,8 +15,8 @@
                 <GradientStop Color="#FFC7C7C7" Offset="0.383"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <ListBox HorizontalAlignment="Left" Height="320" Margin="160,20,0,0" VerticalAlignment="Top" Width="505"/>
-        <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="590,345,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
+        <ListBox HorizontalAlignment="Left" Height="321" Margin="180,20,0,0" VerticalAlignment="Top" Width="520"/>
+        <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="625,346,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE2E2E2" Offset="0"/>
@@ -25,8 +25,8 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <TextBox HorizontalAlignment="Left" Height="20" Margin="160,345,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430"/>
-        <Grid HorizontalAlignment="Left" Height="75" Margin="20,40,0,0" VerticalAlignment="Top" Width="140">
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="180,346,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="445"/>
+        <Grid HorizontalAlignment="Left" Height="75" Margin="20,40,0,0" VerticalAlignment="Top" Width="160">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE8E8E8" Offset="0"/>
@@ -39,7 +39,7 @@
             <Label Content="Username: " Height="25" Width="60" HorizontalAlignment="Left" Margin="0,25,0,0" VerticalAlignment="Top" FontSize="10"/>
             <Label Content="GroupID:" Height="25" Width="60" HorizontalAlignment="Left" Margin="0,50,0,0" VerticalAlignment="Top" FontSize="10"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Height="130" Margin="20,116,0,0" VerticalAlignment="Top" Width="140">
+        <Grid HorizontalAlignment="Left" Height="140" Margin="20,116,0,0" VerticalAlignment="Top" Width="160">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE8E8E8" Offset="0"/>
@@ -48,17 +48,18 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Label Content="Filter By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
-            <Grid HorizontalAlignment="Left" Height="105" Margin="0,25,0,0" VerticalAlignment="Top" Width="140">
-                <RadioButton Grid.Row="1" Content="Username" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" Checked="RadioButton_Checked" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
+            <Grid HorizontalAlignment="Left" Height="115" Margin="0,25,0,0" VerticalAlignment="Top" Width="160">
+                <RadioButton Grid.Row="1" Content="Username" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
                 <RadioButton Grid.Row="3" Content="GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="130"/>
+                <TextBox Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
+                <RadioButton Grid.Row="5" Content="No Filter" HorizontalAlignment="Left" Margin="5,95,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
             </Grid>
             
 
 
         </Grid>
-        <Button Name="logoutButton" Content="Logout" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="140" Height="20" FontWeight="Bold" Click="logoutButton_Click">
+        <Button Name="logoutButton" Content="Logout" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="160" Height="20" FontWeight="Bold" Click="logoutButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFFF5454" Offset="0"/>
@@ -67,5 +68,22 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
+        <Grid HorizontalAlignment="Left" Height="108" Margin="20,257,0,0" VerticalAlignment="Top" Width="160">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE8E8E8" Offset="0"/>
+                    <GradientStop Color="#FFE8E8E8" Offset="1"/>
+                    <GradientStop Color="White" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Label Content="Sort By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
+            <ComboBox HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
+                <ComboBoxItem Content="Message Timestamp" FontSize="8" />
+                <ComboBoxItem Content="Nickname" FontSize="8" />
+                <ComboBoxItem Content="GroupID, Nickname, and Timestamp" FontSize="8" />
+            </ComboBox>
+            <RadioButton Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <RadioButton Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        </Grid>
     </Grid>
 </Window>

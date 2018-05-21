@@ -32,6 +32,7 @@ namespace ISE182_project
         {
             ChatWindow cw = new ChatWindow();
             cw.Show();
+            this.Hide();
         }
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
