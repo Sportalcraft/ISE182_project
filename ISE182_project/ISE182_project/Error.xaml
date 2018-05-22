@@ -7,7 +7,16 @@
         mc:Ignorable="d"
         Title="Error" Height="150" Width="300">
     <Grid>
-        <Label Content="{Binding ErrorText}" HorizontalAlignment="Left" Margin="125,45,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding ErrorText}" Foreground="Red" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" FontSize="12" Height="119" Width="290" VerticalContentAlignment="Center" FontWeight="Bold" HorizontalContentAlignment="Center">
+            <Label.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFEAEAEA" Offset="0"/>
+                    <GradientStop Color="#FFEAEAEA" Offset="1"/>
+                    <GradientStop Color="#FFC9C9C9" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Label.Background>
+
+        </Label>
 
     </Grid>
 </Window>

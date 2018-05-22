@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ISE182_project.Layers.PresentationLayer;
 
 namespace ISE182_project
 {
@@ -19,8 +20,11 @@ namespace ISE182_project
     /// </summary>
     public partial class Error : Window
     {
-        public Error()
+        private ObservableObject bindObject;
+        public Error(ObservableObject obs)
         {
+            this.bindObject = obs;
+            this.DataContext = bindObject;
             InitializeComponent();
         }
     }

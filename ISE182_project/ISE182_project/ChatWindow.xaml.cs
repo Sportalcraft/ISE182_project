@@ -31,6 +31,7 @@ namespace ISE182_project
         private ICollection<IMessage> last20;
         private bool sortChanged;
         private bool filterApplied;
+        private bool reloadChat;
 
         public ChatWindow(ObservableObject fromMainWindows)
         {
@@ -59,17 +60,35 @@ namespace ISE182_project
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
             ChatRoom.send(bindObject.MessageContent);
             UpdateScreen();
             bindObject.MessageContent = "";
+            }
+            catch (Exception ex)
+            {
+                bindObject.ErrorText = ex.Message;
+                Error ePage = new Error(bindObject);
+                ePage.Show();
+            }
         }
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
             ChatRoom.logout();
             dispatcherTimer.Stop();
             MainWindow main = new MainWindow();
             main.Show();
             this.Hide();
+            }
+            catch (Exception ex)
+            {
+                bindObject.ErrorText = ex.Message;
+                Error ePage = new Error(bindObject);
+                ePage.Show();
+            }
         }
         private void Printer(ICollection<IMessage> list)
         {
@@ -92,9 +111,16 @@ namespace ISE182_project
                 option = MessageService.Sort.Nickname;
             else
                 option = MessageService.Sort.GroupNickTime;
-
-            Printer(list);
-            this.last20= ChatRoom.request20Messages();
+            if (reloadChat)
+            {
+                Printer(ChatRoom.request20Messages());
+                this.reloadChat = false;
+            }
+            else
+            {
+                Printer(list);
+                this.last20= ChatRoom.request20Messages();
+            }
             if (sortChanged)
             {
                 ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
@@ -115,6 +141,8 @@ namespace ISE182_project
                 else if (bindObject.FilterGroupid)
                     Printer(ChatRoom.requestMessagesfromGroup(temp, int.Parse(bindObject.FilterGroupString)));
                 filterApplied = false;
+                bindObject.UsernameBox = "";
+                bindObject.GroupidBox = "";
             }
         }
 
@@ -132,14 +160,14 @@ namespace ISE182_project
 
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (bindObject.FilterNone)
+                reloadChat = true;
         }
 
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
             if (bindObject.FilterNone)
             {
-                filterApplied = false;
                 UpdateScreen();
             }
             else
