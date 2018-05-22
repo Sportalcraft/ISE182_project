@@ -50,7 +50,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Geter and setter to the current user
-        private static IUser LoggedinUser
+        public static IUser LoggedinUser
         {
             get { return _loggedinUser; }
             set { _loggedinUser = value; }
@@ -102,6 +102,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             UserService.Instence.register(new User(nickname,GroupID)); //register
+            login(nickname, GroupID);
         }
 
         // logIn an existing user to the server

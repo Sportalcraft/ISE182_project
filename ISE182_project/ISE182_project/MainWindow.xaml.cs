@@ -23,18 +23,26 @@ namespace ISE182_project
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableObject _main = new ObservableObject();
+
         public MainWindow()
         {
-            ObservableObject _main = new ObservableObject();
             this.DataContext = _main;
 
-            ChatRoom.start(ChatRoom.Place.Home);
+            ChatRoom.start(ChatRoom.Place.University);
             InitializeComponent();
         }
-
         private void userHandlerButton_Click(object sender, RoutedEventArgs e)
         {
-            ChatWindow cw = new ChatWindow();
+            string name = usernameBox.Text;
+            int groupID = int.Parse(groupidBox.Text);
+
+            if (loginRadio.IsChecked == true)
+                ChatRoom.login(name, groupID);
+            else
+                ChatRoom.register(name, groupID);
+
+            ChatWindow cw = new ChatWindow(this._main);
             cw.Show();
             this.Hide();
         }

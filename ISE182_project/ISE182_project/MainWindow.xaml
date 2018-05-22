@@ -16,10 +16,10 @@
                 <GradientStop Color="#FFE2E2E2" Offset="0.5"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <RadioButton IsChecked="{Binding MainWindowLoginRadio}" Content="Login" HorizontalAlignment="Left" Margin="40,167,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="Register" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="108,233,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <RadioButton Name="loginRadio" Content="Login" HorizontalAlignment="Left" Margin="40,167,0,0" VerticalAlignment="Top"/>
+        <RadioButton Name="registerRadio" Content="Register" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="usernameBox" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <TextBox Name="groupidBox" HorizontalAlignment="Left" Height="23" Margin="108,233,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="40,196,0,0" VerticalAlignment="Top" Height="23" VerticalContentAlignment="Center"/>
         <Label Content="GroupID:" HorizontalAlignment="Left" Margin="40,229,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         <Button Name="userHandlerButton" Content="Go!" HorizontalAlignment="Left" Margin="202,266,0,0" VerticalAlignment="Top" Width="75" Click="userHandlerButton_Click">
