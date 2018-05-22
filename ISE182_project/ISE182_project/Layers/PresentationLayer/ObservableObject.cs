@@ -111,6 +111,70 @@ namespace ISE182_project.Layers.PresentationLayer
                 OnPropertyChanged();
             }
         }
-
+        private bool filterUsername;
+        public bool FilterUsername
+        {
+            get
+            {
+                return this.filterUsername;
+            }
+            set
+            {
+                    this.filterUsername = value;
+                    OnPropertyChanged();
+            }
+        }
+        private bool filterGroupid;
+        public bool FilterGroupid
+        {
+            get
+            {
+                return this.filterGroupid;
+            }
+            set
+            {
+                    this.filterGroupid = value;
+                    OnPropertyChanged();
+            }
+        }
+        private bool filterNone;
+        public bool FilterNone
+        {
+            get
+            {
+                return this.filterNone;
+            }
+            set
+            {
+                    this.filterNone = value;
+                    OnPropertyChanged();
+            }
+        }
+        private bool sortAscending;
+        public bool SortAscending
+        {
+            get
+            {
+                return this.sortAscending;
+            }
+            set
+            {
+                    this.sortAscending = value;
+                    OnPropertyChanged();
+            }
+        }
+        private bool sortDescending;
+        public bool SortDescending
+        {
+            get
+            {
+                return this.sortDescending;
+            }
+            set
+            {
+                    this.sortDescending = value;
+                    OnPropertyChanged();
+            }
+        }
     }
 }
