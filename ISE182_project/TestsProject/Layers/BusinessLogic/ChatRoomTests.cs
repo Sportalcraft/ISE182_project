@@ -14,11 +14,6 @@ namespace ISE182_project.Layers.BusinessLogic
     [TestClass]
     public class ChatRoomTests
     {
-        string ExistingUserRegistration = "client tried to register with an already existing user";
-        string UserEmptyNullString = "The client tried to use illegal nickname";
-        string LogoutNotLogin = "A user tried to logout without being logedin to a user";
-        string PartialLogInWhenLoggedin = "The user tried to login while loggedin to: ";
-        string LogInNotRegistered = "A user tried to login to a not register account";
 
         [TestInitialize]
         public void Init()
@@ -125,7 +120,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(UserEmptyNullString, e.Message);
+               //GOOD
             }
 
             //Null registration
@@ -136,7 +131,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(UserEmptyNullString, e.Message);
+                //GOOD
             }
 
             // try to register with an existing user
@@ -154,7 +149,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(ExistingUserRegistration, e.Message);
+                
             }
         }
 
@@ -194,7 +189,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.IsTrue(e.Message.Contains(PartialLogInWhenLoggedin));
+                //GOOD
             }
 
             // "" LogIn
@@ -204,7 +199,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(UserEmptyNullString, e.Message);
+               //GOOD
             }
 
             // Null LogIn
@@ -214,7 +209,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(UserEmptyNullString, e.Message);
+               //GOOD
             }
 
             // logIn whithout register
@@ -224,7 +219,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(LogInNotRegistered, e.Message);
+               //GOOD
             }
         }
 
@@ -235,7 +230,7 @@ namespace ISE182_project.Layers.BusinessLogic
         [TestMethod()]
         public void logoutTest_Positive()
         {
-            string UserName = "Yossi";
+            string UserName = RandomString(5);
             int GroupID = RandomInt();
 
             LogIn(UserName, GroupID);
@@ -269,7 +264,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch (Exception e)
             {
-                Assert.AreEqual(LogoutNotLogin, e.Message);
+               //GOOD
             }
         }
 
@@ -352,6 +347,244 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
+        #region request20Messages
+
+        [TestMethod()]
+        public void request20MessagesTest_Positive()
+        {
+            string UserName = RandomString(5);
+            int GroupID = RandomInt();
+
+            string message;
+            
+
+            LogIn(UserName, GroupID);
+
+            for (int i = 0; i < 30; i++)
+            {
+                message = "" + i;
+                ChatRoom.send(message);
+                System.Threading.Thread.Sleep(1001);
+            }
+
+            IMessage[] last20 = ChatRoom.request20Messages().ToArray();
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (!last20[i].MessageContent.Equals((i + 10).ToString()))
+                    Assert.Fail("Falid to retrivedlast 20 correctly!");
+            }
+        }
+
+        [TestMethod()]
+        public void request20MessagesTest_Negative()
+        {
+            //NONE
+        }
+
+        #endregion
+
+        #region sortByTime
+
+        [TestMethod()]
+        public void sortByTimeTest_Positive()
+        {
+            ArrayList last20 = new ArrayList(ChatRoom.request20Messages().ToArray());
+            ArrayList last20copy = last20.Clone() as ArrayList;
+            Random rnd = new Random();
+            ICollection<IMessage> UnSorted = new List<IMessage>();
+            int rando;
+
+            while (last20.Count != 0)
+            {
+                rando = rnd.Next(0, last20.Count);
+
+                UnSorted.Add(last20[rando] as IMessage);
+                last20.RemoveAt(rando);
+            }
+
+            UnSorted = ChatRoom.sort(UnSorted, ChatRoom.Sort.Time, false);
+
+            IMessage[] NotSorted = UnSorted.ToArray();
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (!(last20copy[i] as IMessage).Equals(NotSorted[i] as IMessage))
+                    throw new Exception("Falid to sortmessage by their time!");
+            }
+
+            UnSorted = ChatRoom.sort(UnSorted, ChatRoom.Sort.Time, true);
+
+            NotSorted = UnSorted.ToArray();
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (!(last20copy[i] as IMessage).Equals(NotSorted[19 - i] as IMessage))
+                    Assert.Fail("Falid to sortmessage by their time desending!");
+            }
+        }
+
+        [TestMethod()]
+        public void sortByTimeTest_Negative()
+        {
+            //NONE
+        }
+
+        #endregion
+
+        #region sortByNickName
+
+        [TestMethod()]
+        public void sortByNickNameTest_Positive()
+        {
+            string UserName;
+            int GroupID = RandomInt();
+
+            string[] namestarts = new string[] { "zzzzz", "aaaa", "abcde", "qqqqq", "bacc", "th", "m", "udssss", "yy", "f" };         
+            string[] returnedNames;
+
+            for (int i = 0; i < namestarts.Length; i++)
+            {
+                UserName = namestarts[i] + RandomString(7);
+                LogIn(UserName, GroupID);
+                ChatRoom.send("Hello world");
+                System.Threading.Thread.Sleep(1001);
+            }
+
+            IMessage[] temp = ChatRoom.request20Messages().Take(namestarts.Length).ToArray();
+            IMessage[] mesgs = ChatRoom.sort(temp, ChatRoom.Sort.Nickname, false).ToArray();
+
+            returnedNames = new string[mesgs.Length];
+
+            for (int i = 0; i < mesgs.Length; i++)
+            {
+                returnedNames[i] = mesgs[i].UserName;
+            }
+
+            Array.Sort(returnedNames);
+
+            for (int i = 0; i < returnedNames.Length; i++)
+            {
+                if (!returnedNames[i].Equals(mesgs[i].UserName))
+                    Assert.Fail("Failed tio sort by nick name!");
+            }
+
+            mesgs = ChatRoom.sort(temp, ChatRoom.Sort.Nickname, true).ToArray();
+
+            returnedNames = new string[mesgs.Length];
+
+            for (int i = 0; i < mesgs.Length; i++)
+            {
+                returnedNames[i] = mesgs[i].UserName;
+            }
+
+            Array.Sort(returnedNames);
+            returnedNames = returnedNames.Reverse().ToArray();
+
+            for (int i = 0; i < returnedNames.Length; i++)
+            {
+                if (!returnedNames[i].Equals(mesgs[i].UserName))
+                    Assert.Fail("Failed to sort by nick name desending!");
+            }
+        }
+
+        [TestMethod()]
+        public void sortByNickNameTest_Negative()
+        {
+            //NONE
+        }
+
+        #endregion
+
+        #region requestAllMessagesfromUser
+
+        [TestMethod()]
+        public void requestAllMessagesfromUserTest_Positive()
+        {
+            string UserName = RandomString(10);
+            int GroupID = RandomInt();
+
+            ICollection<IMessage> temp;
+
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch { }
+
+            temp = ChatRoom.requestAllMessagesfromUser(UserName, GroupID);
+
+            if (temp.Count != 0)
+               Assert.Fail("nedd to be emty arry!1");
+
+            ChatRoom.register(UserName, GroupID);
+
+            temp = ChatRoom.requestAllMessagesfromUser(UserName, GroupID);
+
+            if (temp.Count != 0)
+                Assert.Fail("nedd to be emty arry!2");
+
+            for (int i = 0; i < 30; i++)
+            {
+                ChatRoom.send(UserName + " #" + i);
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            IMessage[] sent = ChatRoom.requestAllMessagesfromUser(UserName, GroupID).ToArray();
+
+            for (int i = 0; i < 30; i++)
+            {
+                if (!(sent[i] as IMessage).MessageContent.Equals(UserName + " #" + i))
+                    Assert.Fail("Didn't recved message correctly!");
+            }
+        }
+
+        [TestMethod()]
+        public void requestAllMessagesfromUserTest_Negative()
+        {
+            //NONE
+        }
+
+        #endregion
+
+        #region requestAllMessagesfromGroup
+
+        [TestMethod()]
+        public void requestAllMessagesfromGroupTest_Positive()
+        {
+            string UserName;
+            int GroupID = RandomInt();
+
+            IMessage[] temp;
+
+            for (int i = 0; i < 30; i++)
+            {
+                UserName = RandomString(16);
+
+                LogIn(UserName, GroupID);
+
+                ChatRoom.send("GroupFilterTest #" + i);
+                System.Threading.Thread.Sleep(1001);
+            }
+
+            temp = ChatRoom.requestAllMessagesfromGroup(GroupID).Reverse().Take(30).Reverse().ToArray();
+
+            for (int i = 0; i < 30; i++)
+            {
+                if (!(temp[i] as IMessage).MessageContent.Equals("GroupFilterTest #" + i))
+                    Assert.Fail("Didn't recved message correctly!");
+            }
+        }
+
+        [TestMethod()]
+        public void requestAllMessagesfromGroupTest_Negative()
+        {
+           //NONE
+        }
+
+        #endregion
+
+
 
 
         #region Healpers
@@ -378,31 +611,23 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch { }
 
-            //rgister if not registered
+            //rgister + login if not registered
             try
             {
                 ChatRoom.register(UserName, GroupID);
             }
             catch { }
 
-            //logIn
-            try
-            {
-                ChatRoom.login(UserName, GroupID);
-            }
-            catch
-            {
-                Assert.Fail("Failed to logged in");
-            }
-
             //Make sure user is connected
             try
             {
-                Assert.IsTrue(ChatRoom.isLoggedIn());
+                bool t = ChatRoom.isLoggedIn();
+
+                Assert.IsTrue(t);
             }
-            catch
+            catch(Exception e)
             {
-                Assert.Fail("Didn't logged in");
+                Assert.Fail("Didn't logged in 123 : " + e.Message);
             }
         }
 
