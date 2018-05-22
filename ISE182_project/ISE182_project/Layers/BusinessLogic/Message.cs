@@ -18,6 +18,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private DateTime _receivingTime; // The time the server received the message
         private IUser _sender;           // The sender user
         private string _body;            // The message’s content
+        private const int MAX_LENGTH = 150;
 
         #region Getters & Setters
 
@@ -116,7 +117,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return body != null &&  // Not null
-                body.Length < 150 & // Less then 150 characters
+                body.Length < MAX_LENGTH & // Less then 150 characters
                 !body.Equals("");   // Atleast 1 charcter
         }
 

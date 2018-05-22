@@ -70,33 +70,58 @@ namespace ISE182_project.Layers.PresentationLayer
                 }
             }
         }
-        private string _Username;
+        private string username;
         public string Username
         {
             get
             {
-                return this._Username;
+                return this.username;
             }
             set
             {
-                    this._Username = value;
+                    this.username = value;
                     OnPropertyChanged();
             }
         }
-        private string _GroupID;
+        private string groupID;
         public string GroupID
         {
             get
             {
-                return this._GroupID;
+                return this.groupID;
             }
             set
             {
-                this._GroupID = value;
+                this.groupID = value;
                 OnPropertyChanged();
             }
         }
-
+        private string usernameBox;
+        public string UsernameBox
+        {
+            get
+            {
+                return this.usernameBox;
+            }
+            set
+            {
+                this.usernameBox = value;
+                OnPropertyChanged();
+            }
+        }
+        private string groupidBox;
+        public string GroupidBox
+        {
+            get
+            {
+                return this.groupidBox;
+            }
+            set
+            {
+                this.groupidBox = value;
+                OnPropertyChanged();
+            }
+        }
 
     }
 }
