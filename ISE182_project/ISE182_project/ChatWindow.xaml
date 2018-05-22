@@ -16,7 +16,7 @@
                 <GradientStop Color="#FFC7C7C7" Offset="0.383"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <ListBox ItemsSource="{Binding Messages}"   w:ListBox.AutoScroll="True" ScrollViewer.CanContentScroll="True" IsEnabled="True" HorizontalAlignment="Left" Height="321" Margin="180,20,0,0" VerticalAlignment="Top" Width="520"/>
+        <ListBox ItemsSource="{Binding Messages}" ScrollViewer.CanContentScroll="True" IsEnabled="True" HorizontalAlignment="Left" Height="321" Margin="180,20,0,0" VerticalAlignment="Top" Width="520"/>
         <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="625,346,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

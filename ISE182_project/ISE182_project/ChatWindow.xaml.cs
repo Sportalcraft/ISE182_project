@@ -33,8 +33,8 @@ namespace ISE182_project
             InitializeComponent();
             this.bindObject = fromMainWindows;
             this.DataContext = bindObject;
-            bindObject.Username = "Username: " + ChatRoom.LoggedinUser.NickName;
-            bindObject.GroupID = "GroupID: " + ChatRoom.LoggedinUser.Group_ID.ToString();
+            bindObject.Username = "Username: " + ChatRoom.LoggedUser.NickName;
+            bindObject.GroupID = "GroupID: " + ChatRoom.LoggedUser.Group_ID.ToString();
 
 
             dispatcherTimer = new DispatcherTimer();
@@ -66,7 +66,7 @@ namespace ISE182_project
             main.Show();
             this.Hide();
         }
-        private void Printer(ICollection<IMessage> list)
+        private void UpdateList(ICollection<IMessage> list)
         {
             string temp;
 
@@ -81,7 +81,7 @@ namespace ISE182_project
 
         private void UpdateScreen()
         {
-            Printer(ChatRoom.request20Messages());
+            UpdateList(ChatRoom.request20Messages());
         }
     }
 }

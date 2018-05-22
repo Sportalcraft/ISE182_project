@@ -77,7 +77,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Sort
 
         //Sort a message List by the time
-        public ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        public ICollection<IMessage> sort(ICollection<IMessage> messages, ChatRoom.Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -85,17 +85,17 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 switch (SortBy)
                 {
-                    case Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList();
-                    case Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
-                    case Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
+                    case ChatRoom.Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList();
+                    case ChatRoom.Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
+                    case ChatRoom.Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
                 }
             }
 
             switch (SortBy)
             {
-                case Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
-                case Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
-                case Sort.GroupNickTime: return messages.OrderBy(msg => msg.GroupID).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
+                case ChatRoom.Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
+                case ChatRoom.Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
+                case ChatRoom.Sort.GroupNickTime: return messages.OrderBy(msg => msg.GroupID).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
             }
 
             string error = "The sorting methid failed";
@@ -104,13 +104,7 @@ namespace ISE182_project.Layers.BusinessLogic
             throw new InvalidOperationException(error);
         }
 
-        //Sort options
-        public enum Sort
-        {
-            Time,
-            Nickname,
-            GroupNickTime
-        }
+        
 
         #endregion
 
@@ -196,7 +190,7 @@ namespace ISE182_project.Layers.BusinessLogic
         protected override ICollection<IMessage> DefaultSort(ICollection<IMessage> Data)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return sort(Data, Sort.Time, false);
+            return sort(Data, ChatRoom.Sort.Time, false);
         }
 
         #endregion
