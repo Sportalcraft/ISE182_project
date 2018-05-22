@@ -86,7 +86,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw new ArgumentNullException();
             }
-            
+
             _guid = guid;
             _receivingTime = receivingTime;
             _sender = sender;
