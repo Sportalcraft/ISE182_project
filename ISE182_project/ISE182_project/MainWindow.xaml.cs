@@ -37,15 +37,23 @@ namespace ISE182_project
 
         private void userHandlerButton_Click(object sender, RoutedEventArgs e)
         {
-            int groupID = int.Parse(main.GroupidBox);
-            if (loginRadio.IsChecked == true)
-                ChatRoom.login(main.UsernameBox, groupID);
-            else
-                ChatRoom.register(main.UsernameBox, groupID);
-
-            ChatWindow cw = new ChatWindow(this.main);
-            cw.Show();
-            this.Hide();
+            try
+            {
+                int groupID = int.Parse(main.GroupidBox);
+                if (loginRadio.IsChecked == true)
+                    ChatRoom.login(main.UsernameBox, groupID);
+                else
+                    ChatRoom.register(main.UsernameBox, groupID);
+                ChatWindow cw = new ChatWindow(this.main);
+                cw.Show();
+                this.Hide();
+            }
+            catch (Exception ex)
+            {
+                main.ErrorText = ex.Message;
+                Error ePage = new Error(main);
+                ePage.Show();
+            }
         }
 
         private void exitButton_Click(object sender, RoutedEventArgs e)

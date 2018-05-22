@@ -65,7 +65,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region ToString & Equals
 
         // Cheack if two users are equals.
-        // Two useres are equaks if they both have the same group ID and the same nicknake
+        // Two useres are equals if they both have the same group ID and the same nicknake
         public override bool Equals(object obj)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
