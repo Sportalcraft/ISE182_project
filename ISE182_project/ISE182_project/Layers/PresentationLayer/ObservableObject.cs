@@ -15,24 +15,30 @@ namespace ISE182_project.Layers.PresentationLayer
     {
         
         public event PropertyChangedEventHandler PropertyChanged;
+
         public ObservableObject()
         {
-            Messages.CollectionChanged += Messages_CollectionChanged;
-
-            DispatcherTimer dispatcherTimer = new DispatcherTimer(); 
-            dispatcherTimer.Tick += dispatcherTimer_Tick;         // add event
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 2);  // set time between ticks
-            //dispatcherTimer.Start();                              // start the timer        
-        }
-
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            messageContent = "Banana";
+            messages = new ObservableCollection<string>();
+            messages.CollectionChanged += Messages_CollectionChanged;         
         }
 
         private void Messages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Messages");
+        }
+
+        private ObservableCollection<string> messages;
+        public ObservableCollection<string> Messages
+        {
+            get
+            {
+                return messages;
+            }
+            set
+            {
+                messages = value;
+                OnPropertyChanged("Messages");
+            }
         }
 
         private string messageContent = "";
@@ -52,7 +58,6 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private bool mainWindowLoginRadio;
         public bool MainWindowLoginRadio

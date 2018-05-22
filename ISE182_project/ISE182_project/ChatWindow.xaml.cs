@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.PresentationLayer;
 using ISE182_project.Layers;
+using System.Windows.Threading;
+using ISE182_project.Layers.CommunicationLayer;
 
 namespace ISE182_project
 {
@@ -24,6 +26,8 @@ namespace ISE182_project
     public partial class ChatWindow : Window
     {
         private ObservableObject bindObject;
+        private DispatcherTimer dispatcherTimer;
+
         public ChatWindow(ObservableObject fromMainWindows)
         {
             InitializeComponent();
@@ -31,27 +35,53 @@ namespace ISE182_project
             this.DataContext = bindObject;
             bindObject.Username = "Username: " + ChatRoom.LoggedinUser.NickName;
             bindObject.GroupID = "GroupID: " + ChatRoom.LoggedinUser.Group_ID.ToString();
-            Printer(ChatRoom.request20Messages());
+
+
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;         // add event
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 2);  // set time between ticks
+            dispatcherTimer.Start();
+
+            UpdateScreen();       
         }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            ChatRoom.SaveLast10FromServer();
+            UpdateScreen();
+        }
+
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             ChatRoom.send(bindObject.MessageContent);
+            UpdateScreen();
             bindObject.MessageContent = "";
         }
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             ChatRoom.logout();
+            dispatcherTimer.Stop();
             MainWindow main = new MainWindow();
             main.Show();
             this.Hide();
         }
-        private void Printer<T>(ICollection<T> list)
+        private void Printer(ICollection<IMessage> list)
         {
-            foreach (object o in list)
+            string temp;
+
+            foreach (IMessage msg in list)
             {
-                bindObject.Messages.Add(o.ToString());
+                temp = msg.ToString();
+
+                if (!bindObject.Messages.Contains(temp))
+                    bindObject.Messages.Add(temp + "\n");
             }
+        }
+
+        private void UpdateScreen()
+        {
+            Printer(ChatRoom.request20Messages());
         }
     }
 }
