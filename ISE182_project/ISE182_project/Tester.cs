@@ -345,7 +345,7 @@ namespace ISE182_project
             Console.WriteLine("Passed send Test!");
         }
 
-        private void last20Test()
+        public void last20Test()
         {
             string message;
             string UserName = "Yossi";
@@ -372,7 +372,7 @@ namespace ISE182_project
             Console.WriteLine("Passed last20 test!");
         }
 
-        private void SortTimeMessageTest()
+        public void SortTimeMessageTest()
         {
             ArrayList last20 = new ArrayList(ChatRoom.request20Messages().ToArray());
             ArrayList last20copy = last20.Clone() as ArrayList;
@@ -388,7 +388,7 @@ namespace ISE182_project
                 last20.RemoveAt(rando);
             }
 
-            UnSorted = MessageService.Instence.sort(UnSorted, MessageService.Sort.Time, false);
+            UnSorted = MessageService.Instence.sort(UnSorted, ChatRoom.Sort.Time, false);
 
             IMessage[] NotSorted = UnSorted.ToArray();
 
@@ -398,7 +398,7 @@ namespace ISE182_project
                     throw new Exception("Falid to sortmessage by their time!");
             }
 
-            UnSorted = MessageService.Instence.sort(UnSorted, MessageService.Sort.Time, true);
+            UnSorted = MessageService.Instence.sort(UnSorted, ChatRoom.Sort.Time, true);
 
             NotSorted = UnSorted.ToArray();
 
@@ -411,7 +411,7 @@ namespace ISE182_project
             Console.WriteLine("Passed sort test!");
         }
 
-        private void NickSorting()
+        public void NickSorting()
         {
             string[] namestarts = new string[] { "zzzzz", "aaaa", "abcde", "qqqqq", "bacc", "th", "m", "udssss", "yy", "f" };
             string UserName;
@@ -426,7 +426,7 @@ namespace ISE182_project
             }
 
             IMessage[] temp = MessageService.Instence.lastNmesages(namestarts.Length).ToArray();
-            IMessage[] mesgs = MessageService.Instence.sort(temp, MessageService.Sort.Nickname, false).ToArray();
+            IMessage[] mesgs = MessageService.Instence.sort(temp, ChatRoom.Sort.Nickname, false).ToArray();
 
             returnedNames = new string[mesgs.Length];
 
@@ -443,7 +443,7 @@ namespace ISE182_project
                     throw new Exception("Failed tio sort by nick name!");
             }
 
-             mesgs = MessageService.Instence.sort(temp, MessageService.Sort.Nickname, true).ToArray();
+             mesgs = MessageService.Instence.sort(temp, ChatRoom.Sort.Nickname, true).ToArray();
 
             returnedNames = new string[mesgs.Length];
 
@@ -464,7 +464,7 @@ namespace ISE182_project
             Console.WriteLine("Passed sort by nickname!");
         }
 
-        private void UserFilterTest()
+        public void UserFilterTest()
         {
             ICollection<IMessage> temp;
             string UserName = RandomString(10);
@@ -515,7 +515,7 @@ namespace ISE182_project
             Console.WriteLine("Passed filter by user!");
         }
 
-        private void GroupFilterTest()
+        public void GroupFilterTest()
         {
             IMessage[] temp;
             string UserName;

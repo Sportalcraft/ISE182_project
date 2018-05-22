@@ -12,7 +12,7 @@ namespace ISE182_project.Layers.BusinessLogic
 {
 
     //This class hanel the chatroom
-    static class ChatRoom
+    public static class ChatRoom
     {
         private const string HOME_URL = @"http://localhost/";             // The url addres of the server at home
         private const string BGU_URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
@@ -50,10 +50,16 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Geter and setter to the current user
-        public static IUser LoggedinUser
+        private static IUser LoggedinUser
         {
             get { return _loggedinUser; }
             set { _loggedinUser = value; }
+        }
+
+        //Geter and setter to the current user
+        public static DisplayUser LoggedUser
+        {
+            get { return new DisplayUser(_loggedinUser.NickName, _loggedinUser.Group_ID); }
         }
 
         //Initiating the ram's saves from disk
@@ -189,12 +195,20 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Sort
 
         //Sort a message List by the time
-        public static ICollection<IMessage> sort(ICollection<IMessage> messages, MessageService.Sort SortBy, bool descending)
+        public static ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return MessageService.Instence.sort(messages, SortBy, descending);
 
+        }
+
+        //Sort options
+        public enum Sort
+        {
+            Time,
+            Nickname,
+            GroupNickTime
         }
 
         #endregion

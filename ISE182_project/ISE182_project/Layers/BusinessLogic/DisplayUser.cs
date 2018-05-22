@@ -11,7 +11,7 @@ namespace ISE182_project.Layers.BusinessLogic
 {
     [Serializable]
     // This class represent a user in the chatroom with the properties and methods that can be publish to the users 
-    class DisplayUser
+    public class DisplayUser
     {
 
         private int _groupID;            // The Group ID of the user
