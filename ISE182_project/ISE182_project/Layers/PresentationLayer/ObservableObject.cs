@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Windows.Threading;
 
 namespace ISE182_project.Layers.PresentationLayer
 {
@@ -18,7 +18,18 @@ namespace ISE182_project.Layers.PresentationLayer
         public ObservableObject()
         {
             Messages.CollectionChanged += Messages_CollectionChanged;
+
+            DispatcherTimer dispatcherTimer = new DispatcherTimer(); 
+            dispatcherTimer.Tick += dispatcherTimer_Tick;         // add event
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 2);  // set time between ticks
+            //dispatcherTimer.Start();                              // start the timer        
         }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            messageContent = "Banana";
+        }
+
         private void Messages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Messages");
