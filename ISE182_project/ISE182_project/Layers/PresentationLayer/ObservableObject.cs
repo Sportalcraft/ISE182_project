@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Windows.Threading;
 
 namespace ISE182_project.Layers.PresentationLayer
 {
@@ -15,13 +15,30 @@ namespace ISE182_project.Layers.PresentationLayer
     {
         
         public event PropertyChangedEventHandler PropertyChanged;
+
         public ObservableObject()
         {
-            Messages.CollectionChanged += Messages_CollectionChanged;
+            messages = new ObservableCollection<string>();
+            messages.CollectionChanged += Messages_CollectionChanged;         
         }
+
         private void Messages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Messages");
+        }
+
+        private ObservableCollection<string> messages;
+        public ObservableCollection<string> Messages
+        {
+            get
+            {
+                return messages;
+            }
+            set
+            {
+                messages = value;
+                OnPropertyChanged("Messages");
+            }
         }
 
         private string messageContent = "";
@@ -41,7 +58,6 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private bool mainWindowLoginRadio;
         public bool MainWindowLoginRadio

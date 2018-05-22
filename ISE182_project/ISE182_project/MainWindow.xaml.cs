@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.PresentationLayer;
 using ISE182_project.Layers;
+using System.Windows.Threading;
 
 namespace ISE182_project
 {
@@ -23,15 +24,17 @@ namespace ISE182_project
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableObject main = new ObservableObject();
+        private ObservableObject main = new ObservableObject();     
 
         public MainWindow()
         {
             this.DataContext = main;
 
-            ChatRoom.start(ChatRoom.Place.University);
+            ChatRoom.start(ChatRoom.Place.University);       
+
             InitializeComponent();
         }
+
         private void userHandlerButton_Click(object sender, RoutedEventArgs e)
         {
             int groupID = int.Parse(main.GroupidBox);

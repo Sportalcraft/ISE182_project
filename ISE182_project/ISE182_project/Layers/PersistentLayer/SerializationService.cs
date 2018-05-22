@@ -28,8 +28,10 @@ namespace ISE182_project.Layers.PersistentLayer
             {
                 formater.Serialize(stream, toSerialize); //Serializing
             }
-            catch
+            catch (Exception e)
             {
+                string temp = e.Message;
+
                 Logger.Log.Error(Logger.Developer("Failed to serialize to " + fileName));
                 succeed = false;
             }
