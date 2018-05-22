@@ -30,7 +30,7 @@ namespace ISE182_project
         {
             this.DataContext = main;
 
-            ChatRoom.start(ChatRoom.Place.University);       
+            ChatRoom.start(ChatRoom.Place.University); //HERE       
 
             InitializeComponent();
         }
