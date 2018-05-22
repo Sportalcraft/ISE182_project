@@ -35,6 +35,8 @@ namespace ISE182_project
             this.DataContext = bindObject;
             bindObject.Username = "Username: " + ChatRoom.LoggedUser.NickName;
             bindObject.GroupID = "GroupID: " + ChatRoom.LoggedUser.Group_ID.ToString();
+            bindObject.FilterNone = true;
+            bindObject.SortAscending = true;
 
 
             dispatcherTimer = new DispatcherTimer();
@@ -66,22 +68,58 @@ namespace ISE182_project
             main.Show();
             this.Hide();
         }
-        private void UpdateList(ICollection<IMessage> list)
+        
+        private void UpdateScreen()
         {
-            string temp;
-
-            foreach (IMessage msg in list)
+            UpdateList(ChatRoom.request20Messages());
+            ICollection<IMessage> list = ChatRoom.request20Messages();
+            foreach (IMessage m in this.last20)
+                if (list.Contains(m))
+                    list.Remove(m);
+            MessageService.Sort option;
+            if (bindObject.SortOption == 0)
+                option = MessageService.Sort.Time;
+            else if (bindObject.SortOption == 1)
+                option = MessageService.Sort.Nickname;
+            else
+                option = MessageService.Sort.GroupNickTime;
+            if (reloadChat)
             {
-                temp = msg.ToString();
-
-                if (!bindObject.Messages.Contains(temp))
-                    bindObject.Messages.Add(temp + "\n");
+                Printer(ChatRoom.request20Messages());
+                this.reloadChat = false;
+            }
+            else
+            {
+                Printer(list);
+                this.last20= ChatRoom.request20Messages();
+            }
+            if (sortChanged)
+            {
+                ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
+                foreach (IMessage msg in bindObject.Messages)
+                    temp.Add(msg);
+                bindObject.Messages.Clear();
+                Printer(ChatRoom.sort(temp, option, bindObject.SortDescending));
+                sortChanged = false;
             }
         }
 
         private void UpdateScreen()
         {
-            UpdateList(ChatRoom.request20Messages());
+            if (bindObject.FilterNone)
+            {
+                UpdateScreen();
+            }
+            else
+            {
+                if (bindObject.FilterGroupString==""|bindObject.FilterGroupString==null)
+                    return;
+                if (bindObject.FilterUsername)
+                    if (bindObject.FilterNameString == "" | bindObject.FilterNameString == null)
+                        return;
+                filterApplied = true;
+                UpdateScreen();
+            }
         }
     }
 }
