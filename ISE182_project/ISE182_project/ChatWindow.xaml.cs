@@ -36,7 +36,8 @@ namespace ISE182_project
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ChatRoom.send(bindObject.MessageContent);
+            bindObject.MessageContent = "";
         }
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -50,7 +51,6 @@ namespace ISE182_project
             foreach (object o in list)
             {
                 bindObject.Messages.Add(o.ToString());
-                bindObject.Messages.Add("Hello");
             }
         }
     }
