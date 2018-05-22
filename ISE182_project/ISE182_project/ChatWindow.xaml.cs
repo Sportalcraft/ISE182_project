@@ -39,10 +39,11 @@ namespace ISE182_project
             this.last20 = new List<IMessage>();
             this.bindObject = fromMainWindows;
             this.DataContext = bindObject;
-            bindObject.Username = "Username: " + ChatRoom.LoggedinUser.NickName;
-            bindObject.GroupID = "GroupID: " + ChatRoom.LoggedinUser.Group_ID.ToString();
+            bindObject.Username = "Username: " + ChatRoom.LoggedUser.NickName;
+            bindObject.GroupID = "GroupID: " + ChatRoom.LoggedUser.Group_ID.ToString();
             bindObject.FilterNone = true;
             bindObject.SortAscending = true;
+
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;         // add event
@@ -90,7 +91,7 @@ namespace ISE182_project
                 ePage.Show();
             }
         }
-        private void Printer(ICollection<IMessage> list)
+        private void UpdateList(ICollection<IMessage> list)
         {
             foreach (IMessage msg in list)
             {
@@ -100,6 +101,7 @@ namespace ISE182_project
 
         private void UpdateScreen()
         {
+            UpdateList(ChatRoom.request20Messages());
             ICollection<IMessage> list = ChatRoom.request20Messages();
             foreach (IMessage m in this.last20)
                 if (list.Contains(m))
@@ -180,6 +182,5 @@ namespace ISE182_project
                 filterApplied = true;
                 UpdateScreen();
             }
-        }
         }
     }

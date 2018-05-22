@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.LoggingLayer
 {
-    static class Logger
+    public static class Logger
     {
         private static readonly ILog log = LogManager.GetLogger("SEprojectLogger"); // Holds the logger  
 

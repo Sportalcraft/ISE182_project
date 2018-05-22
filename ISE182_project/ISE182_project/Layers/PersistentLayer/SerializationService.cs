@@ -12,7 +12,7 @@ namespace ISE182_project.Layers.PersistentLayer
 {
 
     //This class enable serializtion and deserializtion to the disk of any kind
-    static class SerializationService
+    public static class SerializationService
     {
 
         //Serialize an object into afile in  the given file name. return if it was done successfully
