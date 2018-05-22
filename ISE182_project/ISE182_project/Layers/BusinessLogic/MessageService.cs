@@ -166,7 +166,14 @@ namespace ISE182_project.Layers.BusinessLogic
 
             foreach (IMessage msg in retrived)
             {
-                newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
+                try
+                {
+                    newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
+                }
+                catch
+                {
+
+                }
             }
 
             RamData = newData;

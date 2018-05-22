@@ -50,11 +50,20 @@
             </Grid.Background>
             <Label Content="Filter By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
             <Grid HorizontalAlignment="Left" Height="115" Margin="0,25,0,0" VerticalAlignment="Top" Width="160">
-                <RadioButton IsChecked="{Binding FilterUsername}" Grid.Row="1" Content="Username" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
-                <RadioButton IsChecked="{Binding FilterGroupid}" Grid.Row="3" Content="GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
-                <RadioButton IsChecked="{Binding FilterNone}" Grid.Row="5" Content="No Filter" HorizontalAlignment="Left" Margin="5,95,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterUsername}" Grid.Row="1" Content="Username" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
+                <TextBox Text="{Binding FilterNameString}" Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterGroupid}" Grid.Row="3" Content="GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+                <TextBox Text="{Binding FilterGroupString}" Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterNone}" Grid.Row="5" Content="No Filter" HorizontalAlignment="Left" Margin="5,95,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+                <Button Name="Apply" Content="Apply" HorizontalAlignment="Left" Margin="95,93,0,3" Width="61" FontSize="10" Click="Apply_Click">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFE2E2E2" Offset="0"/>
+                            <GradientStop Color="#FFE2E2E2" Offset="1"/>
+                            <GradientStop Color="#FFC5C5C5" Offset="0.5"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
             </Grid>
 
 
@@ -78,13 +87,13 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Label Content="Sort By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
-            <ComboBox HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
-                <ComboBoxItem Name="option1" Content="Message Timestamp" FontSize="8" />
-                <ComboBoxItem Name="option2" Content="Nickname" FontSize="8" />
-                <ComboBoxItem Name="option3" Content="GroupID, Nickname, and Timestamp" FontSize="8" />
+            <ComboBox SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="{Binding SortOption}" HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
+                <ComboBoxItem Name="option0" Content="Message Timestamp" FontSize="8" />
+                <ComboBoxItem Name="option1" Content="Nickname" FontSize="8" />
+                <ComboBoxItem Name="option2" Content="GroupID, Nickname, and Timestamp" FontSize="8" />
             </ComboBox>
-            <RadioButton IsChecked="{Binding SortAscending}" Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-            <RadioButton IsChecked="{Binding SortDescending}" Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortAscending, Mode=OneWayToSource}" Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortDescending, Mode=OneWayToSource}" Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         </Grid>
     </Grid>
 </Window>

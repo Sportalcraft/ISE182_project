@@ -8,6 +8,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
+using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.PersistentLayer;
+using ISE182_project.Layers.CommunicationLayer;
 
 namespace ISE182_project.Layers.PresentationLayer
 {
@@ -18,7 +21,7 @@ namespace ISE182_project.Layers.PresentationLayer
 
         public ObservableObject()
         {
-            messages = new ObservableCollection<string>();
+            messages = new ObservableCollection<IMessage>();
             messages.CollectionChanged += Messages_CollectionChanged;         
         }
 
@@ -27,8 +30,8 @@ namespace ISE182_project.Layers.PresentationLayer
             OnPropertyChanged("Messages");
         }
 
-        private ObservableCollection<string> messages;
-        public ObservableCollection<string> Messages
+        private ObservableCollection<IMessage> messages;
+        public ObservableCollection<IMessage> Messages
         {
             get
             {
@@ -58,7 +61,19 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        private string errorText;
+        public string ErrorText
+        {
+            get
+            {
+                return this.errorText;
+            }
+            set
+            {
+                this.errorText = value;
+                OnPropertyChanged();
+            }
+        }
         private bool mainWindowLoginRadio;
         public bool MainWindowLoginRadio
         {
@@ -166,6 +181,32 @@ namespace ISE182_project.Layers.PresentationLayer
                     OnPropertyChanged();
             }
         }
+        private string filterGroupString;
+        public string FilterGroupString
+        {
+            get
+            {
+                return this.filterGroupString;
+            }
+            set
+            {
+                this.filterGroupString = value;
+                OnPropertyChanged();
+            }
+        }
+        private string filterNameString;
+        public string FilterNameString
+        {
+            get
+            {
+                return this.filterNameString;
+            }
+            set
+            {
+                this.filterNameString = value;
+                OnPropertyChanged();
+            }
+        }
         private bool sortAscending;
         public bool SortAscending
         {
@@ -190,6 +231,19 @@ namespace ISE182_project.Layers.PresentationLayer
             {
                     this.sortDescending = value;
                     OnPropertyChanged();
+            }
+        }
+        private int sortOption;
+        public int SortOption
+        {
+            get
+            {
+                return this.sortOption;
+            }
+            set
+            {
+                this.sortOption = value;
+                OnPropertyChanged();
             }
         }
     }

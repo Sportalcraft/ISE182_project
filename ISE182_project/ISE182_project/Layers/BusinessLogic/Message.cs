@@ -87,13 +87,13 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException();
             }
 
-            if(!isValid(body))
+            /*if(!isValid(body))
             {
                 string error = "recived an illegal message body as an argument";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new ArgumentException(error);
-            }
+            }*/
 
             _guid = guid;
             _receivingTime = receivingTime;

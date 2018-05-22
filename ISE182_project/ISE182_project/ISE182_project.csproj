@@ -65,6 +65,9 @@
     <Compile Include="ChatWindow.xaml.cs">
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Error.xaml.cs">
+      <DependentUpon>Error.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Layers\BusinessLogic\ChatRoom.cs" />
     <Compile Include="Layers\BusinessLogic\DisplayUser.cs" />
     <Compile Include="Layers\BusinessLogic\GeneralHandler.cs" />
@@ -110,6 +113,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ChatWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Error.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
