@@ -230,7 +230,7 @@ namespace ISE182_project.Layers.BusinessLogic
         [TestMethod()]
         public void logoutTest_Positive()
         {
-            string UserName = RandomString(5);
+            string UserName = RandomString(7);
             int GroupID = RandomInt();
 
             LogIn(UserName, GroupID);
@@ -623,7 +623,8 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 bool t = ChatRoom.isLoggedIn();
 
-                Assert.IsTrue(t);
+                if (!t)
+                    Assert.Fail("Didn't logged in 100  + "+UserName+" + " + GroupID);
             }
             catch(Exception e)
             {
