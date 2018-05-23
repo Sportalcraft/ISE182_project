@@ -11,9 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ISE182_project.Layers.PresentationLayer;
 
-namespace ISE182_project
+namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 {
     /// <summary>
     /// Interaction logic for Error.xaml

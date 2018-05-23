@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ISE182_project.Layers.PresentationLayer
+namespace ISE182_project.Layers.PresentationLayer.GUI
 {
 
     public static class ListBox
@@ -87,7 +87,11 @@ namespace ISE182_project.Layers.PresentationLayer
         {
             if (e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null || e.NewItems.Count < 1)
                 return;
-            Target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
+
+            if (Target.SelectedIndex >= Target.Items.Count - 4)
+            {
+                Target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
+            }
         }
 
     }

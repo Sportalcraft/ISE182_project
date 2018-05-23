@@ -62,12 +62,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ChatWindow.xaml.cs">
-      <DependentUpon>ChatWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Error.xaml.cs">
-      <DependentUpon>Error.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Layers\BusinessLogic\ChatRoom.cs" />
     <Compile Include="Layers\BusinessLogic\DisplayUser.cs" />
     <Compile Include="Layers\BusinessLogic\GeneralHandler.cs" />
@@ -82,13 +76,21 @@
     <Compile Include="Layers\PersistentLayer\SerializationService.cs" />
     <Compile Include="Layers\BusinessLogic\User.cs" />
     <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
-    <Compile Include="Layers\PresentationLayer\CLI.cs" />
-    <Compile Include="Layers\PresentationLayer\ListBox.cs" />
-    <Compile Include="Layers\PresentationLayer\ObservableObject.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Layers\PresentationLayer\CLI\CLI.cs" />
+    <Compile Include="Layers\PresentationLayer\GUI\ListBox.cs" />
+    <Compile Include="Layers\PresentationLayer\GUI\ObservableObject.cs" />
+    <Compile Include="Layers\PresentationLayer\GUI\Windows\ChatWindow.xaml.cs">
+      <DependentUpon>ChatWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Tester.cs" />
+    <Compile Include="Layers\PresentationLayer\GUI\Windows\Error.xaml.cs">
+      <DependentUpon>Error.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Layers\PresentationLayer\GUI\Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -112,19 +114,20 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ChatWindow.xaml">
+    <Page Include="Layers\PresentationLayer\GUI\Windows\ChatWindow.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
-    <Page Include="Error.xaml">
+    <Page Include="Layers\PresentationLayer\GUI\Windows\Error.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Layers\PresentationLayer\GUI\Windows\MainWindow.xaml">
       <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

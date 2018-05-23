@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.CommunicationLayer;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,14 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ISE182_project.Layers.BusinessLogic;
-using ISE182_project.Layers.PresentationLayer;
-using ISE182_project.Layers;
 using System.Windows.Threading;
-using ISE182_project.Layers.CommunicationLayer;
-using System.Collections.ObjectModel;
 
-namespace ISE182_project
+namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 {
     /// <summary>
     /// Interaction logic for ChatWindow.xaml
@@ -179,6 +176,31 @@ namespace ISE182_project
                         return;
                 filterApplied = true;
                 UpdateScreen();
+            }
+        }
+
+        private void TextBox_KeyDownSendMessage(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox box = sender as TextBox;
+
+                try
+                {
+                    ChatRoom.send(box.Text);
+                    box.Text = "";
+                    bindObject.MessageContent = "";
+
+                    UpdateScreen();
+
+                }
+                catch (Exception ex)
+                {
+                    bindObject.ErrorText = ex.Message;
+                    Error ePage = new Error(bindObject);
+                    ePage.Show();
+                }
+
             }
         }
     }

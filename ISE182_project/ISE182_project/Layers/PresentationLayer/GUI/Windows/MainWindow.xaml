@@ -1,9 +1,9 @@
-﻿<Window x:Class="ISE182_project.MainWindow"
+﻿<Window x:Class="ISE182_project.Layers.PresentationLayer.GUI.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ISE182_project"
+        xmlns:local="clr-namespace:ISE182_project.Layers.PresentationLayer.GUI.Windows"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="350">
     <Grid>
@@ -16,13 +16,13 @@
                 <GradientStop Color="#FFE2E2E2" Offset="0.5"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <RadioButton Name="loginRadio" Content="Login" HorizontalAlignment="Left" Margin="40,167,0,0" VerticalAlignment="Top"/>
-        <RadioButton Name="registerRadio" Content="Register" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top"/>
+        <RadioButton IsChecked="{Binding ToLogIn, Mode=OneWayToSource}" Content="Login" HorizontalAlignment="Left" Margin="40,167,0,0" VerticalAlignment="Top"/>
+        <RadioButton Content="Register" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top"/>
         <TextBox Text="{Binding UsernameBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
-        <TextBox Text="{Binding GroupidBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <TextBox Text="{Binding GroupidBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center" KeyDown="TextBox_KeyDown"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="40,196,0,0" VerticalAlignment="Top" Height="23" VerticalContentAlignment="Center"/>
         <Label Content="GroupID:" HorizontalAlignment="Left" Margin="40,229,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-        <Button Name="userHandlerButton" Content="Go!" HorizontalAlignment="Left" Margin="202,266,0,0" VerticalAlignment="Top" Width="75" Click="userHandlerButton_Click">
+        <Button Content="Go!" HorizontalAlignment="Left" Margin="202,266,0,0" VerticalAlignment="Top" Width="75" Click="userHandlerButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE2E2E2" Offset="0"/>
@@ -31,7 +31,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Button Name="exitButton" Content="Exit" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Width="75" Click="exitButton_Click">
+        <Button Content="Exit" HorizontalAlignment="Left" Margin="15,15,0,0" VerticalAlignment="Top" Width="75" Click="exitButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFFF5454" Offset="0"/>

@@ -12,7 +12,7 @@ using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.PersistentLayer;
 using ISE182_project.Layers.CommunicationLayer;
 
-namespace ISE182_project.Layers.PresentationLayer
+namespace ISE182_project.Layers.PresentationLayer.GUI
 {
     public class ObservableObject : INotifyPropertyChanged
     {
@@ -230,7 +230,7 @@ namespace ISE182_project.Layers.PresentationLayer
             set
             {
                     this.sortDescending = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(); 
             }
         }
         private int sortOption;
@@ -243,6 +243,20 @@ namespace ISE182_project.Layers.PresentationLayer
             set
             {
                 this.sortOption = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool toLogIn;
+        public bool ToLogIn
+        {
+            get
+            {
+                return this.toLogIn;
+            }
+            set
+            {
+                this.toLogIn = value;
                 OnPropertyChanged();
             }
         }

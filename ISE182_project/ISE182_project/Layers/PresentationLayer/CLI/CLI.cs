@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.CommunicationLayer;
 
-namespace ISE182_project.Layers.PresentationLayer
+namespace ISE182_project.Layers.PresentationLayer.CLI
 {
     class CLI
     {

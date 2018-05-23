@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ISE182_project.Layers.BusinessLogic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,21 +11,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ISE182_project.Layers.BusinessLogic;
-using ISE182_project.Layers.PresentationLayer;
-using ISE182_project.Layers;
-using System.Windows.Threading;
 
-namespace ISE182_project
+namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableObject main = new ObservableObject();     
+        private ObservableObject main = new ObservableObject();
 
         public MainWindow()
         {
@@ -37,10 +33,16 @@ namespace ISE182_project
 
         private void userHandlerButton_Click(object sender, RoutedEventArgs e)
         {
+            logister();
+        }
+
+        //Log in ore register
+        private void logister()
+        {
             try
             {
                 int groupID = int.Parse(main.GroupidBox);
-                if (loginRadio.IsChecked == true)
+                if (main.ToLogIn)
                     ChatRoom.login(main.UsernameBox, groupID);
                 else
                     ChatRoom.register(main.UsernameBox, groupID);
@@ -59,6 +61,16 @@ namespace ISE182_project
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             ChatRoom.exit();
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox box = sender as TextBox;
+                main.GroupidBox = box.Text;
+                logister();
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿<Window x:Class="ISE182_project.ChatWindow"
+﻿<Window x:Class="ISE182_project.Layers.PresentationLayer.GUI.Windows.ChatWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:w="clr-namespace:ISE182_project.Layers.PresentationLayer"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:w="clr-namespace:ISE182_project.Layers.PresentationLayer.GUI"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ISE182_project"
+        xmlns:local="clr-namespace:ISE182_project.Layers.PresentationLayer.GUI.Windows"
         mc:Ignorable="d"
-        Title="ChatWindow" Height="420" Width="735">
+          Title="ChatWindow" Height="420" Width="735">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -16,8 +16,8 @@
                 <GradientStop Color="#FFC7C7C7" Offset="0.383"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <ListBox ItemsSource="{Binding Messages}" ScrollViewer.CanContentScroll="True" IsEnabled="True" HorizontalAlignment="Left" Height="321" Margin="180,20,0,0" VerticalAlignment="Top" Width="520"/>
-        <Button Name="sendButton" Content="Send" HorizontalAlignment="Left" Margin="625,346,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
+        <ListBox ItemsSource="{Binding Messages}" w:ListBox.AutoScroll="True" ScrollViewer.CanContentScroll="True" IsEnabled="True" HorizontalAlignment="Left" Height="321" Margin="180,20,0,0" VerticalAlignment="Top" Width="520"/>
+        <Button Content="Send" HorizontalAlignment="Left" Margin="625,346,0,0" VerticalAlignment="Top" Width="75" Click="sendButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE2E2E2" Offset="0"/>
@@ -26,7 +26,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <TextBox Text="{Binding MessageContent, Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="180,346,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="445" VerticalContentAlignment="Center"/>
+        <TextBox Text="{Binding MessageContent, Mode=TwoWay}" HorizontalAlignment="Left" Height="20" Margin="180,346,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="445" VerticalContentAlignment="Center" KeyDown="TextBox_KeyDownSendMessage" />
         <Grid HorizontalAlignment="Left" Height="75" Margin="20,40,0,0" VerticalAlignment="Top" Width="160">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -50,12 +50,12 @@
             </Grid.Background>
             <Label Content="Filter By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
             <Grid HorizontalAlignment="Left" Height="115" Margin="0,25,0,0" VerticalAlignment="Top" Width="160">
-                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterUsername}" Grid.Row="1" Content="Username" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterUsername}" Grid.Row="1" Content="By User" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
                 <TextBox Text="{Binding FilterNameString, Mode=TwoWay}" Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
-                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterGroupid}" Grid.Row="3" Content="GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterGroupid}" Grid.Row="3" Content="By GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
                 <TextBox Text="{Binding FilterGroupString, Mode=TwoWay}" Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
                 <RadioButton Click="Filter_Click" IsChecked="{Binding FilterNone}" Grid.Row="5" Content="No Filter" HorizontalAlignment="Left" Margin="5,95,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-                <Button Name="Apply" Content="Apply" HorizontalAlignment="Left" Margin="95,93,0,3" Width="61" FontSize="10" Click="Apply_Click">
+                <Button Content="Apply" HorizontalAlignment="Left" Margin="95,93,0,3" Width="61" FontSize="10" Click="Apply_Click">
                     <Button.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFE2E2E2" Offset="0"/>
@@ -69,7 +69,7 @@
 
 
         </Grid>
-        <Button Name="logoutButton" Content="Logout" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="160" Height="20" FontWeight="Bold" Click="logoutButton_Click">
+        <Button Content="Logout" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" Width="160" Height="20" FontWeight="Bold" Click="logoutButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFFF5454" Offset="0"/>
@@ -88,9 +88,9 @@
             </Grid.Background>
             <Label Content="Sort By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
             <ComboBox SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="{Binding SortOption}" HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
-                <ComboBoxItem Name="option0" Content="Message Timestamp" FontSize="8" />
-                <ComboBoxItem Name="option1" Content="Nickname" FontSize="8" />
-                <ComboBoxItem Name="option2" Content="GroupID, Nickname, and Timestamp" FontSize="8" />
+                <ComboBoxItem Content="Message Timestamp" FontSize="8" />
+                <ComboBoxItem Content="Nickname" FontSize="8" />
+                <ComboBoxItem Content="GroupID, Nickname, and Timestamp" FontSize="8" />
             </ComboBox>
             <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortAscending, Mode=OneWayToSource}" Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
             <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortDescending, Mode=OneWayToSource}" Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
