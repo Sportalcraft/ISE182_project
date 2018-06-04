@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ISE182_project.Layers.BusinessLogic;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,11 @@ namespace ISE182_project
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            ChatRoom.start(ChatRoom.Place.Home); //HERE
+        }
     }
 }

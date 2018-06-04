@@ -24,9 +24,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
         public MainWindow()
         {
-            this.DataContext = main;
-
-            ChatRoom.start(ChatRoom.Place.University); //HERE       
+            this.DataContext = main;     
 
             InitializeComponent();
         }

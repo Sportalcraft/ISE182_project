@@ -14,18 +14,19 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represen a message in the chatroom
     class Message : IMessage
     {
+        private const int MAX_LENGTH = 100; // message maximum leangth
+
         private Guid _guid;              // The unique idetifier of the message
         private DateTime _receivingTime; // The time the server received the message
         private IUser _sender;           // The sender user
         private string _body;            // The message’s content
-        private const int MAX_LENGTH = 150;
 
         #region Getters & Setters
 
         //Getter to the reciving time
         public DateTime Date
         {
-            get { return _receivingTime; }
+            get { return _receivingTime.ToLocalTime(); }
         }
 
         //Getter to the group ID
@@ -99,11 +100,17 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
 
+        //A constractor of message class
+        public Message(Guid guid, DateTime receivingTime, int group, string nickName, string body) : this(guid, receivingTime, new User(nickName, group), body)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
+
         #endregion
 
-        #region functionalities
+            #region functionalities
 
-        //Cheak if the body is valid
+            //Cheak if the body is valid
         public static bool isValid(string body)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
@@ -136,8 +143,8 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
-                "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
+            return "By : " + Sender + "At : " + Date.ToLocalTime() + "\n" + MessageContent;
+
         }
 
         #endregion

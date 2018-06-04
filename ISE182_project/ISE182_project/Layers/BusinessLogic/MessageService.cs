@@ -1,4 +1,5 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.DataAccsesLayer;
 using ISE182_project.Layers.LoggingLayer;
 using ISE182_project.Layers.PersistentLayer;
 using System;
@@ -15,10 +16,16 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the messages stored in RAM
      class MessageService : GeneralHandler<IMessage>
     {
-         #region singletone
+        private MessageQueryCreator query; // the query generator
+        private DateTime _lastMessageTime; // the time of the last message
+
+        #region singletone
 
         //private ctor
-        private MessageService() { }
+        private MessageService()
+        {
+            query = new MessageQueryCreator();
+        }
 
         private static MessageService _instence; // the instence
 
@@ -45,7 +52,11 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return FilterByUser(user, RamData);
+            prepareGroupFilter(user.Group_ID);
+            query.addNicknameFilter(user.NickName);
+            Execute();
+
+            return RamData;
         }
 
         //recive all the messages from a certain group
@@ -53,23 +64,10 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return FilterByGroup(groupID, RamData);
-        }
+            prepareGroupFilter(groupID);
+            Execute();
 
-        //recive all the messages from a certain user and from a certain colection of messages
-        public ICollection<IMessage> FilterByUser(IUser user, ICollection<IMessage> toFilter)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return toFilter.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
-        }
-
-        //recive all the messages from a certain group and from a certain colection of messages
-        public ICollection<IMessage> FilterByGroup(int groupID, ICollection<IMessage> toFilter)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return toFilter.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
+            return RamData;
         }
 
         #endregion
@@ -163,6 +161,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 try
                 {
                     newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
+                    _lastMessageTime = msg.Date;
                 }
                 catch
                 {
@@ -200,6 +199,12 @@ namespace ISE182_project.Layers.BusinessLogic
             return sort(Data, ChatRoom.Sort.Time, false);
         }
 
+        public override void start()
+        {           
+            base.start();
+            _lastMessageTime = RamData.Last().Date;
+        }
+
         #endregion
 
         #region Unused code
@@ -234,7 +239,23 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             RamData.Add(msg);
+            _lastMessageTime = msg.Date;
             UpdateDisk();
+        }
+
+        //Ckear old filterrs and add filter by the group and by the time
+        private void prepareGroupFilter(int group)
+        {
+            query.clearFilters();
+            query.addGroupFilter(group);
+            query.addTimeFilter(_lastMessageTime);
+        }
+
+        //Execute the query
+        private void Execute()
+        {
+            MessageExcuteor excuteor = new MessageExcuteor();
+            excuteor.ExcuteAndAddTo(query.getQuary(), RamData);
         }
 
         #endregion

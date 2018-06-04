@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.BusinessLogic
 {
+
     //This class generally handle data on the ram
     abstract class GeneralHandler<T>
     {
@@ -60,7 +61,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Initiating the ram's saves from users stored in the disk
-        public void start()
+        public virtual void start()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             SetRAM();

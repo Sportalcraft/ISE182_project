@@ -140,7 +140,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 filterApplied = false;
                 bindObject.UsernameBox = "";
                 bindObject.GroupidBox = "";
-            }
+            }            
         }
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)
