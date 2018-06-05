@@ -88,7 +88,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             if (e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null || e.NewItems.Count < 1)
                 return;
 
-            if (Target.SelectedIndex >= Target.Items.Count - 4)
+           // if (Target.SelectedIndex >= Target.Items.Count - 4)
             {
                 Target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
             }
