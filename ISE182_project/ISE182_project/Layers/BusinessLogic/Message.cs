@@ -136,7 +136,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date + 
+            return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date.ToLocalTime() + 
                 "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
         }
 
