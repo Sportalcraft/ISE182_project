@@ -95,9 +95,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // register a user to the server
-        public static void register(string nickname, int GroupID)
+        public static void register(string nickname, int GroupID/*, string password */)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            IUser user = new User(nickname, GroupID/*, password */);
 
             if (isLoggedIn()) //Already logged In
             {
@@ -107,16 +109,23 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            UserService.Instence.register(new User(nickname,GroupID)); //register
-            login(nickname, GroupID);
+            if (!UserService.Instence.canRegister(user)) //Was regusterd
+            {
+                string error = "A user tried to login to a not register account";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
+            }
+
+            UserService.Instence.register(user); //register
         }
 
         // logIn an existing user to the server
-        public static void login(string nickname, int GroupID)
+        public static void login(string nickname, int GroupID/*, string password */)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            IUser user = new User(nickname, GroupID);
+            IUser user = new User(nickname, GroupID/*, password */);
 
             if (isLoggedIn()) //Already logged In
             {
@@ -172,17 +181,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            LoggedinUser.send(body, URL); // Sending
-            SaveLast10FromServer();       // reciving the last sent 10 messages
+            LoggedinUser.send(body); // Sending
         }
 
-        //retrive and sace the last meseges from server and retun the new messages tha were added
-        public static void SaveLast10FromServer()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            MessageService.Instence.SaveLast10FromServer(URL);
-        }
 
         // Receive the last 20 messages
         public static ICollection<IMessage> request20Messages()
@@ -190,6 +191,14 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return requestNMessages(20);
+        }
+
+        //draw the last messages since kast draw
+        public static void DrawLastMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            MessageService.Instence.DrawNewMessage();
         }
 
         #region Sort
@@ -216,35 +225,19 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Filter
 
         // Receive all the messages from a certain user
-        public static ICollection<IMessage> requestAllMessagesfromUser(string nickName, int GroupID)
+        public static ICollection<IMessage> requestMessagesfromUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
-        // Receive all the messages from a certain user from a certain collection
-        public static ICollection<IMessage> requestMessagesfromUser(ICollection<IMessage> messages, string nickName, int GroupID)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return MessageService.Instence.FilterByUser(new User(nickName, GroupID), messages);
-        }
-
         // Receive all the messages from a certain group
-        public static ICollection<IMessage> requestAllMessagesfromGroup(int GroupID)
+        public static ICollection<IMessage> requestMessagesfromGroup(int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return MessageService.Instence.FilterByGroup(GroupID);
-        }
-
-        // Receive all the messages from a certain group from a certain collection
-        public static ICollection<IMessage> requestMessagesfromGroup(ICollection<IMessage> messages, int GroupID)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return MessageService.Instence.FilterByGroup(GroupID, messages);
         }
 
         #endregion

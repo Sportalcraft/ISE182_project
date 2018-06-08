@@ -42,7 +42,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
                 IMessage msg = new Message(guid, receivingTime,groupID, NickName, body);
 
-                toAdd.Add(msg);
+                if (!toAdd.Contains(msg))
+                  toAdd.Add(msg);
             }
         }
     }

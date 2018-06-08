@@ -82,7 +82,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // create the connectio string
         private static string ConectionString()
         {
-            string server_address = "ise172.ise.bgu.ac.il,1433\\DB_LAB";
+            string server_address = @"GLADOS\SQLEXPRESS"; //"ise172.ise.bgu.ac.il,1433\\DB_LAB";
             string database_name = "MS3";
             string user_name = "publicUser";
             string password = "isANerd";

@@ -50,7 +50,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            ChatRoom.SaveLast10FromServer();
+            ChatRoom.DrawLastMessages();
             UpdateScreen();
         }
 
@@ -134,9 +134,9 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                     temp.Add(msg);
                 bindObject.Messages.Clear();
                 if (bindObject.FilterUsername)
-                    Printer(ChatRoom.requestMessagesfromUser(temp, bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString)));
+                    Printer(ChatRoom.requestMessagesfromUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString)));
                 else if (bindObject.FilterGroupid)
-                    Printer(ChatRoom.requestMessagesfromGroup(temp, int.Parse(bindObject.FilterGroupString)));
+                    Printer(ChatRoom.requestMessagesfromGroup(int.Parse(bindObject.FilterGroupString)));
                 filterApplied = false;
                 bindObject.UsernameBox = "";
                 bindObject.GroupidBox = "";

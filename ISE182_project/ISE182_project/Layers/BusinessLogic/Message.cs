@@ -106,11 +106,17 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
 
+        //A constractor of message class
+        public Message(int group, string nickName, string body) : this(Guid.NewGuid(), DateTime.Now.ToUniversalTime(), new User(nickName, group), body)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
+
         #endregion
 
-            #region functionalities
+        #region functionalities
 
-            //Cheak if the body is valid
+        //Cheak if the body is valid
         public static bool isValid(string body)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));

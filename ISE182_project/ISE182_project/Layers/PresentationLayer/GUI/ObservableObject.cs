@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using ISE182_project.Layers.BusinessLogic;
-using ISE182_project.Layers.PersistentLayer;
 using ISE182_project.Layers.CommunicationLayer;
 
 namespace ISE182_project.Layers.PresentationLayer.GUI

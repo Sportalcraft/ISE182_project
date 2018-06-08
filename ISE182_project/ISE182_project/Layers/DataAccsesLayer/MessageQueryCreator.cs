@@ -17,7 +17,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         private const int EMPTY_GROUP = -1; // the number were there is no group
         private /*const*/ DateTime EMPTY_TIME = new DateTime(0,1,1); // the time were there is no time filter
-        private const int MAX_MESSAGES = 200; // maximum items per quary
+        private readonly int MAX_MESSAGES; // maximum items per quary
 
         //table coloms names
         private const string TABLE_NAME = "Messages"; // the name of the table
@@ -43,9 +43,10 @@ namespace ISE182_project.Layers.DataAccsesLayer
         #region Constructors
 
         //A constructor
-        public MessageQueryCreator() : base()
+        public MessageQueryCreator(int MaxMessages) : base()
         {            
             clear();
+            MAX_MESSAGES = MaxMessages;
         }
 
         #endregion

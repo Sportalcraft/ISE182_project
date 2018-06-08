@@ -1,7 +1,7 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
 using ISE182_project.Layers.DataAccsesLayer;
 using ISE182_project.Layers.LoggingLayer;
-using ISE182_project.Layers.PersistentLayer;
+//using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +16,8 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the messages stored in RAM
      class MessageService : GeneralHandler<IMessage>
     {
+        private const int MAX_MESSAGES = 200; // maximum items per quary
+
         private MessageQueryCreator query; // the query generator
         private DateTime _lastMessageTime; // the time of the last message
 
@@ -24,7 +26,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //private ctor
         private MessageService()
         {
-            query = new MessageQueryCreator();
+            query = new MessageQueryCreator(MAX_MESSAGES);
         }
 
         private static MessageService _instence; // the instence
@@ -44,6 +46,16 @@ namespace ISE182_project.Layers.BusinessLogic
         #endregion
 
         #region functionalities
+
+        public override void add(IMessage item)
+        {
+            base.add(item);
+
+            if (RamData.Count > MAX_MESSAGES)
+            {
+                RamData.Remove(RamData.First());
+            }
+        }
 
         #region Filter
 
@@ -129,24 +141,18 @@ namespace ISE182_project.Layers.BusinessLogic
             return RamData.Reverse().Take(amount).Reverse().ToList();
         }
 
-        //retrive and save the last 10 meseges from server. and return the new nessages that were not originaly in the ram
-        public void SaveLast10FromServer(string url)
+        //retrive and save the new messages that were send after the last draw.
+        public void DrawNewMessage()
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));         
 
-            List<IMessage> retrived, newData = new List<IMessage>(); ;
-
-            if (url == null || url.Equals(""))
-            {
-                string error = "Recived an illegal url";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
+            query.clearFilters();
+            query.addTimeFilter(_lastMessageTime);
 
             try
             {
-                retrived = Communication.Instance.GetTenMessages(url);
+                Execute();
+                _lastMessageTime = RamData.Last().Date;
             }
             catch
             {
@@ -155,21 +161,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw;
             } 
-
-            foreach (IMessage msg in retrived)
-            {
-                try
-                {
-                    newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
-                    _lastMessageTime = msg.Date;
-                }
-                catch
-                {
-
-                }
-            }
-
-            RamData = newData;
         }
 
         #endregion
@@ -179,17 +170,36 @@ namespace ISE182_project.Layers.BusinessLogic
         #region override methods
 
         // deserialize messages
-        protected override ICollection<IMessage> deserialize()
+        protected override void reciveData()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.deserialize();
+
+            query.clearFilters();
+            query.SETtoSELECT();
+            Execute();
         }
 
         // serialize messages
-        protected override bool serialize(ICollection<IMessage> Data)
+        protected override bool AddToDS(IMessage Data)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.serialize(RamData);
+
+            query.SETtoINSERT(Data);
+
+            try
+            {
+                Execute();
+                _lastMessageTime = Data.Date;
+                return true;
+            }
+            catch
+            {
+                string error = "Recived an illegal url";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);;
+            }
+            
         }
 
         //Sorting by time
@@ -199,6 +209,7 @@ namespace ISE182_project.Layers.BusinessLogic
             return sort(Data, ChatRoom.Sort.Time, false);
         }
 
+        //init data
         public override void start()
         {           
             base.start();
@@ -207,7 +218,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        #region Unused code
+        #region PrivateMethods
 
         //Edid message by guid and save to the RAM and disk
         private void EditMessage(Guid ID, string newBody)
@@ -222,7 +233,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 if (msg.Equals(dummy))
                 {
                     msg.editBody(newBody);
-                    UpdateDisk();
+                    query.clearFilters();
+                    query.SETtoUPDATE(msg);
+                    Execute();
                     return;
                 }
             }
@@ -233,17 +246,7 @@ namespace ISE182_project.Layers.BusinessLogic
             throw new KeyNotFoundException(error);
         }
 
-        // save a single message to the RAM
-        private void SaveMessage(IMessage msg)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            RamData.Add(msg);
-            _lastMessageTime = msg.Date;
-            UpdateDisk();
-        }
-
-        //Ckear old filterrs and add filter by the group and by the time
+        //Clear old filterrs and add filter by the group and by the time
         private void prepareGroupFilter(int group)
         {
             query.clearFilters();
@@ -256,6 +259,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             MessageExcuteor excuteor = new MessageExcuteor();
             excuteor.ExcuteAndAddTo(query.getQuary(), RamData);
+            query.clearFilters();
         }
 
         #endregion

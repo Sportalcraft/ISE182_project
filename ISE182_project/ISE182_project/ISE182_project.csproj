@@ -75,6 +75,7 @@
     <Compile Include="Layers\DataAccsesLayer\Connect.cs" />
     <Compile Include="Layers\DataAccsesLayer\MessageQueryCreator.cs" />
     <Compile Include="Layers\DataAccsesLayer\QueryCreator.cs" />
+    <Compile Include="Layers\DataAccsesLayer\UserExcuteor.cs" />
     <Compile Include="Layers\DataAccsesLayer\UserQueryCreator.cs" />
     <Compile Include="Layers\LoggingLayer\Logger.cs" />
     <Compile Include="Layers\PersistentLayer\MessageSerializationService.cs" />

@@ -96,7 +96,21 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             //command.Prepare(); // preapering fo execution
             return command;
-        }      
+        }
+
+        // add an item to the quart
+        public void addQuaryItem(T item)
+        {
+            if (item == null)
+            {
+                string error = "this item is illeagal!";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
+            }
+
+            _item = item;
+        }
 
         #endregion
 
@@ -138,21 +152,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             }
 
             _type = type;
-        }
-
-        // add an item to the quart
-        private void addQuaryItem(T item)
-        {
-            if (item == null)
-            {
-                string error = "this item is illeagal!";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
-
-            _item = item;
-        }
+        }       
 
         #endregion
 

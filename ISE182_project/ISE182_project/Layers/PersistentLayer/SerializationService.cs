@@ -1,4 +1,4 @@
-﻿using ISE182_project.Layers.LoggingLayer;
+﻿/*using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,3 +70,4 @@ namespace ISE182_project.Layers.PersistentLayer
         }
     }
 }
+*/

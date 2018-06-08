@@ -8,14 +8,18 @@ namespace ISE182_project.Layers.BusinessLogic
 {
     interface IUser
     {
+
         //return the nickname of the user
         string NickName { get; }
 
         //return the group ID of the user
         int Group_ID { get; }
 
+        //return the password of the user
+        string Password { get; }
+
         //Send a new message to the server
-        void send(string msg, string URL);
+        void send(string msg);
 
         //logout the user
         void logout();

@@ -1,5 +1,6 @@
-﻿using ISE182_project.Layers.LoggingLayer;
-using ISE182_project.Layers.PersistentLayer;
+﻿using ISE182_project.Layers.DataAccsesLayer;
+using ISE182_project.Layers.LoggingLayer;
+//using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,10 +16,15 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the useres stored in RAM
     class UserService : GeneralHandler<IUser>
     {
+        private UserQueryCreator query; // the query generator
+
         #region singletone
 
         //private ctor
-        private UserService() { }
+        private UserService()
+        {
+            query = new UserQueryCreator();
+        }
 
         private static UserService _instence; // the instence
 
@@ -41,7 +47,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //Add a new user to the users list
         public void register(IUser user)
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));          
 
             if (user == null)
             {
@@ -51,7 +57,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            if (!canRegister(user)) //cheak if this nicknake is taken
+            if (!canRegister(user)) //cheak if this user is taken
             {
                 string error = "client tried to register with an already existing user";
                 Logger.Log.Error(Logger.Maintenance(error));
@@ -60,7 +66,9 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             RamData.Add(user);
-            UpdateDisk();
+            query.clearFilters();
+            query.SETtoINSERT(user);
+            Execute();
         }
 
         #endregion
@@ -72,6 +80,8 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
+            UserExcuteor ue = new UserExcuteor();
+
             if (user == null)
             {
                 string error = "recived a null user for registration";
@@ -80,13 +90,15 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return !RamData.Contains(user);
+            return !ue.canRegister(user);
         }
 
         //cheak if a user can login
         public bool canLogIn(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            UserExcuteor ue = new UserExcuteor();
 
             if (user == null)
             {
@@ -96,7 +108,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return RamData.Contains(user);
+            return ue.canLogIn(user);
         }
 
         #endregion
@@ -105,22 +117,51 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region overrding methods
 
-        protected override ICollection<IUser> deserialize()
+        protected override void reciveData()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return UserSerializationService.deserialize();
+
+            query.clearFilters();
+            query.SETtoSELECT();
+            Execute();
         }
 
-        protected override bool serialize(ICollection<IUser> Data)
+        protected override bool AddToDS(IUser item)
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return UserSerializationService.serialize(RamData);
+            try
+            {
+                query.clearFilters();
+                query.SETtoINSERT(item);
+                Execute();
+                return true;
+            }
+            catch
+            {
+                string error = "Failed to add data to DS";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new Exception(error);
+            }
+
         }
+
 
         protected override ICollection<IUser> DefaultSort(ICollection<IUser> Data)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
             return Data; // No defult sorting mechanisem, For now....
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        //Execute the query
+        private void Execute()
+        {
+            UserExcuteor excuteor = new UserExcuteor();
+            excuteor.ExcuteAndAddTo(query.getQuary(), RamData);
+            query.clearFilters();
         }
 
         #endregion

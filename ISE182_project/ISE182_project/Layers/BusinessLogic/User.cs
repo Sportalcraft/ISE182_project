@@ -14,15 +14,45 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represent a user in the chatroom
     class User : DisplayUser, IUser
     {
-        public User(string nickName, int GroupID) : base(nickName, GroupID)
+        private const int MIN_PASSWORD_LENGTH = 6; //Minimup password lenfth
+
+        private string _password; // the password of the user
+
+        public User(string nickName, int GroupID /*, string password*/) : base(nickName, GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            string password = "123456";
+
+            if (!isValidPassword(password))
+            {
+                string error = "The paswword is illegal";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);
+            }
+
+            _password = password;
+        }
+
+        //getter to the Passwrd
+        public string Password
+        {
+            get { return _password; }
         }
 
         #region functionalities
 
+
+        public bool isValidPassword(string Password)
+        {
+            return Password != null && //Not null
+                Password.Length >= MIN_PASSWORD_LENGTH; // Not too short
+        }
+
+
         //Send a new message to the chatroom and save it
-        public void send(string msg, string URL)
+        public void send(string msg)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -34,17 +64,11 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentException(error);
             }
 
-            if (URL == null || URL.Equals(""))
-            {
-                string error = "The url the user tried to send to is illegal";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
+            IMessage message = new Message(this.Group_ID, this.NickName, msg);
 
             try
             {
-                Communication.Instance.Send(URL, Group_ID.ToString(), NickName, msg);
+                MessageService.Instence.add(message); //send mesage
             }
             catch
             {
