@@ -34,17 +34,16 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             try
             {
-                _conn.Open();
-                data_reader = command.ExecuteReader();              
+                command.Connection.Open();
+                data_reader = command.ExecuteReader();
             }
-            catch
+            catch(Exception e)
             {
-
+                throw;
             }
             finally
             {
-                _conn.Close();
-                data_reader.Close();
+                //data_reader.Close();
                 command.Dispose();
             }
 
@@ -58,17 +57,16 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             try
             {
-                _conn.Open();
+                command.Connection.Open();
                 command.Prepare();
                 num_rows_changed = command.ExecuteNonQuery();
             }
-            catch
+            catch(Exception e)
             {
 
             }
             finally
             {
-                _conn.Close();
                 command.Dispose();
             }
 
@@ -82,12 +80,14 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // create the connectio string
         private static string ConectionString()
         {
+            //Data Source=GLADOS\SQLEXPRESS;Initial Catalog=MS3;Integrated Security=True
+
             string server_address = @"GLADOS\SQLEXPRESS"; //"ise172.ise.bgu.ac.il,1433\\DB_LAB";
             string database_name = "MS3";
             string user_name = "publicUser";
             string password = "isANerd";
 
-            string connetion_string = $"Data Source={server_address};Initial Catalog={database_name };User ID={user_name};Password={password}";
+            string connetion_string = $"Data Source={server_address};Initial Catalog={database_name};Integrated Security=True";//;User ID={user_name};Password={password}";
             return connetion_string;
         }
 

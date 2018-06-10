@@ -23,6 +23,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         protected const string AND = "AND";
         protected const string SET = "SET";
         protected const string VALUES = "VALUES";
+        protected const string INNER_JOIN = "INNER JOIN";
+        protected const string ON = "ON";
 
         private string _type; //SELECT, INSERT or UPDATE
         private T _item; //The item to add or edit

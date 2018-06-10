@@ -40,10 +40,11 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             try
             {
                 int groupID = int.Parse(main.GroupidBox);
-                if (main.ToLogIn)
-                    ChatRoom.login(main.UsernameBox, groupID);
-                else
+
+                if (!main.ToLogIn)
                     ChatRoom.register(main.UsernameBox, groupID);
+
+                ChatRoom.login(main.UsernameBox, groupID);
                 ChatWindow cw = new ChatWindow(this.main);
                 cw.Show();
                 this.Hide();

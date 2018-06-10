@@ -39,15 +39,11 @@ namespace ISE182_project.Layers.BusinessLogic
             if (!RamData.Contains(item))
             {
                 RamData.Add(item);
-                AddToDS(item);
             }
         }
 
         //desierilse data 
         protected abstract void reciveData();
-
-        //serialize data
-        protected abstract bool AddToDS(T item);
 
         //Sort the data
         protected abstract ICollection<T> DefaultSort(ICollection<T> Data);

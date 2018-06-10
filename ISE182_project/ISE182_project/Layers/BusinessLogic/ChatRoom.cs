@@ -18,6 +18,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private const string BGU_URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
         private static Place _location;                                   // The location of the client
         private static IUser _loggedinUser;                               // Current logged in user
+        private static int _loggeninUserID;                               // The id of the loged user
 
         #region General
 
@@ -70,6 +71,7 @@ namespace ISE182_project.Layers.BusinessLogic
             UserService.Instence.start();    // Initiating mesaages on ram
             MessageService.Instence.start(); // Initiating users on ram
             _location = location;   // Set the location
+            _loggeninUserID = -1;
         }
 
         //exit the program
@@ -111,7 +113,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (!UserService.Instence.canRegister(user)) //Was regusterd
             {
-                string error = "A user tried to login to a not register account";
+                string error = "The user tried to register to a not register account";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new InvalidOperationException(error);
@@ -126,6 +128,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             IUser user = new User(nickname, GroupID/*, password */);
+            int id;
 
             if (isLoggedIn()) //Already logged In
             {
@@ -135,15 +138,18 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            if (!UserService.Instence.canLogIn(user)) //Was regusterd
+            id = UserService.Instence.canLogIn(user);
+
+            if (id < 0) //Was regusterd
             {
-                string error = "A user tried to login to a not register account";
+                string error = "An error accured while trying to login. try checkin your info!";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new InvalidOperationException(error);
             }
 
             LoggedinUser = user; //log in
+            _loggeninUserID = id;
             Logger.Log.Info(Logger.Maintenance("The user " + user + " loggedin"));
         }
 
@@ -161,6 +167,7 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             LoggedinUser.logout();
+            _loggeninUserID = -1;
             LoggedinUser = null; // Change the loggedin user to null
         }
 
@@ -181,7 +188,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            LoggedinUser.send(body); // Sending
+            LoggedinUser.send(body, _loggeninUserID); // Sending
         }
 
 

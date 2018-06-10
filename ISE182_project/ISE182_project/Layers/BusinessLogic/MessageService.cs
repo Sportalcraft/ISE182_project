@@ -57,6 +57,12 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
+        public void send(IMessage item, int UserID)
+        {
+            add(item);
+            AddToDS(item, UserID);
+        }
+
         #region Filter
 
         //recive all the messages from a certain user
@@ -147,16 +153,19 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));         
 
             query.clearFilters();
+            query.SETtoSELECT();
             query.addTimeFilter(_lastMessageTime);
 
             try
             {
                 Execute();
-                _lastMessageTime = RamData.Last().Date;
+
+                if(RamData.Count > 0)
+                 _lastMessageTime = RamData.Last().Date;
             }
             catch
             {
-                string error = "Server was not found!";
+                string error = "An Error Acured while drawing messages!";
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw;
@@ -177,24 +186,31 @@ namespace ISE182_project.Layers.BusinessLogic
             query.clearFilters();
             query.SETtoSELECT();
             Execute();
+
+            if (RamData.Count > 0)
+                _lastMessageTime = RamData.Last().Date;
+            else
+                _lastMessageTime = new DateTime(1, 1, 1);
         }
 
         // serialize messages
-        protected override bool AddToDS(IMessage Data)
+        protected bool AddToDS(IMessage Data, int UserID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             query.SETtoINSERT(Data);
+            query.addUserID(UserID);
 
             try
             {
-                Execute();
+                Connect con = new Connect();
+                con.ExecuteNonQuery(query.getQuary());
                 _lastMessageTime = Data.Date;
                 return true;
             }
-            catch
+            catch(Exception e)
             {
-                string error = "Recived an illegal url";
+                string error = "Failed do add data to the DS";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new ArgumentException(error);;
@@ -213,7 +229,9 @@ namespace ISE182_project.Layers.BusinessLogic
         public override void start()
         {           
             base.start();
-            _lastMessageTime = RamData.Last().Date;
+
+            if (RamData.Count > 0)
+                _lastMessageTime = RamData.Last().Date; 
         }
 
         #endregion
@@ -226,7 +244,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             //A dummy message to use in the .equals
-            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy",0), "Dummy");
+            IMessage dummy = new Message(ID, DateTime.Now,"Dummy",0, "Dummy");
 
             foreach (Message msg in RamData)
             {
@@ -235,7 +253,8 @@ namespace ISE182_project.Layers.BusinessLogic
                     msg.editBody(newBody);
                     query.clearFilters();
                     query.SETtoUPDATE(msg);
-                    Execute();
+                    Connect con = new Connect();
+                    con.ExecuteNonQuery(query.getQuary());
                     return;
                 }
             }
@@ -254,12 +273,13 @@ namespace ISE182_project.Layers.BusinessLogic
             query.addTimeFilter(_lastMessageTime);
         }
 
-        //Execute the query
         private void Execute()
         {
-            MessageExcuteor excuteor = new MessageExcuteor();
-            excuteor.ExcuteAndAddTo(query.getQuary(), RamData);
-            query.clearFilters();
+            MessageExcuteor me = new MessageExcuteor();
+            ICollection<IMessage> temp = me.Excute(query.getQuary());
+
+            foreach (IMessage msg in temp)
+                add(msg);
         }
 
         #endregion

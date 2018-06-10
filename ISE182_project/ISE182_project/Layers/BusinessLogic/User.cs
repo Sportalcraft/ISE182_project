@@ -14,7 +14,8 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represent a user in the chatroom
     class User : DisplayUser, IUser
     {
-        private const int MIN_PASSWORD_LENGTH = 6; //Minimup password lenfth
+        private const int MIN_PASSWORD_LENGTH = 6; //Minimum password lenfth
+        private const int MAX_PASSWORD_LENGTH = 64; //Maximum password lenfth
 
         private string _password; // the password of the user
 
@@ -47,12 +48,13 @@ namespace ISE182_project.Layers.BusinessLogic
         public bool isValidPassword(string Password)
         {
             return Password != null && //Not null
-                Password.Length >= MIN_PASSWORD_LENGTH; // Not too short
+                Password.Length >= MIN_PASSWORD_LENGTH && // Not too short
+                Password.Length <= MAX_PASSWORD_LENGTH; //Not too long
         }
 
 
         //Send a new message to the chatroom and save it
-        public void send(string msg)
+        public void send(string msg, int id)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -68,11 +70,11 @@ namespace ISE182_project.Layers.BusinessLogic
 
             try
             {
-                MessageService.Instence.add(message); //send mesage
+                MessageService.Instence.send(message, id); //send mesage
             }
             catch
             {
-                string error = "Server was not found!";
+                string error = "Error accured while sending a message!";
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw;

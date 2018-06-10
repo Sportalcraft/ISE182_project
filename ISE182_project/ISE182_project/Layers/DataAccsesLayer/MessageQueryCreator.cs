@@ -16,27 +16,36 @@ namespace ISE182_project.Layers.DataAccsesLayer
         #region members
 
         private const int EMPTY_GROUP = -1; // the number were there is no group
-        private /*const*/ DateTime EMPTY_TIME = new DateTime(0,1,1); // the time were there is no time filter
+        private /*const*/ DateTime EMPTY_TIME = new DateTime(1,1,1); // the time were there is no time filter
         private readonly int MAX_MESSAGES; // maximum items per quary
 
         //table coloms names
         private const string TABLE_NAME = "Messages"; // the name of the table
-        private const string GUI_COL = "GUI";
-        private const string GROUP_COL = "GroupID";
-        private const string DATE_COL = "Data";
-        private const string NICK_COL = "nickName";
+        private const string GUID_COL = "Guid";
+        private const string User_ID_COL = "User_Id";
+        private const string DATE_COL = "SendTime";
         private const string BODY_COL = "Body";
 
         //Names of the parameters
-        private const string GUI_PARM = "@GUI";
-        private const string GROUP_PARM = "@GroupID";
+        private const string GUID_PARM = "@GUI";
+        private const string USER_ID_PARM = "@UserID";
         private const string DATE_PARM = "@Data";
-        private const string NICK_PARM = "@nickName";
         private const string BODY_PARM = "@Body";
+
+        //From Users Table
+        private const string USERS_TABLE = "Users"; // the name of the table
+        private const string USERS_ID_COL = "Id";
+        private const string GROUP_COL = "Group_Id";
+        private const string NICK_COL = "Nickname";
+
+        //Users parameters
+        private const string GROUP_PARM = "@GroupID";
+        private const string NICK_PARM = "@NICk";
 
         private int _group; // the group to filter with
         private string _nickName; // the nick name to filter with  
         private DateTime _lastRecivedMessage; // Save the time of the last recived message    
+        private int _userID; //The id of the user
 
         #endregion
 
@@ -72,6 +81,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
             }
 
             _group = group;
+        }
+
+        public void addUserID(int id)
+        {
+            if (id <= 0)
+            {
+                string error = "this id is illeagal!";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
+            }
+
+            _userID = id;
         }
 
         // add a nick name filter
@@ -118,11 +140,22 @@ namespace ISE182_project.Layers.DataAccsesLayer
         {
             string quary = "";
 
+            if(Type.Equals(INSERT))
+            {
+                if(_userID == -1)
+                {
+                    string error = "you must enter the id of the user in order to send messages!";
+                    Logger.Log.Error(Logger.Developer(error));
+
+                    throw new InvalidOperationException(error);
+                }
+            }
+
             //Create query
             switch (Type)
             {
-                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} * {FROM} {TABLE_NAME} {where()}"; break;
-                case INSERT: quary = $"{INSERT} {TABLE_NAME} ({GUI_COL},{DATE_COL},{GROUP_COL},{NICK_COL},{BODY_COL}) {values()}"; break;
+                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} * {FROM} {JOIN()} {where()}"; break;
+                case INSERT: quary = $"{INSERT} {TABLE_NAME} ({GUID_COL},{User_ID_COL},{DATE_COL},{BODY_COL}) {values()}"; break;
                 case UPDATE: quary = $"{UPDATE} {TABLE_NAME} {set()}"; break;
             }
 
@@ -139,6 +172,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             _group = EMPTY_GROUP;
             _nickName = null;
             _lastRecivedMessage = EMPTY_TIME;
+            _userID = -1;
         }
 
         //get a where to the filtering options
@@ -152,41 +186,47 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             if (_group != EMPTY_GROUP)
             {
-                where += GROUP_COL + " = " + GROUP_PARM;
+                where += $"{GROUP_COL} = {GROUP_PARM}";
                 parameters.Add(new SqlParameter(GROUP_PARM, _group));
 
                 if (_nickName != null)
-                    where += " " +AND + " ";
+                    where += $" {AND} ";
             }
 
             if (_nickName != null)
             {
-                where += NICK_COL + " = " + NICK_PARM;
+                where += $"{NICK_COL} = {NICK_PARM}";
                 parameters.Add(new SqlParameter(NICK_PARM, _nickName));
             }
 
-            timeCondition = $"{DATE_COL} = {_lastRecivedMessage}";
+            timeCondition = $"{DATE_COL} = {DATE_PARM}";           
 
-            if(!_lastRecivedMessage.Equals(EMPTY_TIME))
+            if (!_lastRecivedMessage.Equals(EMPTY_TIME))
             {
                 if (where.Equals(""))
-                    where += $"{WHERE} {DATE_COL} = {timeCondition}";
+                    where += $"{WHERE} {timeCondition}";
                 else
                     where += $"{AND} {timeCondition}";
+
+                parameters.Add(new SqlParameter(DATE_PARM, _lastRecivedMessage));
             }
 
             return where;
         }
 
+        private string JOIN()
+        {
+            return $"{TABLE_NAME} {INNER_JOIN} {USERS_TABLE} {ON} {TABLE_NAME}.{User_ID_COL} = {USERS_TABLE}.{USERS_ID_COL}";
+        }
+
         // get the VALUES statements for INSERT quary
         private string values()
         {
-           string values =  VALUES +$" ({GROUP_PARM},{DATE_PARM},{GROUP_PARM},{NICK_PARM},{BODY_PARM})";
+           string values =  VALUES +$" ({GUID_PARM},{USER_ID_PARM},{DATE_PARM},{BODY_PARM})";
 
-            parameters.Add(new SqlParameter(GROUP_PARM, QuaryItem.GroupID));
+            parameters.Add(new SqlParameter(GUID_PARM, QuaryItem.Id));
+            parameters.Add(new SqlParameter(USER_ID_PARM, _userID));
             parameters.Add(new SqlParameter(DATE_PARM, QuaryItem.Date));
-            parameters.Add(new SqlParameter(GROUP_PARM, QuaryItem.GroupID));
-            parameters.Add(new SqlParameter(NICK_PARM, QuaryItem.UserName));
             parameters.Add(new SqlParameter(BODY_PARM, QuaryItem.MessageContent));
 
             return values;
@@ -195,10 +235,10 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get the SET statement for UPDATE queries
         private string set()
         {
-            string where = $"{SET} {BODY_COL} = {BODY_PARM} {WHERE} {GUI_COL} = { GUI_PARM}";
+            string where = $"{SET} {BODY_COL} = {BODY_PARM} {WHERE} {GUID_COL} = { GUID_PARM}";
 
             parameters.Add(new SqlParameter(BODY_PARM, QuaryItem.MessageContent));
-            parameters.Add(new SqlParameter(GUI_PARM, QuaryItem.Id));
+            parameters.Add(new SqlParameter(GUID_PARM, QuaryItem.Id));
 
             return where;
         }

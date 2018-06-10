@@ -93,8 +93,8 @@ namespace ISE182_project.Layers.BusinessLogic
             return !ue.canRegister(user);
         }
 
-        //cheak if a user can login
-        public bool canLogIn(IUser user)
+        //cheak if a user can login, and id so, return it's id. or -1 if can't login
+        public int canLogIn(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -108,7 +108,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return ue.canLogIn(user);
+            return ue.Loginable(user);
         }
 
         #endregion
@@ -126,7 +126,7 @@ namespace ISE182_project.Layers.BusinessLogic
             Execute();
         }
 
-        protected override bool AddToDS(IUser item)
+        protected bool AddToDS(IUser item)
         {
             try
             {

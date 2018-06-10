@@ -15,17 +15,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
         #region members
 
         //table coloms names
-        private const string TABLE_NAME = "Useres"; // the name of the table
+        private const string TABLE_NAME = "Users"; // the name of the table
         private const string ID_COL = "id";
-        private const string GROUP_COL = "GroupID";
-        private const string NICK_COL = "Nickmame";
+        private const string GROUP_COL = "Group_Id";
+        private const string NICK_COL = "Nickname";
         private const string PASSWORD_COL = "Password";
 
         //Parametes names
         private const string ID_PARM = "@id";
-        private const string GROUP_PARM = "@GRoupID";
+        private const string GROUP_PARM = "@GroupID";
         private const string NICK_PARM = "@NICk";
         private const string PASSWORD_PARM = "@pass";
+
+        private bool _logister; // This to check if the the query is to check if the user can register of login
 
         #endregion
 
@@ -41,9 +43,18 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         #region Abstract Imlamentation
 
+        public override void clearFilters()
+        {
+            base.clearFilters();
+            clear();
+        }
+
         protected override string getQueryString()
         {
             string quary = "";
+
+            if(_logister)
+                return canLogisterQuery();
 
             //Create Quary
             switch (Type)
@@ -66,9 +77,15 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         #region functionalities
         
-        public string canLogisterQuery()
+        public  void SetToLogisterQuery()
         {
-            return $"{SELECT} {PASSWORD_COL} {FROM} {TABLE_NAME} {Where()}";
+            SETtoSELECT();
+            _logister = true;
+        }
+
+        private string canLogisterQuery()
+        {
+            return $"{SELECT} {ID_COL},{PASSWORD_COL} {FROM} {TABLE_NAME} {Where()}";
         }      
 
         #endregion
@@ -94,6 +111,11 @@ namespace ISE182_project.Layers.DataAccsesLayer
             parameters.Add(new SqlParameter(NICK_PARM, QuaryItem.NickName));
 
             return query;
+        }
+
+        public void clear()
+        {
+            _logister = false;
         }
 
         #endregion

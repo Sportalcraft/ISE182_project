@@ -19,7 +19,7 @@ namespace ISE182_project.Layers.BusinessLogic
         string Password { get; }
 
         //Send a new message to the server
-        void send(string msg);
+        void send(string msg, int id);
 
         //logout the user
         void logout();

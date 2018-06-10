@@ -31,34 +31,53 @@ namespace ISE182_project.Layers.DataAccsesLayer
             Connect conn = new Connect();
             SqlDataReader reader = conn.ExecuteReader(query);
 
-            while (reader.Read())
+            try
             {
-                id = reader.GetInt32(1);
-                Grpuo_id = reader.GetInt32(2);
-                NickName = reader.GetString(3);
-                password = reader.GetString(4);
+                while (reader.Read())
+                {
+                    id = reader.GetInt32(1);
+                    Grpuo_id = reader.GetInt32(2);
+                    NickName = reader.GetString(3);
+                    password = reader.GetString(4);
 
-                IUser user = new User(/*id,*/ NickName, Grpuo_id/*, password */);
+                    IUser user = new User(/*id,*/ NickName, Grpuo_id/*, password */);
 
-                if (!toAdd.Contains(user))
-                    toAdd.Add(user);
+                    if (!toAdd.Contains(user))
+                        toAdd.Add(user);
+                }
             }
+            catch
+            {
+
+            }
+            finally
+            {
+                reader.Close();
+            }          
         }
 
-        public bool canLogIn(IUser user)
+        //check if a user can log in, and if si return it's id, return -1 if cann't log in
+        public int Loginable(IUser user)
         {
             UserQueryCreator qc = new UserQueryCreator();
             Connect conn = new Connect();
+            string DSpassword;
+            int id;
 
             qc.addQuaryItem(user);
-            SqlCommand query = conn.getCommand(qc.canLogisterQuery());
-            SqlDataReader reader = conn.ExecuteReader(query);
+            qc.SetToLogisterQuery();
+            SqlDataReader reader = conn.ExecuteReader(qc.getQuary());
 
             if (!reader.Read())
-                return false; // Not registered
+                return -1; // Not registered
 
-            string DSpassword = reader.GetString(1);
-            return DSpassword.Equals(user.Password);
+            id = reader.GetInt32(0);
+            DSpassword = reader.GetString(1).Trim();
+
+            if (DSpassword.Equals(user.Password))
+                return id;
+
+            return -1;
         }
 
         public bool canRegister(IUser user)
@@ -67,8 +86,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
             Connect conn = new Connect();
 
             qc.addQuaryItem(user);
-            SqlCommand query = conn.getCommand(qc.canLogisterQuery());
-            SqlDataReader reader = conn.ExecuteReader(query);           
+            qc.SetToLogisterQuery();
+            SqlDataReader reader = conn.ExecuteReader(qc.getQuary());           
 
             return reader.Read(); //No current usser with this name and group
         } 

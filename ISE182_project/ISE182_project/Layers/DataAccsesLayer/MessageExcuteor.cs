@@ -12,39 +12,40 @@ namespace ISE182_project.Layers.DataAccsesLayer
 {
     class MessageExcuteor
     {
-        // execute the queary and add it's items into te given collection
-        public void ExcuteAndAddTo(SqlCommand query, ICollection<IMessage> toAdd)
+        // execute the queary
+        public ICollection<IMessage> Excute(SqlCommand query)
         {
-            Guid guid;              
+            Guid guid;
+            int UserID;           
             DateTime receivingTime; 
             int groupID;
             string NickName;        
-            string body; 
+            string body;
 
-            if (toAdd == null)
-            {
-                string error = "collection is null";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
+            ICollection<IMessage> output = new List<IMessage>();
 
             Connect conn = new Connect();
             SqlDataReader reader = conn.ExecuteReader(query);
 
             while(reader.Read())
             {
-                guid = reader.GetGuid(1);
+                guid = new Guid(reader.GetString(0).Trim());
+                UserID = reader.GetInt32(1);
                 receivingTime = reader.GetDateTime(2);
-                groupID = reader.GetInt32(3);
-                NickName = reader.GetString(4);
-                body = reader.GetString(5);
+                body = reader.GetString(3);
+
+                //CHECK HERE
+
+                groupID = 32;
+                NickName = "Tal";
+                
 
                 IMessage msg = new Message(guid, receivingTime,groupID, NickName, body);
 
-                if (!toAdd.Contains(msg))
-                  toAdd.Add(msg);
+                output.Add(msg);
             }
+
+            return output;
         }
     }
 }
