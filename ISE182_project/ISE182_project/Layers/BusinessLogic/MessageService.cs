@@ -24,6 +24,9 @@ namespace ISE182_project.Layers.BusinessLogic
         private ICollection<IMessage> _ramData; // Store a coppy of the data in the ram for quick acces       
         private ICollection<IMessage> _lastFilteredList; //Save te filtered items
 
+        private ChatRoom.Sort _sortBy; //Save the last sort option
+        private bool _descending; //Save the last sort direction
+
         #region singletone
 
         //private ctor
@@ -31,7 +34,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             query = new MessageQueryCreator(MAX_MESSAGES);
             _ramData = new List<IMessage>();
-
+            _lastFilteredList = new List<IMessage>();
         }
 
         private static MessageService _instence; // the instence
@@ -63,22 +66,27 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
-        public void add(IMessage item)
+        private void add(IMessage item)
         {
-            if (!RamData.Contains(item))
-            {
-                RamData.Add(item);
-            }
+
+             RamData.Add(item);
+            _lastFilteredList.Add(item);
 
             if (RamData.Count > MAX_MESSAGES)
             {
                 RamData.Remove(RamData.First());
+            }
+
+            if (_lastFilteredList.Count > MAX_MESSAGES)
+            {
+                _lastFilteredList.Remove(_lastFilteredList.First());
             }
         }
 
         public void send(IMessage item, int UserID)
         {
             add(item);
+            sort(_sortBy, _descending); // resort
             AddToDS(item, UserID);
         }
 
@@ -88,7 +96,6 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return _lastFilteredList;
-
         }
 
         #region Filter
@@ -121,31 +128,34 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Sort
 
         //Sort a message List by the time
-        public ICollection<IMessage> sort(ICollection<IMessage> messages, ChatRoom.Sort SortBy, bool descending)
+        public void sort(ChatRoom.Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            ICollection<IMessage> temp = null;
+
+            //Save last sort option
+            _sortBy = SortBy;
+            _descending = descending;
 
             if (descending)
             {
                 switch (SortBy)
                 {
-                    case ChatRoom.Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList();
-                    case ChatRoom.Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
-                    case ChatRoom.Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
+                    case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderByDescending(msg => msg.Date).ToList(); break;
+                    case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderByDescending(msg => msg.UserName).ToList(); break;
+                    case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList(); break;
                 }
             }
 
             switch (SortBy)
             {
-                case ChatRoom.Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
-                case ChatRoom.Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
-                case ChatRoom.Sort.GroupNickTime: return messages.OrderBy(msg => msg.GroupID).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
+                case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderBy(msg => msg.Date).ToList(); break;
+                case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderBy(msg => msg.UserName).ToList(); break;
+                case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderBy(msg => int.Parse(msg.GroupID)).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList(); break;
             }
 
-            string error = "The sorting methid failed";
-            Logger.Log.Fatal(Logger.Maintenance(error));
-
-            throw new InvalidOperationException(error);
+            _lastFilteredList = temp;
         }
 
         
@@ -214,8 +224,6 @@ namespace ISE182_project.Layers.BusinessLogic
             query.clearFilters();
             query.SETtoSELECT();
             Execute();
-
-            RamData = sort(RamData, ChatRoom.Sort.Time, false); //Sortg by Time at start
         }
 
         // serialize messages
@@ -254,6 +262,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 _lastMessageTime = new DateTime(1, 1, 1);
 
             _lastFilteredList = RamData;
+             sort(ChatRoom.Sort.Time, false); //Sortg by Time at start
+            RamData = _lastFilteredList;
+
         }
 
         #endregion

@@ -212,7 +212,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
                 parameters.Add(tParameter);
             }
 
-            timeCondition = $"{DATE_COL} = {DATE_PARM}";           
+            timeCondition = $"{DATE_COL} > {DATE_PARM}";           
 
             if (!_lastRecivedMessage.Equals(EMPTY_TIME))
             {

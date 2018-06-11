@@ -87,13 +87,13 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Label Content="Sort By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
-            <ComboBox SelectionChanged="ComboBox_SelectionChanged" SelectedIndex="{Binding SortOption}" HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
+            <ComboBox SelectionChanged="SortOptionns_SelectionChanged" SelectedIndex="{Binding SortOption}" HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top" Width="150">
                 <ComboBoxItem Content="Message Timestamp" FontSize="8" />
                 <ComboBoxItem Content="Nickname" FontSize="8" />
                 <ComboBoxItem Content="GroupID, Nickname, and Timestamp" FontSize="8" />
             </ComboBox>
-            <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortAscending, Mode=OneWayToSource}" Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-            <RadioButton Click="RadioButton_Click" IsChecked="{Binding SortDescending, Mode=OneWayToSource}" Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <RadioButton Click="Sort_RadioButton_Click" IsChecked="{Binding SortAscending, Mode=OneWayToSource}" Content="Ascending" HorizontalAlignment="Left" Margin="5,74,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+            <RadioButton Click="Sort_RadioButton_Click" IsChecked="{Binding SortDescending, Mode=OneWayToSource}" Content="Descending" HorizontalAlignment="Left" Margin="5,91,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
         </Grid>
     </Grid>
 </Window>

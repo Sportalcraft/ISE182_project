@@ -403,7 +403,8 @@ namespace ISE182_project.Layers.BusinessLogic
                 last20.RemoveAt(rando);
             }
 
-            UnSorted = ChatRoom.sort(UnSorted, ChatRoom.Sort.Time, false);
+            ChatRoom.sort(ChatRoom.Sort.Time, false);
+            UnSorted = ChatRoom.getMessages();
 
             IMessage[] NotSorted = UnSorted.ToArray();
 
@@ -413,7 +414,8 @@ namespace ISE182_project.Layers.BusinessLogic
                     throw new Exception("Falid to sortmessage by their time!");
             }
 
-            UnSorted = ChatRoom.sort(UnSorted, ChatRoom.Sort.Time, true);
+            ChatRoom.sort(ChatRoom.Sort.Time, true);
+            UnSorted = ChatRoom.getMessages();
 
             NotSorted = UnSorted.ToArray();
 
@@ -452,7 +454,8 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             IMessage[] temp = ChatRoom.request20Messages().Take(namestarts.Length).ToArray();
-            IMessage[] mesgs = ChatRoom.sort(temp, ChatRoom.Sort.Nickname, false).ToArray();
+            ChatRoom.sort(ChatRoom.Sort.Nickname, false);
+            IMessage[] mesgs = ChatRoom.getMessages().ToArray();
 
             returnedNames = new string[mesgs.Length];
 
@@ -469,7 +472,8 @@ namespace ISE182_project.Layers.BusinessLogic
                     Assert.Fail("Failed tio sort by nick name!");
             }
 
-            mesgs = ChatRoom.sort(temp, ChatRoom.Sort.Nickname, true).ToArray();
+            ChatRoom.sort(ChatRoom.Sort.Nickname, true);
+            mesgs = ChatRoom.getMessages().ToArray();
 
             returnedNames = new string[mesgs.Length];
 

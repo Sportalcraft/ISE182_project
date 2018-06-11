@@ -218,11 +218,11 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Sort
 
         //Sort a message List by the time
-        public static ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        public static void sort(Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.sort(messages, SortBy, descending);
+            MessageService.Instence.sort(SortBy, descending);
 
         }
 

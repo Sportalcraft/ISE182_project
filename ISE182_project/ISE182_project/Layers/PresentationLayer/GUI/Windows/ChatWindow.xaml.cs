@@ -46,6 +46,8 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             UpdateScreen();
         }
 
+        #region Events
+
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             ChatRoom.DrawLastMessages();
@@ -55,18 +57,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                ChatRoom.send(bindObject.MessageContent);
-                UpdateScreen();
-                bindObject.MessageContent = "";
-            }
-            catch (Exception ex)
-            {
-                bindObject.ErrorText = ex.Message;
-                Error ePage = new Error(bindObject);
-                ePage.Show();
-            }
+            send(bindObject.MessageContent);
         }
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -85,13 +76,46 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 ePage.Show();
             }
         }
-        private void Printer(ICollection<IMessage> list)
+
+        //Sort direction changed event
+        private void Sort_RadioButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (IMessage msg in list)
+            sort();
+        }
+
+        //The sort option changed event
+        private void SortOptionns_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            sort();
+        }
+
+        //Filter Data
+        private void Filter_Click(object sender, RoutedEventArgs e)
+        {
+            if (bindObject.FilterNone)
+                reloadChat = true;
+        }
+
+        //Apply button click
+        private void Apply_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //Enter clicked event
+        private void TextBox_KeyDownSendMessage(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             {
-                bindObject.Messages.Add(msg);
+                TextBox box = sender as TextBox;
+                send(box.Text);
+                box.Text = "";
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         //Update the messages displayed on screen
         private void UpdateScreen()
@@ -100,68 +124,44 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             bindObject.Messages.Clear();
 
             foreach (IMessage m in list)
-                bindObject.Messages.Add(m);           
+                bindObject.Messages.Add(m);
         }
 
-        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        //Send a new message
+        private void send(string message)
         {
-            sortChanged = true;
-            UpdateScreen();
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            sortChanged = true;
-            UpdateScreen();
-        }
-
-        private void Filter_Click(object sender, RoutedEventArgs e)
-        {
-            if (bindObject.FilterNone)
-                reloadChat = true;
-        }
-
-        private void Apply_Click(object sender, RoutedEventArgs e)
-        {
-            if (bindObject.FilterNone)
+            try
             {
+                ChatRoom.send(message);
+                bindObject.MessageContent = "";
                 UpdateScreen();
+
             }
-            else
+            catch (Exception ex)
             {
-                if (bindObject.FilterGroupString == "" | bindObject.FilterGroupString == null)
-                    return;
-                if (bindObject.FilterUsername)
-                    if (bindObject.FilterNameString == "" | bindObject.FilterNameString == null)
-                        return;
-                filterApplied = true;
-                UpdateScreen();
+                bindObject.ErrorText = ex.Message;
+                Error ePage = new Error(bindObject);
+                ePage.Show();
             }
         }
 
-        private void TextBox_KeyDownSendMessage(object sender, KeyEventArgs e)
+        //Sort the messages
+        private void sort()
         {
-            if (e.Key == Key.Enter)
+            ChatRoom.Sort option;
+
+            switch (bindObject.SortOption)
             {
-                TextBox box = sender as TextBox;
-
-                try
-                {
-                    ChatRoom.send(box.Text);
-                    box.Text = "";
-                    bindObject.MessageContent = "";
-
-                    UpdateScreen();
-
-                }
-                catch (Exception ex)
-                {
-                    bindObject.ErrorText = ex.Message;
-                    Error ePage = new Error(bindObject);
-                    ePage.Show();
-                }
-
+                case 0: option = ChatRoom.Sort.Time; break;
+                case 1: option = ChatRoom.Sort.Nickname; break;
+                case 2: option = ChatRoom.Sort.GroupNickTime; break;
+                default: option = ChatRoom.Sort.Time; break;
             }
+
+            ChatRoom.sort(option, bindObject.SortDescending); //sorting
+            UpdateScreen(); //Update view
         }
+
+        #endregion
     }
 }

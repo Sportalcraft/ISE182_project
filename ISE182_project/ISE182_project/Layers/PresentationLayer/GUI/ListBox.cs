@@ -90,7 +90,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
 
            // if (Target.SelectedIndex >= Target.Items.Count - 6)
             {
-                Target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
+             //   Target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
             }
 
         }
