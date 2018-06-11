@@ -18,6 +18,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private const string BGU_URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
         private static Place _location;                                   // The location of the client
         private static IUser _loggedinUser;                               // Current logged in user
+        private static int _loggeninUserID;                               // The id of the loged user
 
         #region General
 
@@ -67,9 +68,9 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            UserService.Instence.start();    // Initiating mesaages on ram
-            MessageService.Instence.start(); // Initiating users on ram
+            MessageService.Instence.start(); // Initiating mesaages on ram
             _location = location;   // Set the location
+            _loggeninUserID = -1;
         }
 
         //exit the program
@@ -95,9 +96,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         // register a user to the server
-        public static void register(string nickname, int GroupID)
+        public static void register(string nickname, int GroupID/*, string password */)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            IUser user = new User(nickname, GroupID/*, password */);
 
             if (isLoggedIn()) //Already logged In
             {
@@ -107,16 +110,24 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            UserService.Instence.register(new User(nickname,GroupID)); //register
-            login(nickname, GroupID);
+            if (!UserService.Instence.canRegister(user)) //Was regusterd
+            {
+                string error = "The user tried to register to a not register account";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
+            }
+
+            UserService.Instence.register(user); //register
         }
 
         // logIn an existing user to the server
-        public static void login(string nickname, int GroupID)
+        public static void login(string nickname, int GroupID/*, string password */)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            IUser user = new User(nickname, GroupID);
+            IUser user = new User(nickname, GroupID/*, password */);
+            int id;
 
             if (isLoggedIn()) //Already logged In
             {
@@ -126,15 +137,18 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            if (!UserService.Instence.canLogIn(user)) //Was regusterd
+            id = UserService.Instence.canLogIn(user);
+
+            if (id < 0) //Was regusterd
             {
-                string error = "A user tried to login to a not register account";
+                string error = "An error accured while trying to login. try checkin your info!";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new InvalidOperationException(error);
             }
 
             LoggedinUser = user; //log in
+            _loggeninUserID = id;
             Logger.Log.Info(Logger.Maintenance("The user " + user + " loggedin"));
         }
 
@@ -152,12 +166,28 @@ namespace ISE182_project.Layers.BusinessLogic
             }
 
             LoggedinUser.logout();
+            _loggeninUserID = -1;
             LoggedinUser = null; // Change the loggedin user to null
         }
 
         #endregion
 
         #region Message
+
+        //Get the filtered messages
+        public static ICollection<string> getMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            ICollection<IMessage> temp = MessageService.Instence.getMessages();
+
+            ICollection<string> output = new List<string>();
+
+            foreach (IMessage msg in temp)
+                output.Add(msg.ToString());
+
+            return output;
+        }
 
         // Send new message to te server
         public static void send(string body)
@@ -172,17 +202,9 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            LoggedinUser.send(body, URL); // Sending
-            SaveLast10FromServer();       // reciving the last sent 10 messages
+            LoggedinUser.send(body, _loggeninUserID); // Sending
         }
 
-        //retrive and sace the last meseges from server and retun the new messages tha were added
-        public static void SaveLast10FromServer()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            MessageService.Instence.SaveLast10FromServer(URL);
-        }
 
         // Receive the last 20 messages
         public static ICollection<IMessage> request20Messages()
@@ -192,14 +214,22 @@ namespace ISE182_project.Layers.BusinessLogic
             return requestNMessages(20);
         }
 
-        #region Sort
-
-        //Sort a message List by the time
-        public static ICollection<IMessage> sort(ICollection<IMessage> messages, Sort SortBy, bool descending)
+        //draw the last messages since kast draw
+        public static void DrawLastMessages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.sort(messages, SortBy, descending);
+            MessageService.Instence.DrawNewMessage();
+        }
+
+        #region Sort
+
+        //Sort a message List by the time
+        public static void sort(Sort SortBy, bool descending)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            MessageService.Instence.sort(SortBy, descending);
 
         }
 
@@ -216,35 +246,27 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Filter
 
         // Receive all the messages from a certain user
-        public static ICollection<IMessage> requestAllMessagesfromUser(string nickName, int GroupID)
+        public static void filterByUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
-        }
-
-        // Receive all the messages from a certain user from a certain collection
-        public static ICollection<IMessage> requestMessagesfromUser(ICollection<IMessage> messages, string nickName, int GroupID)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return MessageService.Instence.FilterByUser(new User(nickName, GroupID), messages);
+            MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
         // Receive all the messages from a certain group
-        public static ICollection<IMessage> requestAllMessagesfromGroup(int GroupID)
+        public static void filterByGroup(int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.FilterByGroup(GroupID);
+            MessageService.Instence.FilterByGroup(GroupID);
         }
 
-        // Receive all the messages from a certain group from a certain collection
-        public static ICollection<IMessage> requestMessagesfromGroup(ICollection<IMessage> messages, int GroupID)
+        // Reset Filters
+        public static void resetFilters()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.FilterByGroup(GroupID, messages);
+            MessageService.Instence.resetFilters();
         }
 
         #endregion

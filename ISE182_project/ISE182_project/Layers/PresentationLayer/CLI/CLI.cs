@@ -91,7 +91,7 @@ namespace ISE182_project.Layers.PresentationLayer.CLI
         {
             try
             {
-                ChatRoom.SaveLast10FromServer();
+                ChatRoom.DrawLastMessages();
                 boldingText("The 10 last messages were retrieved", ConsoleColor.Cyan);
             }
             catch (Exception e)
@@ -139,7 +139,9 @@ namespace ISE182_project.Layers.PresentationLayer.CLI
             }
             try
             {
-                ICollection<IMessage> list = ChatRoom.requestAllMessagesfromUser(username, groupID); // An array of username's messages
+                ChatRoom.filterByUser(username, groupID); // An array of username's messages
+                ICollection<string> list = ChatRoom.getMessages();
+
                 if (list.Count == 0)
                 {
                     boldingText(username + " have no messages", ConsoleColor.Cyan);

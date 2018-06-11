@@ -17,7 +17,8 @@ namespace ISE182_project
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            ChatRoom.start(ChatRoom.Place.University); //HERE       
+
+            ChatRoom.start(ChatRoom.Place.Home); //HERE
         }
     }
 }

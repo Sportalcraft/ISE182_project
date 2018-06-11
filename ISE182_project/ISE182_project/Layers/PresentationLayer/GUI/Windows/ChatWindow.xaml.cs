@@ -23,17 +23,13 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
     /// </summary>
     public partial class ChatWindow : Window
     {
-        private ObservableObject bindObject;
-        private DispatcherTimer dispatcherTimer;
-        private ICollection<IMessage> last20;
-        private bool sortChanged;
-        private bool filterApplied;
-        private bool reloadChat;
+        private ObservableObject bindObject; //The Binding object
+        private DispatcherTimer dispatcherTimer; //The timer
 
+        //A Constructor
         public ChatWindow(ObservableObject fromMainWindows)
         {
             InitializeComponent();
-            this.last20 = new List<IMessage>();
             this.bindObject = fromMainWindows;
             this.DataContext = bindObject;
             bindObject.Username = "Username: " + ChatRoom.LoggedUser.NickName;
@@ -48,28 +44,22 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             UpdateScreen();
         }
 
+        #region Events
+
+        //Timer Tick Event
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            ChatRoom.SaveLast10FromServer();
+            ChatRoom.DrawLastMessages();
             UpdateScreen();
         }
 
-
+        //Send button click event
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                ChatRoom.send(bindObject.MessageContent);
-                UpdateScreen();
-                bindObject.MessageContent = "";
-            }
-            catch (Exception ex)
-            {
-                bindObject.ErrorText = ex.Message;
-                Error ePage = new Error(bindObject);
-                ePage.Show();
-            }
+            send(bindObject.MessageContent);
         }
+
+        //Logout button click event
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -87,121 +77,104 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 ePage.Show();
             }
         }
-        private void Printer(ICollection<IMessage> list)
+
+        //Sort direction changed event
+        private void Sort_RadioButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (IMessage msg in list)
-            {
-                bindObject.Messages.Add(msg);
-            }
+            sort();
         }
 
-        private void UpdateScreen()
+        //The sort option changed event
+        private void SortOptionns_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ICollection<IMessage> list = ChatRoom.request20Messages();
-            foreach (IMessage m in this.last20)
-                if (list.Contains(m))
-                    list.Remove(m);
-            ChatRoom.Sort option;
-            if (bindObject.SortOption == 0)
-                option = ChatRoom.Sort.Time;
-            else if (bindObject.SortOption == 1)
-                option = ChatRoom.Sort.Nickname;
-            else
-                option = ChatRoom.Sort.GroupNickTime;
-            if (reloadChat)
-            {
-                Printer(ChatRoom.request20Messages());
-                this.reloadChat = false;
-            }
-            else
-            {
-                Printer(list);
-                this.last20 = ChatRoom.request20Messages();
-            }
-            if (sortChanged)
-            {
-                ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
-                foreach (IMessage msg in bindObject.Messages)
-                    temp.Add(msg);
-                bindObject.Messages.Clear();
-                Printer(ChatRoom.sort(temp, option, bindObject.SortDescending));
-                sortChanged = false;
-            }
-            if (filterApplied)
-            {
-                ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
-                foreach (IMessage msg in bindObject.Messages)
-                    temp.Add(msg);
-                bindObject.Messages.Clear();
-                if (bindObject.FilterUsername)
-                    Printer(ChatRoom.requestMessagesfromUser(temp, bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString)));
-                else if (bindObject.FilterGroupid)
-                    Printer(ChatRoom.requestMessagesfromGroup(temp, int.Parse(bindObject.FilterGroupString)));
-                filterApplied = false;
-                bindObject.UsernameBox = "";
-                bindObject.GroupidBox = "";
-            }
+            sort();
         }
 
-        private void RadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            sortChanged = true;
-            UpdateScreen();
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            sortChanged = true;
-            UpdateScreen();
-        }
-
+        //add filter optins
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
-            if (bindObject.FilterNone)
-                reloadChat = true;
+
         }
 
+        //Apply button click
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
             if (bindObject.FilterNone)
-            {
-                UpdateScreen();
-            }
-            else
-            {
-                if (bindObject.FilterGroupString == "" | bindObject.FilterGroupString == null)
-                    return;
-                if (bindObject.FilterUsername)
-                    if (bindObject.FilterNameString == "" | bindObject.FilterNameString == null)
-                        return;
-                filterApplied = true;
-                UpdateScreen();
-            }
+                ChatRoom.resetFilters();
+
+            if (bindObject.FilterUser)
+                ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
+
+            if (bindObject.FilterGroupid)
+                ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+
+            //reset data
+            bindObject.UsernameBox = "";
+            bindObject.GroupidBox = "";
+
+            UpdateScreen();
         }
 
+        //Enter clicked event
         private void TextBox_KeyDownSendMessage(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 TextBox box = sender as TextBox;
-
-                try
-                {
-                    ChatRoom.send(box.Text);
-                    box.Text = "";
-                    bindObject.MessageContent = "";
-
-                    UpdateScreen();
-
-                }
-                catch (Exception ex)
-                {
-                    bindObject.ErrorText = ex.Message;
-                    Error ePage = new Error(bindObject);
-                    ePage.Show();
-                }
-
+                send(box.Text);
+                box.Text = "";
             }
         }
+
+        #endregion
+
+        #region Private Methods
+
+        //Update the messages displayed on screen
+        private void UpdateScreen()
+        {
+            ICollection<string> list = ChatRoom.getMessages();
+            bindObject.Messages.Clear();
+
+            foreach (string m in list)
+                bindObject.Messages.Add(m);
+        }
+
+        //Send a new message
+        private void send(string message)
+        {
+            try
+            {
+                ChatRoom.send(message);
+                bindObject.MessageContent = "";
+                UpdateScreen();
+
+            }
+            catch (Exception ex)
+            {
+                bindObject.ErrorText = ex.Message;
+                Error ePage = new Error(bindObject);
+                ePage.Show();
+            }
+        }
+
+        //Sort the messages
+        private void sort()
+        {
+            ChatRoom.Sort option;
+
+            switch (bindObject.SortOption)
+            {
+                case 0: option = ChatRoom.Sort.Time; break;
+                case 1: option = ChatRoom.Sort.Nickname; break;
+                case 2: option = ChatRoom.Sort.GroupNickTime; break;
+                default: option = ChatRoom.Sort.Time; break;
+            }
+
+            ChatRoom.sort(option, bindObject.SortDescending); //sorting
+            UpdateScreen(); //Update view
+        }
+
+        #endregion
     }
 }

@@ -14,11 +14,13 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represen a message in the chatroom
     class Message : IMessage
     {
+        private const int MAX_LENGTH = 100; // message maximum leangth
+
         private Guid _guid;              // The unique idetifier of the message
         private DateTime _receivingTime; // The time the server received the message
-        private IUser _sender;           // The sender user
+        private string _nickName;        // The sender mame user
+        private int _groupID;            // The group of the sender
         private string _body;            // The message’s content
-        private const int MAX_LENGTH = 150;
 
         #region Getters & Setters
 
@@ -31,7 +33,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter to the group ID
         public string GroupID
         {
-            get { return _sender.Group_ID.ToString(); }
+            get { return _groupID.ToString(); }
         }
 
         //Getter to the guid
@@ -62,13 +64,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //Getter to the sender nickname
         public string UserName
         {
-            get { return _sender.NickName; }
-        }
-
-        //Getter to the sender nuckname
-        private IUser Sender
-        {
-            get { return _sender; }
+            get { return _nickName; }
         }
 
         #endregion
@@ -76,11 +72,11 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Ctors
 
         //A constractor of message class
-        public Message(Guid guid, DateTime receivingTime, IUser sender, string body)
+        public Message(Guid guid, DateTime receivingTime, string userName, int GroupID, string body)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if (guid == null | receivingTime == null | sender == null | body == null)
+            if (guid == null | receivingTime == null | userName == null | GroupID < 0 | body == null)
             {
                 Logger.Log.Error(Logger.Maintenance("recived a null as an argument"));
 
@@ -89,12 +85,25 @@ namespace ISE182_project.Layers.BusinessLogic
 
             _guid = guid;
             _receivingTime = receivingTime;
-            _sender = sender;
-            _body = body;
+            _nickName = userName.Trim();
+            _groupID = GroupID;
+            _body = body.Trim();
         }
 
         //A copy constractor
-        public Message(IMessage msg) : this(msg.Id, msg.Date, new User(msg.UserName, int.Parse(msg.GroupID)), msg.MessageContent)
+        public Message(IMessage msg) : this(msg.Id, msg.Date, msg.UserName, int.Parse(msg.GroupID), msg.MessageContent)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
+
+        //A constractor of message class
+        public Message(Guid guid, DateTime receivingTime, int group, string nickName, string body) : this(guid, receivingTime, nickName, group, body)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
+
+        //A constractor of message class
+        public Message(int group, string nickName, string body) : this(Guid.NewGuid(), DateTime.Now.ToUniversalTime(), nickName, group, body)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
@@ -136,8 +145,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return "Message : \nGuid: " + Id + "\nRecivingTime : " + Date.ToLocalTime() + 
-                "\nSender : " + Sender + "\nMessage Body : " + MessageContent;
+            return $"By : {UserName} (Grpup ID : {GroupID}) At : {Date.ToLocalTime()} \n{MessageContent}";
         }
 
         #endregion

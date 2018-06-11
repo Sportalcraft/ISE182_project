@@ -1,6 +1,7 @@
 ﻿using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.DataAccsesLayer;
 using ISE182_project.Layers.LoggingLayer;
-using ISE182_project.Layers.PersistentLayer;
+//using ISE182_project.Layers.PersistentLayer;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,12 +14,32 @@ using System.Threading.Tasks;
 namespace ISE182_project.Layers.BusinessLogic
 {
     //This class manege the messages stored in RAM
-     class MessageService : GeneralHandler<IMessage>
+     class MessageService
     {
-         #region singletone
+        #region Members
+
+        private const int MAX_MESSAGES = 200; // maximum items per quary
+
+        private MessageQueryCreator query; // the query generator
+        private DateTime _lastMessageTime; // the time of the last message
+
+        private ICollection<IMessage> _ramData; // Store a coppy of the data in the ram for quick acces       
+        private ICollection<IMessage> _lastFilteredList; //Save te filtered items     
+
+        private ChatRoom.Sort _sortBy; //Save the last sort option
+        private bool _descending; //Save the last sort direction
+
+        #endregion
+
+        #region singletone
 
         //private ctor
-        private MessageService() { }
+        private MessageService()
+        {
+            query = new MessageQueryCreator(MAX_MESSAGES);
+            _ramData = new List<IMessage>();
+            _lastFilteredList = new List<IMessage>();
+        }
 
         private static MessageService _instence; // the instence
 
@@ -38,70 +59,112 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region functionalities
 
+        //Getter and setter to the data stored in the ram
+        public ICollection<IMessage> RamData
+        {
+            get { return _ramData; }
+            private set
+            {
+                if(value != null)
+                    _ramData = value;
+            }
+        }
+
+        private void add(IMessage item)
+        {
+             RamData.Add(item);
+            _lastFilteredList.Add(item);
+
+            if (RamData.Count > MAX_MESSAGES)
+            {
+                RamData.Remove(RamData.First());
+            }
+
+            if (_lastFilteredList.Count > MAX_MESSAGES)
+            {
+                _lastFilteredList.Remove(_lastFilteredList.First());
+            }
+        }
+
+        public void send(IMessage item, int UserID)
+        {
+            add(item);
+            LastSort(); // resort
+            AddToDS(item, UserID);
+        }
+
+        //Get the filtered messages
+        public ICollection<IMessage> getMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return _lastFilteredList;
+        }
+
         #region Filter
 
         //recive all the messages from a certain user
-        public ICollection<IMessage> FilterByUser(IUser user)
+        public void FilterByUser(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return FilterByUser(user, RamData);
+            prepareGroupFilter(user.Group_ID);
+            query.addNicknameFilter(user.NickName);
+
+            _lastFilteredList = getFilterdMessages();
         }
 
         //recive all the messages from a certain group
-        public ICollection<IMessage> FilterByGroup(int groupID)
+        public void FilterByGroup(int groupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return FilterByGroup(groupID, RamData);
+            prepareGroupFilter(groupID);
+            _lastFilteredList = getFilterdMessages();
         }
 
-        //recive all the messages from a certain user and from a certain colection of messages
-        public ICollection<IMessage> FilterByUser(IUser user, ICollection<IMessage> toFilter)
+        //reset filters
+        public void resetFilters()
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return toFilter.Where(msg => user.Equals(new User(msg.UserName, int.Parse(msg.GroupID)))).ToList();
-        }
-
-        //recive all the messages from a certain group and from a certain colection of messages
-        public ICollection<IMessage> FilterByGroup(int groupID, ICollection<IMessage> toFilter)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return toFilter.Where(msg => int.Parse(msg.GroupID) == groupID).ToList();
+            _lastFilteredList = RamData;
+            LastSort();
         }
 
         #endregion
 
-        #region Sort
+            #region Sort
 
-        //Sort a message List by the time
-        public ICollection<IMessage> sort(ICollection<IMessage> messages, ChatRoom.Sort SortBy, bool descending)
+            //Sort a message List by the time
+        public void sort(ChatRoom.Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            ICollection<IMessage> temp = null;
+
+            //Save last sort option
+            _sortBy = SortBy;
+            _descending = descending;
 
             if (descending)
             {
                 switch (SortBy)
                 {
-                    case ChatRoom.Sort.Time: return messages.OrderByDescending(msg => msg.Date).ToList();
-                    case ChatRoom.Sort.Nickname: return messages.OrderByDescending(msg => msg.UserName).ToList();
-                    case ChatRoom.Sort.GroupNickTime: return messages.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList();
+                    case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderByDescending(msg => msg.Date).ToList(); break;
+                    case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderByDescending(msg => msg.UserName).ToList(); break;
+                    case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList(); break;
+                }
+            }
+            else
+            {
+                switch (SortBy)
+                {
+                    case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderBy(msg => msg.Date).ToList(); break;
+                    case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderBy(msg => msg.UserName).ToList(); break;
+                    case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderBy(msg => int.Parse(msg.GroupID)).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList(); break;
                 }
             }
 
-            switch (SortBy)
-            {
-                case ChatRoom.Sort.Time: return messages.OrderBy(msg => msg.Date).ToList();
-                case ChatRoom.Sort.Nickname: return messages.OrderBy(msg => msg.UserName).ToList();
-                case ChatRoom.Sort.GroupNickTime: return messages.OrderBy(msg => msg.GroupID).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList();
-            }
-
-            string error = "The sorting methid failed";
-            Logger.Log.Fatal(Logger.Maintenance(error));
-
-            throw new InvalidOperationException(error);
+            _lastFilteredList = temp;
         }
 
         
@@ -131,46 +194,29 @@ namespace ISE182_project.Layers.BusinessLogic
             return RamData.Reverse().Take(amount).Reverse().ToList();
         }
 
-        //retrive and save the last 10 meseges from server. and return the new nessages that were not originaly in the ram
-        public void SaveLast10FromServer(string url)
+        //retrive and save the new messages that were send after the last draw.
+        public void DrawNewMessage()
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));         
 
-            List<IMessage> retrived, newData = new List<IMessage>(); ;
-
-            if (url == null || url.Equals(""))
-            {
-                string error = "Recived an illegal url";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
+            query.clearFilters();
+            query.SETtoSELECT();
+            query.addTimeFilter(_lastMessageTime);
 
             try
             {
-                retrived = Communication.Instance.GetTenMessages(url);
+                Execute();
+
+                if(RamData.Count > 0)
+                 _lastMessageTime = RamData.Last().Date;
             }
             catch
             {
-                string error = "Server was not found!";
+                string error = "An Error Acured while drawing messages!";
                 Logger.Log.Fatal(Logger.Maintenance(error));
 
                 throw;
             } 
-
-            foreach (IMessage msg in retrived)
-            {
-                try
-                {
-                    newData.Add(new Message(msg));  // We need to translate the retured message object to our message to avid problems
-                }
-                catch
-                {
-
-                }
-            }
-
-            RamData = newData;
         }
 
         #endregion
@@ -180,29 +226,59 @@ namespace ISE182_project.Layers.BusinessLogic
         #region override methods
 
         // deserialize messages
-        protected override ICollection<IMessage> deserialize()
+        protected void reciveData()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.deserialize();
+
+            query.clearFilters();
+            query.SETtoSELECT();
+            Execute();
         }
 
         // serialize messages
-        protected override bool serialize(ICollection<IMessage> Data)
+        protected bool AddToDS(IMessage Data, int UserID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return MessageSerializationService.serialize(RamData);
+
+            query.SETtoINSERT(Data);
+            query.addUserID(UserID);
+
+            try
+            {
+                Connect con = new Connect();
+                con.ExecuteNonQuery(query.getQuary());
+                _lastMessageTime = Data.Date;
+                return true;
+            }
+            catch(Exception e)
+            {
+                string error = "Failed do add data to the DS";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error);;
+            }
+            
         }
 
-        //Sorting by time
-        protected override ICollection<IMessage> DefaultSort(ICollection<IMessage> Data)
+        //init data
+        public void start()
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return sort(Data, ChatRoom.Sort.Time, false);
+            reciveData();
+
+            if (RamData.Count > 0)
+                _lastMessageTime = RamData.Last().Date;
+            else
+                _lastMessageTime = new DateTime(1, 1, 1);
+
+            _lastFilteredList = RamData;
+             sort(ChatRoom.Sort.Time, false); //Sortg by Time at start
+            RamData = _lastFilteredList;
+
         }
 
         #endregion
 
-        #region Unused code
+        #region PrivateMethods
 
         //Edid message by guid and save to the RAM and disk
         private void EditMessage(Guid ID, string newBody)
@@ -210,14 +286,17 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             //A dummy message to use in the .equals
-            IMessage dummy = new Message(ID, DateTime.Now, new User("Dummy",0), "Dummy");
+            IMessage dummy = new Message(ID, DateTime.Now,"Dummy",0, "Dummy");
 
             foreach (Message msg in RamData)
             {
                 if (msg.Equals(dummy))
                 {
                     msg.editBody(newBody);
-                    UpdateDisk();
+                    query.clearFilters();
+                    query.SETtoUPDATE(msg);
+                    Connect con = new Connect();
+                    con.ExecuteNonQuery(query.getQuary());
                     return;
                 }
             }
@@ -228,13 +307,33 @@ namespace ISE182_project.Layers.BusinessLogic
             throw new KeyNotFoundException(error);
         }
 
-        // save a single message to the RAM
-        private void SaveMessage(IMessage msg)
+        //Clear old filterrs and add filter by the group and by the time
+        private void prepareGroupFilter(int group)
         {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+            query.clearFilters();
+            query.SETtoSELECT();
+            query.addGroupFilter(group);
+            query.addTimeFilter(_lastMessageTime);
+        }
 
-            RamData.Add(msg);
-            UpdateDisk();
+        private void Execute()
+        {
+            MessageExcuteor me = new MessageExcuteor();
+            ICollection<IMessage> temp = me.Excute(query.getQuary());
+
+            foreach (IMessage msg in temp)
+                add(msg);
+        }
+
+        private ICollection<IMessage> getFilterdMessages()
+        {
+            MessageExcuteor me = new MessageExcuteor();
+            return me.Excute(query.getQuary());
+        }
+
+        private void LastSort()
+        {
+            sort(_sortBy, _descending); // resort
         }
 
         #endregion

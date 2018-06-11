@@ -81,7 +81,7 @@ namespace ISE182_project.Layers.BusinessLogic
         public override string ToString()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return "NickName : " + NickName + ", Group ID : " + Group_ID;
+            return NickName + " , " + Group_ID;
         }
 
         #endregion

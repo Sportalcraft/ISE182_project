@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using ISE182_project.Layers.BusinessLogic;
-using ISE182_project.Layers.PersistentLayer;
 using ISE182_project.Layers.CommunicationLayer;
 
 namespace ISE182_project.Layers.PresentationLayer.GUI
@@ -21,7 +20,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
 
         public ObservableObject()
         {
-            messages = new ObservableCollection<IMessage>();
+            messages = new ObservableCollection<string>();
             messages.CollectionChanged += Messages_CollectionChanged;         
         }
 
@@ -30,8 +29,8 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             OnPropertyChanged("Messages");
         }
 
-        private ObservableCollection<IMessage> messages;
-        public ObservableCollection<IMessage> Messages
+        private ObservableCollection<string> messages;
+        public ObservableCollection<string> Messages
         {
             get
             {
@@ -142,16 +141,16 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
                 OnPropertyChanged();
             }
         }
-        private bool filterUsername;
-        public bool FilterUsername
+        private bool filterUser;
+        public bool FilterUser
         {
             get
             {
-                return this.filterUsername;
+                return this.filterUser;
             }
             set
             {
-                    this.filterUsername = value;
+                    this.filterUser = value;
                     OnPropertyChanged();
             }
         }
@@ -230,7 +229,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.sortDescending = value;
-                    OnPropertyChanged(); 
+                    OnPropertyChanged("SortDescending"); 
             }
         }
         private int sortOption;
