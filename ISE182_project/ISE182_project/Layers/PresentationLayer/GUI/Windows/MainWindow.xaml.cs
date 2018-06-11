@@ -25,7 +25,6 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         public MainWindow()
         {
             this.DataContext = main;     
-
             InitializeComponent();
         }
 

@@ -146,7 +146,6 @@ namespace ISE182_project.Layers.BusinessLogic
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             return $"By : {UserName} (Grpup ID : {GroupID}) At : {Date.ToLocalTime()} \n{MessageContent}";
-
         }
 
         #endregion
