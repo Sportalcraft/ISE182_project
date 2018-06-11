@@ -186,8 +186,21 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get a where to the filtering options
         private string where()
         {
+            string where = whereNoTime();
+
+            if(_group == EMPTY_GROUP & _nickName == null) // there is no filter to do
+            {
+                where += BulidTimeFilter(where); //No filters to make, draw only last messages
+            }         
+
+            return where;
+        }
+
+        //return the where statement without time filter
+        private string whereNoTime()
+        {
             string where = "";
-            string timeCondition;
+
             SqlParameter tParameter;
 
             if (_group != EMPTY_GROUP | _nickName != null) // tere is a where
@@ -207,19 +220,26 @@ namespace ISE182_project.Layers.DataAccsesLayer
             if (_nickName != null)
             {
                 where += $"{NICK_COL} = {NICK_PARM}";
-                tParameter = new SqlParameter(NICK_PARM, SqlDbType.Text, NICK_SIZE);
+                tParameter = new SqlParameter(NICK_PARM, SqlDbType.Char, NICK_SIZE);
                 tParameter.Value = _nickName;
                 parameters.Add(tParameter);
             }
 
-            timeCondition = $"{DATE_COL} > {DATE_PARM}";           
+            return where;
+        }
+
+        private string BulidTimeFilter(string CurrentWhere)
+        {
+            string timeCondition = $"{DATE_COL} > {DATE_PARM}";
+            string where = "";
+            SqlParameter tParameter;
 
             if (!_lastRecivedMessage.Equals(EMPTY_TIME))
             {
-                if (where.Equals(""))
+                if (CurrentWhere.Equals(""))
                     where += $"{WHERE} {timeCondition}";
                 else
-                    where += $"{AND} {timeCondition}";
+                    where += $" {AND} {timeCondition}";
 
                 tParameter = new SqlParameter(DATE_PARM, SqlDbType.DateTime);
                 tParameter.Value = _lastRecivedMessage;

@@ -50,7 +50,7 @@
             </Grid.Background>
             <Label Content="Filter By" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="60" FontSize="10" FontWeight="Bold" FontStyle="Italic"/>
             <Grid HorizontalAlignment="Left" Height="115" Margin="0,25,0,0" VerticalAlignment="Top" Width="160">
-                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterUsername}" Grid.Row="1" Content="By User" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
+                <RadioButton Click="Filter_Click" IsChecked="{Binding FilterUser}" Grid.Row="1" Content="By User" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" FontSize="10" VerticalContentAlignment="Center"/>
                 <TextBox Text="{Binding FilterNameString, Mode=TwoWay}" Grid.Row="2" HorizontalAlignment="Left" Height="25" Margin="5,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>
                 <RadioButton Click="Filter_Click" IsChecked="{Binding FilterGroupid}" Grid.Row="3" Content="By GroupID" HorizontalAlignment="Left" Margin="5,50,0,0" FontSize="10" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
                 <TextBox Text="{Binding FilterGroupString, Mode=TwoWay}" Grid.Row="4" HorizontalAlignment="Left" Height="25" Margin="5,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" VerticalContentAlignment="Center"/>

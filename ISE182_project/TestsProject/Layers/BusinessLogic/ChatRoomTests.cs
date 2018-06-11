@@ -516,14 +516,14 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch { }
 
-            temp = ChatRoom.requestMessagesfromUser(UserName, GroupID);
+            temp = ChatRoom.filterByUser(UserName, GroupID);
 
             if (temp.Count != 0)
                Assert.Fail("nedd to be emty arry!1");
 
             ChatRoom.register(UserName, GroupID);
 
-            temp = ChatRoom.requestMessagesfromUser(UserName, GroupID);
+            temp = ChatRoom.filterByUser(UserName, GroupID);
 
             if (temp.Count != 0)
                 Assert.Fail("nedd to be emty arry!2");
@@ -534,7 +534,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 System.Threading.Thread.Sleep(1000);
             }
 
-            IMessage[] sent = ChatRoom.requestMessagesfromUser(UserName, GroupID).ToArray();
+            IMessage[] sent = ChatRoom.filterByUser(UserName, GroupID).ToArray();
 
             for (int i = 0; i < 30; i++)
             {
@@ -571,7 +571,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 System.Threading.Thread.Sleep(1001);
             }
 
-            temp = ChatRoom.requestMessagesfromGroup(GroupID).Reverse().Take(30).Reverse().ToArray();
+            temp = ChatRoom.filterByGroup(GroupID).Reverse().Take(30).Reverse().ToArray();
 
             for (int i = 0; i < 30; i++)
             {

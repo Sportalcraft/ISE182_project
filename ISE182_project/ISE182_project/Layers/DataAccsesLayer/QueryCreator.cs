@@ -80,7 +80,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
         public SqlCommand getQuary()
         {
             SqlCommand command = null;
-            string quary = getQueryString();
+            string quary;
             Connect con = new Connect();
 
             if (Type == null)
@@ -91,6 +91,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
                 throw new InvalidOperationException(error);
             }
 
+            quary = getQueryString();
             command = con.getCommand(quary);
 
             //Add Parameters

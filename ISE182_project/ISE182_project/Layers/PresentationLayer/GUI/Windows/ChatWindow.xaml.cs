@@ -23,12 +23,10 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
     /// </summary>
     public partial class ChatWindow : Window
     {
-        private ObservableObject bindObject;
-        private DispatcherTimer dispatcherTimer;
-        private bool sortChanged;
-        private bool filterApplied;
-        private bool reloadChat;
+        private ObservableObject bindObject; //The Binding object
+        private DispatcherTimer dispatcherTimer; //The timer
 
+        //A Constructor
         public ChatWindow(ObservableObject fromMainWindows)
         {
             InitializeComponent();
@@ -48,17 +46,20 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
         #region Events
 
+        //Timer Tick Event
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             ChatRoom.DrawLastMessages();
             UpdateScreen();
         }
 
-
+        //Send button click event
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             send(bindObject.MessageContent);
         }
+
+        //Logout button click event
         private void logoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -89,17 +90,29 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             sort();
         }
 
-        //Filter Data
+        //add filter optins
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
-            if (bindObject.FilterNone)
-                reloadChat = true;
+
         }
 
         //Apply button click
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
+            if (bindObject.FilterNone)
+                ChatRoom.resetFilters();
 
+            if (bindObject.FilterUser)
+                ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
+
+            if (bindObject.FilterGroupid)
+                ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+
+            //reset data
+            bindObject.UsernameBox = "";
+            bindObject.GroupidBox = "";
+
+            UpdateScreen();
         }
 
         //Enter clicked event
@@ -120,10 +133,10 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         //Update the messages displayed on screen
         private void UpdateScreen()
         {
-            ICollection<IMessage> list = ChatRoom.getMessages();
+            ICollection<string> list = ChatRoom.getMessages();
             bindObject.Messages.Clear();
 
-            foreach (IMessage m in list)
+            foreach (string m in list)
                 bindObject.Messages.Add(m);
         }
 

@@ -85,9 +85,9 @@ namespace ISE182_project.Layers.BusinessLogic
 
             _guid = guid;
             _receivingTime = receivingTime;
-            _nickName = userName;
+            _nickName = userName.Trim();
             _groupID = GroupID;
-            _body = body;
+            _body = body.Trim();
         }
 
         //A copy constractor
@@ -145,7 +145,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return "By : " + UserName + " (Grpup ID : " + GroupID + ") At : " + Date.ToLocalTime() + "\n" + MessageContent;
+            return $"By : {UserName} (Grpup ID : {GroupID}) At : {Date.ToLocalTime()} \n{MessageContent}";
 
         }
 

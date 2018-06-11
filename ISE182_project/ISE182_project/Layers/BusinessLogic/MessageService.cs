@@ -16,16 +16,20 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the messages stored in RAM
      class MessageService
     {
+        #region Members
+
         private const int MAX_MESSAGES = 200; // maximum items per quary
 
         private MessageQueryCreator query; // the query generator
         private DateTime _lastMessageTime; // the time of the last message
 
         private ICollection<IMessage> _ramData; // Store a coppy of the data in the ram for quick acces       
-        private ICollection<IMessage> _lastFilteredList; //Save te filtered items
+        private ICollection<IMessage> _lastFilteredList; //Save te filtered items     
 
         private ChatRoom.Sort _sortBy; //Save the last sort option
         private bool _descending; //Save the last sort direction
+
+        #endregion
 
         #region singletone
 
@@ -68,7 +72,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
         private void add(IMessage item)
         {
-
              RamData.Add(item);
             _lastFilteredList.Add(item);
 
@@ -86,7 +89,7 @@ namespace ISE182_project.Layers.BusinessLogic
         public void send(IMessage item, int UserID)
         {
             add(item);
-            sort(_sortBy, _descending); // resort
+            LastSort(); // resort
             AddToDS(item, UserID);
         }
 
@@ -101,33 +104,37 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Filter
 
         //recive all the messages from a certain user
-        public ICollection<IMessage> FilterByUser(IUser user)
+        public void FilterByUser(IUser user)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             prepareGroupFilter(user.Group_ID);
             query.addNicknameFilter(user.NickName);
-            Execute();
 
-            return RamData;
+            _lastFilteredList = getFilterdMessages();
         }
 
         //recive all the messages from a certain group
-        public ICollection<IMessage> FilterByGroup(int groupID)
+        public void FilterByGroup(int groupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             prepareGroupFilter(groupID);
-            Execute();
+            _lastFilteredList = getFilterdMessages();
+        }
 
-            return RamData;
+        //reset filters
+        public void resetFilters()
+        {
+            _lastFilteredList = RamData;
+            LastSort();
         }
 
         #endregion
 
-        #region Sort
+            #region Sort
 
-        //Sort a message List by the time
+            //Sort a message List by the time
         public void sort(ChatRoom.Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
@@ -147,12 +154,14 @@ namespace ISE182_project.Layers.BusinessLogic
                     case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderByDescending(msg => msg.GroupID).ThenByDescending(msg => msg.UserName).ThenByDescending(msg => msg.Date).ToList(); break;
                 }
             }
-
-            switch (SortBy)
+            else
             {
-                case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderBy(msg => msg.Date).ToList(); break;
-                case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderBy(msg => msg.UserName).ToList(); break;
-                case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderBy(msg => int.Parse(msg.GroupID)).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList(); break;
+                switch (SortBy)
+                {
+                    case ChatRoom.Sort.Time: temp = _lastFilteredList.OrderBy(msg => msg.Date).ToList(); break;
+                    case ChatRoom.Sort.Nickname: temp = _lastFilteredList.OrderBy(msg => msg.UserName).ToList(); break;
+                    case ChatRoom.Sort.GroupNickTime: temp = _lastFilteredList.OrderBy(msg => int.Parse(msg.GroupID)).ThenBy(msg => msg.UserName).ThenBy(msg => msg.Date).ToList(); break;
+                }
             }
 
             _lastFilteredList = temp;
@@ -302,6 +311,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private void prepareGroupFilter(int group)
         {
             query.clearFilters();
+            query.SETtoSELECT();
             query.addGroupFilter(group);
             query.addTimeFilter(_lastMessageTime);
         }
@@ -313,6 +323,17 @@ namespace ISE182_project.Layers.BusinessLogic
 
             foreach (IMessage msg in temp)
                 add(msg);
+        }
+
+        private ICollection<IMessage> getFilterdMessages()
+        {
+            MessageExcuteor me = new MessageExcuteor();
+            return me.Excute(query.getQuary());
+        }
+
+        private void LastSort()
+        {
+            sort(_sortBy, _descending); // resort
         }
 
         #endregion

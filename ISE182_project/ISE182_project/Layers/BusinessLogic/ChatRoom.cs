@@ -175,11 +175,18 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Message
 
         //Get the filtered messages
-        public static ICollection<IMessage> getMessages()
+        public static ICollection<string> getMessages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.getMessages();
+            ICollection<IMessage> temp = MessageService.Instence.getMessages();
+
+            ICollection<string> output = new List<string>();
+
+            foreach (IMessage msg in temp)
+                output.Add(msg.ToString());
+
+            return output;
         }
 
         // Send new message to te server
@@ -239,19 +246,27 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Filter
 
         // Receive all the messages from a certain user
-        public static ICollection<IMessage> requestMessagesfromUser(string nickName, int GroupID)
+        public static void filterByUser(string nickName, int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.FilterByUser(new User(nickName, GroupID));
+            MessageService.Instence.FilterByUser(new User(nickName, GroupID));
         }
 
         // Receive all the messages from a certain group
-        public static ICollection<IMessage> requestMessagesfromGroup(int GroupID)
+        public static void filterByGroup(int GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            return MessageService.Instence.FilterByGroup(GroupID);
+            MessageService.Instence.FilterByGroup(GroupID);
+        }
+
+        // Reset Filters
+        public static void resetFilters()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            MessageService.Instence.resetFilters();
         }
 
         #endregion
