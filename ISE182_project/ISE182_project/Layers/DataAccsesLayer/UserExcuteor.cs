@@ -13,20 +13,14 @@ namespace ISE182_project.Layers.DataAccsesLayer
     {
 
         // execute the queary and add it's items into te given collection
-        public void ExcuteAndAddTo(SqlCommand query, ICollection<IUser> toAdd)
+        public ICollection<IUser> Excute(SqlCommand query)
         {
             int id;
             int Grpuo_id;
             string NickName;          
             string password;
 
-            if (toAdd == null)
-            {
-                string error = "collection is null";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);
-            }
+            ICollection<IUser> output = new List<IUser>();
 
             Connect conn = new Connect();
             SqlDataReader reader = conn.ExecuteReader(query);
@@ -42,8 +36,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
                     IUser user = new User(/*id,*/ NickName, Grpuo_id/*, password */);
 
-                    if (!toAdd.Contains(user))
-                        toAdd.Add(user);
+                    output.Add(user);
                 }
             }
             catch
@@ -53,7 +46,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
             finally
             {
                 reader.Close();
-            }          
+            }
+
+            return output;      
         }
 
         //check if a user can log in, and if si return it's id, return -1 if cann't log in

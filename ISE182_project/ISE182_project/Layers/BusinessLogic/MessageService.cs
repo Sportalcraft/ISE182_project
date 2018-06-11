@@ -14,12 +14,15 @@ using System.Threading.Tasks;
 namespace ISE182_project.Layers.BusinessLogic
 {
     //This class manege the messages stored in RAM
-     class MessageService : GeneralHandler<IMessage>
+     class MessageService
     {
         private const int MAX_MESSAGES = 200; // maximum items per quary
 
         private MessageQueryCreator query; // the query generator
         private DateTime _lastMessageTime; // the time of the last message
+
+        private ICollection<IMessage> _ramData; // Store a coppy of the data in the ram for quick acces       
+        private ICollection<IMessage> _lastFilteredList; //Save te filtered items
 
         #region singletone
 
@@ -27,6 +30,8 @@ namespace ISE182_project.Layers.BusinessLogic
         private MessageService()
         {
             query = new MessageQueryCreator(MAX_MESSAGES);
+            _ramData = new List<IMessage>();
+
         }
 
         private static MessageService _instence; // the instence
@@ -47,9 +52,23 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region functionalities
 
-        public override void add(IMessage item)
+        //Getter and setter to the data stored in the ram
+        public ICollection<IMessage> RamData
         {
-            base.add(item);
+            get { return _ramData; }
+            private set
+            {
+                if(value != null)
+                    _ramData = value;
+            }
+        }
+
+        public void add(IMessage item)
+        {
+            if (!RamData.Contains(item))
+            {
+                RamData.Add(item);
+            }
 
             if (RamData.Count > MAX_MESSAGES)
             {
@@ -61,6 +80,15 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             add(item);
             AddToDS(item, UserID);
+        }
+
+        //Get the filtered messages
+        public ICollection<IMessage> getMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return _lastFilteredList;
+
         }
 
         #region Filter
@@ -179,7 +207,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region override methods
 
         // deserialize messages
-        protected override void reciveData()
+        protected void reciveData()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -187,10 +215,7 @@ namespace ISE182_project.Layers.BusinessLogic
             query.SETtoSELECT();
             Execute();
 
-            if (RamData.Count > 0)
-                _lastMessageTime = RamData.Last().Date;
-            else
-                _lastMessageTime = new DateTime(1, 1, 1);
+            RamData = sort(RamData, ChatRoom.Sort.Time, false); //Sortg by Time at start
         }
 
         // serialize messages
@@ -218,20 +243,17 @@ namespace ISE182_project.Layers.BusinessLogic
             
         }
 
-        //Sorting by time
-        protected override ICollection<IMessage> DefaultSort(ICollection<IMessage> Data)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return sort(Data, ChatRoom.Sort.Time, false);
-        }
-
         //init data
-        public override void start()
-        {           
-            base.start();
+        public void start()
+        {
+            reciveData();
 
             if (RamData.Count > 0)
-                _lastMessageTime = RamData.Last().Date; 
+                _lastMessageTime = RamData.Last().Date;
+            else
+                _lastMessageTime = new DateTime(1, 1, 1);
+
+            _lastFilteredList = RamData;
         }
 
         #endregion

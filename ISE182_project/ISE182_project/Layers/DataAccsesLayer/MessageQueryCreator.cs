@@ -32,11 +32,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private const string DATE_PARM = "@Data";
         private const string BODY_PARM = "@Body";
 
+        //sizes of the parameters
+        private const int GUID_SIZE = 68;
+        //private const int USER_ID_SIZE = 32;
+        //private const int DATE_SIZE = 30;
+       private const int BODY_SIZE = 100;
+
         //From Users Table
         private const string USERS_TABLE = "Users"; // the name of the table
         private const string USERS_ID_COL = "Id";
         private const string GROUP_COL = "Group_Id";
         private const string NICK_COL = "Nickname";
+
+        private const int NICK_SIZE = 8;
 
         //Users parameters
         private const string GROUP_PARM = "@GroupID";
@@ -154,7 +162,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             //Create query
             switch (Type)
             {
-                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} * {FROM} {JOIN()} {where()}"; break;
+                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} {TABLE_NAME}.*, {USERS_TABLE}.{GROUP_COL}, {USERS_TABLE}.{NICK_COL} {FROM} {JOIN()} {where()} {ORDER_BY} {DATE_COL}"; break;
                 case INSERT: quary = $"{INSERT} {TABLE_NAME} ({GUID_COL},{User_ID_COL},{DATE_COL},{BODY_COL}) {values()}"; break;
                 case UPDATE: quary = $"{UPDATE} {TABLE_NAME} {set()}"; break;
             }
@@ -180,6 +188,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
         {
             string where = "";
             string timeCondition;
+            SqlParameter tParameter;
 
             if (_group != EMPTY_GROUP | _nickName != null) // tere is a where
                 where += WHERE + " ";
@@ -187,7 +196,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
             if (_group != EMPTY_GROUP)
             {
                 where += $"{GROUP_COL} = {GROUP_PARM}";
-                parameters.Add(new SqlParameter(GROUP_PARM, _group));
+                tParameter = new SqlParameter(GROUP_PARM, SqlDbType.Int);
+                tParameter.Value = _group;
+                parameters.Add(tParameter);
 
                 if (_nickName != null)
                     where += $" {AND} ";
@@ -196,7 +207,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
             if (_nickName != null)
             {
                 where += $"{NICK_COL} = {NICK_PARM}";
-                parameters.Add(new SqlParameter(NICK_PARM, _nickName));
+                tParameter = new SqlParameter(NICK_PARM, SqlDbType.Text, NICK_SIZE);
+                tParameter.Value = _nickName;
+                parameters.Add(tParameter);
             }
 
             timeCondition = $"{DATE_COL} = {DATE_PARM}";           
@@ -208,7 +221,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
                 else
                     where += $"{AND} {timeCondition}";
 
-                parameters.Add(new SqlParameter(DATE_PARM, _lastRecivedMessage));
+                tParameter = new SqlParameter(DATE_PARM, SqlDbType.DateTime);
+                tParameter.Value = _lastRecivedMessage;
+                parameters.Add(tParameter);
             }
 
             return where;
@@ -223,11 +238,23 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private string values()
         {
            string values =  VALUES +$" ({GUID_PARM},{USER_ID_PARM},{DATE_PARM},{BODY_PARM})";
+            SqlParameter tParameter;
 
-            parameters.Add(new SqlParameter(GUID_PARM, QuaryItem.Id));
-            parameters.Add(new SqlParameter(USER_ID_PARM, _userID));
-            parameters.Add(new SqlParameter(DATE_PARM, QuaryItem.Date));
-            parameters.Add(new SqlParameter(BODY_PARM, QuaryItem.MessageContent));
+            tParameter = new SqlParameter(GUID_PARM, SqlDbType.UniqueIdentifier, GUID_SIZE);
+            tParameter.Value = QuaryItem.Id;
+            parameters.Add(tParameter);
+
+            tParameter = new SqlParameter(USER_ID_PARM, SqlDbType.Int);
+            tParameter.Value = _userID;
+            parameters.Add(tParameter);
+
+            tParameter = new SqlParameter(DATE_PARM, SqlDbType.DateTime);
+            tParameter.Value = QuaryItem.Date;
+            parameters.Add(tParameter);
+
+            tParameter = new SqlParameter(BODY_PARM, SqlDbType.Text, BODY_SIZE);
+            tParameter.Value = QuaryItem.MessageContent;
+            parameters.Add(tParameter);
 
             return values;
         }
@@ -236,9 +263,15 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private string set()
         {
             string where = $"{SET} {BODY_COL} = {BODY_PARM} {WHERE} {GUID_COL} = { GUID_PARM}";
+            SqlParameter tParameter;
 
-            parameters.Add(new SqlParameter(BODY_PARM, QuaryItem.MessageContent));
-            parameters.Add(new SqlParameter(GUID_PARM, QuaryItem.Id));
+            tParameter = new SqlParameter(BODY_PARM, SqlDbType.Text, BODY_SIZE);
+            tParameter.Value = QuaryItem.MessageContent;
+            parameters.Add(tParameter);
+
+            tParameter = new SqlParameter(GUID_PARM, SqlDbType.UniqueIdentifier, GUID_SIZE);
+            tParameter.Value = QuaryItem.Id;
+            parameters.Add(tParameter);
 
             return where;
         }

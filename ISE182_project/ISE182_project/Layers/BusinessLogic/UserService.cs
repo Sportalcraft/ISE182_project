@@ -14,7 +14,7 @@ namespace ISE182_project.Layers.BusinessLogic
 {
 
     //This class manege the useres stored in RAM
-    class UserService : GeneralHandler<IUser>
+    class UserService
     {
         private UserQueryCreator query; // the query generator
 
@@ -65,10 +65,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            RamData.Add(user);
-            query.clearFilters();
-            query.SETtoINSERT(user);
-            Execute();
+            AddToDS(user);
         }
 
         #endregion
@@ -115,25 +112,17 @@ namespace ISE182_project.Layers.BusinessLogic
 
         //-----------------------------------------------------------
 
-        #region overrding methods
+        #region private methods
 
-        protected override void reciveData()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            query.clearFilters();
-            query.SETtoSELECT();
-            Execute();
-        }
-
-        protected bool AddToDS(IUser item)
+        private void AddToDS(IUser item)
         {
             try
             {
                 query.clearFilters();
                 query.SETtoINSERT(item);
-                Execute();
-                return true;
+                Connect conn = new Connect();
+                conn.ExecuteNonQuery(query.getQuary());
             }
             catch
             {
@@ -143,25 +132,6 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new Exception(error);
             }
 
-        }
-
-
-        protected override ICollection<IUser> DefaultSort(ICollection<IUser> Data)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-            return Data; // No defult sorting mechanisem, For now....
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        //Execute the query
-        private void Execute()
-        {
-            UserExcuteor excuteor = new UserExcuteor();
-            excuteor.ExcuteAndAddTo(query.getQuary(), RamData);
-            query.clearFilters();
         }
 
         #endregion

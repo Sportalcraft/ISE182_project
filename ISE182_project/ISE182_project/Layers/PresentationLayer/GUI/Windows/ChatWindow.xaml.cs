@@ -25,7 +25,6 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
     {
         private ObservableObject bindObject;
         private DispatcherTimer dispatcherTimer;
-        private ICollection<IMessage> last20;
         private bool sortChanged;
         private bool filterApplied;
         private bool reloadChat;
@@ -33,7 +32,6 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         public ChatWindow(ObservableObject fromMainWindows)
         {
             InitializeComponent();
-            this.last20 = new List<IMessage>();
             this.bindObject = fromMainWindows;
             this.DataContext = bindObject;
             bindObject.Username = "Username: " + ChatRoom.LoggedUser.NickName;
@@ -95,52 +93,14 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             }
         }
 
+        //Update the messages displayed on screen
         private void UpdateScreen()
         {
-            ICollection<IMessage> list = ChatRoom.request20Messages();
-            foreach (IMessage m in this.last20)
-                if (list.Contains(m))
-                    list.Remove(m);
-            ChatRoom.Sort option;
-            if (bindObject.SortOption == 0)
-                option = ChatRoom.Sort.Time;
-            else if (bindObject.SortOption == 1)
-                option = ChatRoom.Sort.Nickname;
-            else
-                option = ChatRoom.Sort.GroupNickTime;
-            if (reloadChat)
-            {
-                Printer(ChatRoom.request20Messages());
-                this.reloadChat = false;
-            }
-            else
-            {
-                Printer(list);
-                this.last20 = ChatRoom.request20Messages();
-            }
-            if (sortChanged)
-            {
-                ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
-                foreach (IMessage msg in bindObject.Messages)
-                    temp.Add(msg);
-                bindObject.Messages.Clear();
-                Printer(ChatRoom.sort(temp, option, bindObject.SortDescending));
-                sortChanged = false;
-            }
-            if (filterApplied)
-            {
-                ObservableCollection<IMessage> temp = new ObservableCollection<IMessage>();
-                foreach (IMessage msg in bindObject.Messages)
-                    temp.Add(msg);
-                bindObject.Messages.Clear();
-                if (bindObject.FilterUsername)
-                    Printer(ChatRoom.requestMessagesfromUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString)));
-                else if (bindObject.FilterGroupid)
-                    Printer(ChatRoom.requestMessagesfromGroup(int.Parse(bindObject.FilterGroupString)));
-                filterApplied = false;
-                bindObject.UsernameBox = "";
-                bindObject.GroupidBox = "";
-            }            
+            ICollection<IMessage> list = ChatRoom.getMessages();
+            bindObject.Messages.Clear();
+
+            foreach (IMessage m in list)
+                bindObject.Messages.Add(m);           
         }
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)

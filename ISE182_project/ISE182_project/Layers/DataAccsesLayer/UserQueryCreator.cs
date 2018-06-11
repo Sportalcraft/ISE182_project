@@ -2,6 +2,7 @@
 using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,10 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private const string GROUP_PARM = "@GroupID";
         private const string NICK_PARM = "@NICk";
         private const string PASSWORD_PARM = "@pass";
+
+        //parametes sizes
+        private const int NICK_SIZE = 8;
+        private const int PASWORD_SIZE = 64;
 
         private bool _logister; // This to check if the the query is to check if the user can register of login
 
@@ -95,10 +100,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private string Values()
         {
             string query =  $"{VALUES} ({ GROUP_PARM},{NICK_PARM},{PASSWORD_PARM})";
+            SqlParameter temp;
 
-           parameters.Add(new SqlParameter(GROUP_PARM, QuaryItem.Group_ID));
-           parameters.Add(new SqlParameter(NICK_PARM, QuaryItem.NickName));
-           parameters.Add(new SqlParameter(PASSWORD_PARM, QuaryItem.Password));
+            temp = new SqlParameter(GROUP_PARM, SqlDbType.Int);
+            temp.Value = QuaryItem.Group_ID;
+            parameters.Add(temp);
+
+            temp = new SqlParameter(NICK_PARM, SqlDbType.Char, NICK_SIZE);
+            temp.Value = QuaryItem.NickName;
+            parameters.Add(temp);
+
+            temp = new SqlParameter(PASSWORD_PARM, SqlDbType.Char, PASWORD_SIZE);
+            temp.Value = QuaryItem.Password;
+            parameters.Add(temp);
 
             return query;
         }
@@ -106,9 +120,15 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private string Where()
         {
             string query = $"{WHERE} {GROUP_COL} = {GROUP_PARM} {AND} {NICK_COL} = {NICK_PARM}";
+            SqlParameter temp;
 
-            parameters.Add(new SqlParameter(GROUP_PARM, QuaryItem.Group_ID));
-            parameters.Add(new SqlParameter(NICK_PARM, QuaryItem.NickName));
+            temp = new SqlParameter(GROUP_PARM, SqlDbType.Int);
+            temp.Value = QuaryItem.Group_ID;
+            parameters.Add(temp);
+
+            temp = new SqlParameter(NICK_PARM, SqlDbType.Char, NICK_SIZE);
+            temp.Value = QuaryItem.NickName;
+            parameters.Add(temp);
 
             return query;
         }

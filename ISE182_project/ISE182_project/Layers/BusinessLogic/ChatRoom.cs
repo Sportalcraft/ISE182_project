@@ -68,8 +68,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            UserService.Instence.start();    // Initiating mesaages on ram
-            MessageService.Instence.start(); // Initiating users on ram
+            MessageService.Instence.start(); // Initiating mesaages on ram
             _location = location;   // Set the location
             _loggeninUserID = -1;
         }
@@ -174,6 +173,14 @@ namespace ISE182_project.Layers.BusinessLogic
         #endregion
 
         #region Message
+
+        //Get the filtered messages
+        public static ICollection<IMessage> getMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return MessageService.Instence.getMessages();
+        }
 
         // Send new message to te server
         public static void send(string body)

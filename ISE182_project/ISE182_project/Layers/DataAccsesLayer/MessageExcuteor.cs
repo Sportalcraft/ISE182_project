@@ -33,15 +33,10 @@ namespace ISE182_project.Layers.DataAccsesLayer
                 UserID = reader.GetInt32(1);
                 receivingTime = reader.GetDateTime(2);
                 body = reader.GetString(3);
-
-                //CHECK HERE
-
-                groupID = 32;
-                NickName = "Tal";
-                
+                groupID = reader.GetInt32(4);
+                NickName = reader.GetString(5);
 
                 IMessage msg = new Message(guid, receivingTime,groupID, NickName, body);
-
                 output.Add(msg);
             }
 
