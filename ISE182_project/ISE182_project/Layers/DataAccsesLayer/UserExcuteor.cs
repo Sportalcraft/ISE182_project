@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
+    //This class excute user related queries
     class UserExcuteor
     {
 
-        // execute the queary and add it's items into te given collection
+        // execute the queary and return the users the were drawn frm server
         public ICollection<IUser> Excute(SqlCommand query)
         {
             int id;
@@ -74,7 +75,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             return -1;
         }
-
+        
+        //return if a user can register
         public bool canRegister(IUser user)
         {
             UserQueryCreator qc = new UserQueryCreator();
@@ -84,7 +86,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             qc.SetToLogisterQuery();
             SqlDataReader reader = conn.ExecuteReader(qc.getQuary());           
 
-            return reader.Read(); //No current usser with this name and group
+            return reader.Read(); //No current user with this name and group
         } 
     }
 }

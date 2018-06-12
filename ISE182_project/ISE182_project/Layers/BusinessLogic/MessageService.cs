@@ -29,6 +29,10 @@ namespace ISE182_project.Layers.BusinessLogic
         private ChatRoom.Sort _sortBy; //Save the last sort option
         private bool _descending; //Save the last sort direction
 
+        private string _lastFilter; //Save the last filter option
+        private string _lastFilterNick; //Save the last filter nickname
+        private int _lastFilterGroup; //Save the last filter gtoup
+
         #endregion
 
         #region singletone
@@ -39,9 +43,13 @@ namespace ISE182_project.Layers.BusinessLogic
             query = new MessageQueryCreator(MAX_MESSAGES);
             _ramData = new List<IMessage>();
             _lastFilteredList = new List<IMessage>();
-        }
+            _lastFilter = ""; 
+            _lastFilterNick = ""; 
+            _lastFilterGroup = -1; 
 
-        private static MessageService _instence; // the instence
+    }
+
+    private static MessageService _instence; // the instence
 
         // instemce getter
         public static MessageService Instence
@@ -59,46 +67,49 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region functionalities
 
+        //Get the filtered messages
+        public ICollection<IMessage> getMessages()
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            LastFilter(); //Filter again by the last filter
+            LastSort(); //Sort before sending
+            return _lastFilteredList;
+        }
+
         //Getter and setter to the data stored in the ram
-        public ICollection<IMessage> RamData
+        private ICollection<IMessage> RamData
         {
             get { return _ramData; }
-            private set
+            set
             {
                 if(value != null)
                     _ramData = value;
             }
         }
 
+        //add a message to the ram
         private void add(IMessage item)
         {
-             RamData.Add(item);
-            _lastFilteredList.Add(item);
-
-            if (RamData.Count > MAX_MESSAGES)
-            {
-                RamData.Remove(RamData.First());
-            }
+            if(!RamData.Contains(item))
+                RamData.Add(item);
+            if (!_lastFilteredList.Contains(item))
+                _lastFilteredList.Add(item);
 
             if (_lastFilteredList.Count > MAX_MESSAGES)
             {
-                _lastFilteredList.Remove(_lastFilteredList.First());
+                if(_descending)
+                    _lastFilteredList.Remove(_lastFilteredList.Last());
+                else
+                    _lastFilteredList.Remove(_lastFilteredList.First());
             }
         }
 
+        //Send a message and save into the ram
         public void send(IMessage item, int UserID)
         {
             add(item);
-            LastSort(); // resort
             AddToDS(item, UserID);
-        }
-
-        //Get the filtered messages
-        public ICollection<IMessage> getMessages()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return _lastFilteredList;
         }
 
         #region Filter
@@ -112,6 +123,10 @@ namespace ISE182_project.Layers.BusinessLogic
             query.addNicknameFilter(user.NickName);
 
             _lastFilteredList = getFilterdMessages();
+
+            _lastFilter = "ByUser";
+            _lastFilterGroup = user.Group_ID;
+            _lastFilterNick = user.NickName;
         }
 
         //recive all the messages from a certain group
@@ -121,6 +136,10 @@ namespace ISE182_project.Layers.BusinessLogic
 
             prepareGroupFilter(groupID);
             _lastFilteredList = getFilterdMessages();
+
+            _lastFilter = "ByGroup";
+            _lastFilterGroup = groupID;
+            _lastFilterNick = "";
         }
 
         //reset filters
@@ -128,13 +147,18 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             _lastFilteredList = RamData;
             LastSort();
+            _lastFilteredList = _lastFilteredList.Reverse().Take(MAX_MESSAGES).Reverse().ToList();
+
+            _lastFilter = "None";
+            _lastFilterGroup = -1;
+            _lastFilterNick = "";
         }
 
         #endregion
 
         #region Sort
 
-            //Sort a message List by the time
+        //Sort a message List by the time
         public void sort(ChatRoom.Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
@@ -166,8 +190,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
             _lastFilteredList = temp;
         }
-
-        
 
         #endregion
 
@@ -207,9 +229,12 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 Execute();
 
-                if (RamData.Count > 0)
+                if (_lastFilteredList.Count > 0)
                 {
-                    _lastMessageTime = RamData.Last().Date;
+                    if(_descending)
+                        _lastMessageTime = getMessages().First().Date;
+                    else
+                        _lastMessageTime = getMessages().Last().Date;
                 }
             }
             catch
@@ -219,6 +244,63 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw;
             } 
+        }
+
+        //Edid message by guid and save to the RAM and disk, and chrck if the user can edit the message
+        public void EditMessage(Guid ID, string newBody, IUser editor)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if(editor == null)
+            {
+                string errorMessage = "recived null user!";
+                Logger.Log.Error(Logger.Maintenance(errorMessage));
+
+                throw new ArgumentNullException(errorMessage);
+            }
+
+
+            //A dummy message to use in the .equals
+            IMessage dummy = new Message(ID, DateTime.Now, "Dummy", 0, "Dummy");
+
+            foreach (Message msg in _lastFilteredList)
+            {
+                if (msg.Equals(dummy))
+                {
+                    if(!msg.GroupID.Equals(editor.Group_ID.ToString()) | !msg.UserName.Equals(editor.NickName)) //written by other user
+                    {
+                        string errorMessage = "you can edit only your own messges!!";
+                        Logger.Log.Error(Logger.Maintenance(errorMessage));
+
+                        throw new InvalidOperationException(errorMessage);
+                    }
+
+                    try
+                    {
+                        msg.editBody(newBody);
+                    }
+                    catch
+                    {
+                        string errormessage = "could not edit your message, please check the length of your message!";
+                        Logger.Log.Error(Logger.Maintenance(errormessage));
+
+                        throw new ArgumentOutOfRangeException(errormessage);
+                    }
+
+                    query.clearFilters();
+                    query.SETtoUPDATE(msg);
+                    Connect con = new Connect();
+                    con.ExecuteNonQuery(query.getQuary());
+                    return;
+                }
+            }
+
+            //message is not exists
+
+            string error = "Could not found a message with the ruqusted guid of " + ID;
+            Logger.Log.Error(Logger.Maintenance(error));
+
+            throw new KeyNotFoundException(error);
         }
 
         #endregion
@@ -267,47 +349,18 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             reciveData();
 
-            if (RamData.Count > 0)
-                _lastMessageTime = RamData.Last().Date;
+            _lastFilteredList = RamData;
+            sort(ChatRoom.Sort.Time, false); //Sortg by Time at start
+
+            if (_lastFilteredList.Count > 0)
+                _lastMessageTime = _lastFilteredList.Last().Date;
             else
                 _lastMessageTime = new DateTime(1, 1, 1);
-
-            _lastFilteredList = RamData;
-             sort(ChatRoom.Sort.Time, false); //Sortg by Time at start
-            RamData = _lastFilteredList;
-
         }
 
         #endregion
 
-        #region PrivateMethods
-
-        //Edid message by guid and save to the RAM and disk
-        private void EditMessage(Guid ID, string newBody)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            //A dummy message to use in the .equals
-            IMessage dummy = new Message(ID, DateTime.Now,"Dummy",0, "Dummy");
-
-            foreach (Message msg in RamData)
-            {
-                if (msg.Equals(dummy))
-                {
-                    msg.editBody(newBody);
-                    query.clearFilters();
-                    query.SETtoUPDATE(msg);
-                    Connect con = new Connect();
-                    con.ExecuteNonQuery(query.getQuary());
-                    return;
-                }
-            }
-
-            string error = "Could not found a message with the ruqusted guid of " + ID;
-            Logger.Log.Error(Logger.Maintenance(error));
-
-            throw new KeyNotFoundException(error);
-        }
+        #region Private Methods
 
         //Clear old filterrs and add filter by the group and by the time
         private void prepareGroupFilter(int group)
@@ -318,6 +371,7 @@ namespace ISE182_project.Layers.BusinessLogic
             query.addTimeFilter(_lastMessageTime);
         }
 
+        //Execute queries
         private void Execute()
         {
             MessageExcuteor me = new MessageExcuteor();
@@ -330,15 +384,28 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
+        //get mthe messages return by a filter
         private ICollection<IMessage> getFilterdMessages()
         {
             MessageExcuteor me = new MessageExcuteor();
             return me.Excute(query.getQuary());
         }
 
+        //sort the messages by the last requested sort
         private void LastSort()
         {
             sort(_sortBy, _descending); // resort
+        }
+
+        //filter the messages by the last requested filter
+        private void LastFilter()
+        {
+            switch(_lastFilter)
+            {
+                case "ByUser": FilterByUser(new User(_lastFilterNick, _lastFilterGroup)); break;
+                case "ByGroup": FilterByGroup(_lastFilterGroup); break;
+                default: break;
+            }
         }
 
         #endregion

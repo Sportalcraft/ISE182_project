@@ -39,14 +39,14 @@ namespace ISE182_project.Layers.BusinessLogic
                     case Place.Home: return HOME_URL;
                     case Place.University: return BGU_URL;
                     default:
-                        {                      
+                        {
                             string error = "recived unknown enum value.";
                             Logger.Log.Fatal(Logger.Developer(error));
 
                             throw new ArgumentOutOfRangeException(error);
                         }
                 }
- 
+
             }
         }
 
@@ -175,18 +175,11 @@ namespace ISE182_project.Layers.BusinessLogic
         #region Message
 
         //Get the filtered messages
-        public static ICollection<string> getMessages()
+        public static ICollection<IMessage> getMessages()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection<IMessage> temp = MessageService.Instence.getMessages();
-
-            ICollection<string> output = new List<string>();
-
-            foreach (IMessage msg in temp)
-                output.Add(msg.ToString());
-
-            return output;
+            return MessageService.Instence.getMessages();
         }
 
         // Send new message to te server
@@ -194,7 +187,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            if(!isLoggedIn())
+            if (!isLoggedIn())
             {
                 string error = "You cant send a message without login first!";
                 Logger.Log.Error(Logger.Maintenance(error));
@@ -205,15 +198,6 @@ namespace ISE182_project.Layers.BusinessLogic
             LoggedinUser.send(body, _loggeninUserID); // Sending
         }
 
-
-        // Receive the last 20 messages
-        public static ICollection<IMessage> request20Messages()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return requestNMessages(20);
-        }
-
         //draw the last messages since kast draw
         public static void DrawLastMessages()
         {
@@ -222,10 +206,26 @@ namespace ISE182_project.Layers.BusinessLogic
             MessageService.Instence.DrawNewMessage();
         }
 
-        #region Sort
+        //Edid message by guid and save to the RAM and disk
+        public static void EditMessage(Guid ID, string newBody)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-        //Sort a message List by the time
-        public static void sort(Sort SortBy, bool descending)
+            if(!isLoggedIn()) //can edit messages only when loged in
+            {
+                string error = "You must be loged in in order to edit messagesw!";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new InvalidOperationException(error);
+            }
+
+            MessageService.Instence.EditMessage(ID, newBody, LoggedinUser);
+        }
+
+            #region Sort
+
+            //Sort a message List by the time
+            public static void sort(Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -273,17 +273,5 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        // ----------------------------------------------------------
-
-        #region private Methods
-
-        // Receive the last n messages
-        private static ICollection<IMessage> requestNMessages(int number)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return MessageService.Instence.lastNmesages(number);
-        }
-        #endregion
     }
 }

@@ -20,7 +20,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
 
         public ObservableObject()
         {
-            messages = new ObservableCollection<string>();
+            messages = new ObservableCollection<IMessage>();
             messages.CollectionChanged += Messages_CollectionChanged;         
         }
 
@@ -29,8 +29,8 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             OnPropertyChanged("Messages");
         }
 
-        private ObservableCollection<string> messages;
-        public ObservableCollection<string> Messages
+        private ObservableCollection<IMessage> messages;
+        public ObservableCollection<IMessage> Messages
         {
             get
             {
@@ -154,6 +154,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
                     OnPropertyChanged();
             }
         }
+
         private bool filterGroupid;
         public bool FilterGroupid
         {

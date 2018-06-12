@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
+    //Create user related Queries
     class UserQueryCreator : QueryCreator<IUser>
     {
 
@@ -47,13 +48,15 @@ namespace ISE182_project.Layers.DataAccsesLayer
         #endregion
 
         #region Abstract Imlamentation
-
+        
+        //reset filters
         public override void clearFilters()
         {
             base.clearFilters();
             clear();
         }
 
+        //get te querry command string
         protected override string getQueryString()
         {
             string quary = "";
@@ -82,21 +85,24 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         #region functionalities
         
+        //set this query to check regiserable \ loginable
         public  void SetToLogisterQuery()
         {
             SETtoSELECT();
             _logister = true;
         }
 
-        private string canLogisterQuery()
-        {
-            return $"{SELECT} {ID_COL},{PASSWORD_COL} {FROM} {TABLE_NAME} {Where()}";
-        }      
-
         #endregion
 
         #region Private Methods
 
+        // get the query to check regiserable \ loginable
+        private string canLogisterQuery()
+        {
+            return $"{SELECT} {ID_COL},{PASSWORD_COL} {FROM} {TABLE_NAME} {Where()}";
+        }
+
+        //Get the VALUE part of the query
         private string Values()
         {
             string query =  $"{VALUES} ({ GROUP_PARM},{NICK_PARM},{PASSWORD_PARM})";
@@ -117,6 +123,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return query;
         }
 
+        //Get the WHERE part of the query
         private string Where()
         {
             string query = $"{WHERE} {GROUP_COL} = {GROUP_PARM} {AND} {NICK_COL} = {NICK_PARM}";
@@ -133,6 +140,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return query;
         }
 
+        //clear inputs
         public void clear()
         {
             _logister = false;

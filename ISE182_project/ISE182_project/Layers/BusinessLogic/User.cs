@@ -14,8 +14,8 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represent a user in the chatroom
     class User : DisplayUser, IUser
     {
-        private const int MIN_PASSWORD_LENGTH = 6; //Minimum password lenfth
-        private const int MAX_PASSWORD_LENGTH = 64; //Maximum password lenfth
+        private const int MIN_PASSWORD_LENGTH = 4; //Minimum password lenfth
+        private const int MAX_PASSWORD_LENGTH = 8; //Maximum password lenfth
 
         private string _password; // the password of the user
 
@@ -44,7 +44,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region functionalities
 
-
+        //check passwod validity
         public bool isValidPassword(string Password)
         {
             return Password != null && //Not null

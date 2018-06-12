@@ -93,20 +93,15 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         //add filter optins
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
-
+            if (bindObject.FilterNone)
+                ChatRoom.resetFilters();
         }
 
         //Apply button click
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            if (bindObject.FilterNone)
-                ChatRoom.resetFilters();
 
-            if (bindObject.FilterUser)
-                ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
-
-            if (bindObject.FilterGroupid)
-                ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+            filter();
 
             //reset data
             bindObject.UsernameBox = "";
@@ -133,10 +128,10 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         //Update the messages displayed on screen
         private void UpdateScreen()
         {
-            ICollection<string> list = ChatRoom.getMessages();
+            ICollection<IMessage> list = ChatRoom.getMessages();
             bindObject.Messages.Clear();
 
-            foreach (string m in list)
+            foreach (IMessage m in list)
                 bindObject.Messages.Add(m);
         }
 
@@ -173,6 +168,16 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
             ChatRoom.sort(option, bindObject.SortDescending); //sorting
             UpdateScreen(); //Update view
+        }
+
+        private void filter()
+        {
+            if (bindObject.FilterUser)
+                ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
+            
+            if (bindObject.FilterGroupid)
+                ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+
         }
 
         #endregion

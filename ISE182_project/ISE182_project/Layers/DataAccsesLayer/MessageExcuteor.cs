@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
+    //This class excute message related queries
     class MessageExcuteor
     {
-        // execute the queary
+        // execute the queary and return the messaged tht were drown from the server
         public ICollection<IMessage> Excute(SqlCommand query)
         {
             Guid guid;
@@ -42,5 +43,6 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             return output;
         }
+
     }
 }

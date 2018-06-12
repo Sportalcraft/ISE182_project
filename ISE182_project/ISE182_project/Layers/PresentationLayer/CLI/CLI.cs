@@ -105,7 +105,7 @@ namespace ISE182_project.Layers.PresentationLayer.CLI
             try
             {
                 boldingText("20 Last Messages:", ConsoleColor.Cyan);
-                Printer(ChatRoom.request20Messages());
+                Printer(ChatRoom.getMessages().Reverse().Take(20).Reverse().ToList());
             }
             catch (Exception e)
             {
@@ -140,7 +140,7 @@ namespace ISE182_project.Layers.PresentationLayer.CLI
             try
             {
                 ChatRoom.filterByUser(username, groupID); // An array of username's messages
-                ICollection<string> list = ChatRoom.getMessages();
+                ICollection<IMessage> list = ChatRoom.getMessages();
 
                 if (list.Count == 0)
                 {

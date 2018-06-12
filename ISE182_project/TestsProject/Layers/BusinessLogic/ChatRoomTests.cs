@@ -29,23 +29,6 @@ namespace ISE182_project.Layers.BusinessLogic
             string UserName = RandomString(8);
             int GroupID = RandomInt();
 
-            // if already logged in - logout
-            try
-            {
-                ChatRoom.logout();
-            }
-            catch { }
-
-            // Make sure there is no user currenly connected
-            try
-            {
-                Assert.IsFalse(ChatRoom.isLoggedIn());
-            }
-            catch
-            {
-                Assert.Fail("falid to check if a user is loggedIn");
-            }
-
             LogIn(UserName, GroupID);
 
             // check if a user is now connected
@@ -215,7 +198,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // logIn whithout register
             try
             {
-                ChatRoom.login(RandomString(15), GroupID);
+                ChatRoom.login(RandomString(8), GroupID);
             }
             catch (Exception e)
             {
@@ -286,7 +269,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 for (int i = 1; i <= 30; i++)
                 {
-                    message = "Message #" + i;
+                    message = "Send Test #" + i;
                     ChatRoom.send(message);
                     System.Threading.Thread.Sleep(1000);
                 }
@@ -300,7 +283,7 @@ namespace ISE182_project.Layers.BusinessLogic
         [TestMethod()]
         public void sendTest_Negative()
         {
-            string UserName = RandomString(5);
+            string UserName = RandomString(6);
             int GroupID = RandomInt();
 
             LogIn(UserName, GroupID);
@@ -347,82 +330,39 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        #region request20Messages
-
-        [TestMethod()]
-        public void request20MessagesTest_Positive()
-        {
-            string UserName = RandomString(5);
-            int GroupID = RandomInt();
-
-            string message;
-            
-
-            LogIn(UserName, GroupID);
-
-            for (int i = 0; i < 30; i++)
-            {
-                message = "" + i;
-                ChatRoom.send(message);
-                System.Threading.Thread.Sleep(1001);
-            }
-
-            IMessage[] last20 = ChatRoom.request20Messages().ToArray();
-
-            for (int i = 0; i < 20; i++)
-            {
-                if (!last20[i].MessageContent.Equals((i + 10).ToString()))
-                    Assert.Fail("Falid to retrivedlast 20 correctly!");
-            }
-        }
-
-        [TestMethod()]
-        public void request20MessagesTest_Negative()
-        {
-            //NONE
-        }
-
-        #endregion
-
         #region sortByTime
 
         [TestMethod()]
         public void sortByTimeTest_Positive()
         {
-            ArrayList last20 = new ArrayList(ChatRoom.request20Messages().ToArray());
-            ArrayList last20copy = last20.Clone() as ArrayList;
-            Random rnd = new Random();
-            ICollection<IMessage> UnSorted = new List<IMessage>();
-            int rando;
-
-            while (last20.Count != 0)
-            {
-                rando = rnd.Next(0, last20.Count);
-
-                UnSorted.Add(last20[rando] as IMessage);
-                last20.RemoveAt(rando);
-            }
-
-            ChatRoom.sort(ChatRoom.Sort.Time, false);
-            UnSorted = ChatRoom.getMessages();
+            ChatRoom.sort(ChatRoom.Sort.Nickname, false); //Not sorted enymore by time
+            ICollection<IMessage> UnSorted = ChatRoom.getMessages();
 
             IMessage[] NotSorted = UnSorted.ToArray();
+            DateTime[] sortedDates = new DateTime[NotSorted.Length];
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < NotSorted.Length; i++)
+                sortedDates[i] = NotSorted[i].Date;
+
+            Array.Sort(sortedDates);
+
+            ChatRoom.sort(ChatRoom.Sort.Time, false); // sort  by time
+            ICollection<IMessage> sorted = ChatRoom.getMessages();
+            IMessage[] SortedByChatRoom = sorted.ToArray();
+
+
+
+            for (int i = 0; i < sortedDates.Length; i++)
             {
-                if (!(last20copy[i] as IMessage).Equals(NotSorted[i] as IMessage))
-                    throw new Exception("Falid to sortmessage by their time!");
-            }
-
-            ChatRoom.sort(ChatRoom.Sort.Time, true);
-            UnSorted = ChatRoom.getMessages();
-
-            NotSorted = UnSorted.ToArray();
-
-            for (int i = 0; i < 20; i++)
-            {
-                if (!(last20copy[i] as IMessage).Equals(NotSorted[19 - i] as IMessage))
-                    Assert.Fail("Falid to sortmessage by their time desending!");
+             //   try
+                {
+                    if (!(sortedDates[i]).Equals(SortedByChatRoom[i].Date))
+                        Assert.Fail("Falid to sort message by their time!");
+                }
+              //  catch
+                {
+              //      Assert.Fail("Falid to sort message by their time! exeption was raised.");
+                }
             }
         }
 
@@ -449,11 +389,10 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 UserName = namestarts[i] + RandomString(7);
                 LogIn(UserName, GroupID);
-                ChatRoom.send("Hello world");
+                ChatRoom.send("Nick Name Sort Test #"+i);
                 System.Threading.Thread.Sleep(1001);
             }
 
-            IMessage[] temp = ChatRoom.request20Messages().Take(namestarts.Length).ToArray();
             ChatRoom.sort(ChatRoom.Sort.Nickname, false);
             IMessage[] mesgs = ChatRoom.getMessages().ToArray();
 
@@ -505,40 +444,22 @@ namespace ISE182_project.Layers.BusinessLogic
         [TestMethod()]
         public void requestAllMessagesfromUserTest_Positive()
         {
-            string UserName = RandomString(10);
+            string UserName = RandomString(7);
             int GroupID = RandomInt();
-
-            ICollection<IMessage> temp;
-
-            try
-            {
-                ChatRoom.logout();
-            }
-            catch { }
-
-            temp = ChatRoom.filterByUser(UserName, GroupID);
-
-            if (temp.Count != 0)
-               Assert.Fail("nedd to be emty arry!1");
-
-            ChatRoom.register(UserName, GroupID);
-
-            temp = ChatRoom.filterByUser(UserName, GroupID);
-
-            if (temp.Count != 0)
-                Assert.Fail("nedd to be emty arry!2");
+            LogIn(UserName, GroupID);
 
             for (int i = 0; i < 30; i++)
             {
-                ChatRoom.send(UserName + " #" + i);
+                ChatRoom.send("User Filter Test #" + i);
                 System.Threading.Thread.Sleep(1000);
             }
 
-            IMessage[] sent = ChatRoom.filterByUser(UserName, GroupID).ToArray();
+            ChatRoom.filterByUser(UserName, GroupID);
+            IMessage[] sent = ChatRoom.getMessages().ToArray();
 
             for (int i = 0; i < 30; i++)
             {
-                if (!(sent[i] as IMessage).MessageContent.Equals(UserName + " #" + i))
+                if (!(sent[i]).MessageContent.Equals("User Filter Test #" + i))
                     Assert.Fail("Didn't recved message correctly!");
             }
         }
@@ -554,7 +475,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region requestAllMessagesfromGroup
 
         [TestMethod()]
-        public void requestAllMessagesfromGroupTest_Positive()
+        public void requestMessagesfromGroupTest_Positive()
         {
             string UserName;
             int GroupID = RandomInt();
@@ -563,25 +484,26 @@ namespace ISE182_project.Layers.BusinessLogic
 
             for (int i = 0; i < 30; i++)
             {
-                UserName = RandomString(16);
+                UserName = RandomString(7);
 
                 LogIn(UserName, GroupID);
 
-                ChatRoom.send("GroupFilterTest #" + i);
+                ChatRoom.send("Group Filter Test #" + i);
                 System.Threading.Thread.Sleep(1001);
             }
 
-            temp = ChatRoom.filterByGroup(GroupID).Reverse().Take(30).Reverse().ToArray();
+            ChatRoom.filterByGroup(GroupID);
+            temp = ChatRoom.getMessages().Reverse().Take(30).Reverse().ToArray();
 
             for (int i = 0; i < 30; i++)
             {
-                if (!(temp[i] as IMessage).MessageContent.Equals("GroupFilterTest #" + i))
+                if (!(temp[i] as IMessage).MessageContent.Equals("Group Filter Test #" + i))
                     Assert.Fail("Didn't recved message correctly!");
             }
         }
 
         [TestMethod()]
-        public void requestAllMessagesfromGroupTest_Negative()
+        public void requestMessagesfromGroupTest_Negative()
         {
            //NONE
         }
@@ -619,6 +541,7 @@ namespace ISE182_project.Layers.BusinessLogic
             try
             {
                 ChatRoom.register(UserName, GroupID);
+                ChatRoom.login(UserName, GroupID);
             }
             catch { }
 

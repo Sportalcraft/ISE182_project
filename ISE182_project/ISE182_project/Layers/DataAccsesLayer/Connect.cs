@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ISE182_project.Layers.LoggingLayer;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -7,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
+    //This class help to conect to the server
     class Connect
     {
-        private SqlConnection _conn; // the connection opject
+        private static SqlConnection _conn; // the connection opject
 
         #region constructors
 
+        //A constructor
         public Connect()
         {
             _conn = new SqlConnection(ConectionString());
@@ -22,6 +25,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         #region functionalities
 
+        //get SqlCommand object
         public SqlCommand getCommand(string quary)
         {
             return new SqlCommand(quary, _conn);
@@ -39,8 +43,10 @@ namespace ISE182_project.Layers.DataAccsesLayer
             }
             catch(Exception e)
             {
+                string error = "failed to executer query!";
+                Logger.Log.Error(Logger.Maintenance(error));
 
-                throw;
+                throw new Exception(error);
             }
             finally
             {

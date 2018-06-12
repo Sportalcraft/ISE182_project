@@ -114,7 +114,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region private methods
 
-
+         // Add a user to the server
         private void AddToDS(IUser item)
         {
             try

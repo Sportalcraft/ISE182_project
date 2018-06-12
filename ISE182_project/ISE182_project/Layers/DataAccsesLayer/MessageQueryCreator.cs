@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
+    //This class build the SQL query according to the user inputs
     class MessageQueryCreator : QueryCreator<IMessage>
     {
         #region members
@@ -34,8 +35,6 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         //sizes of the parameters
         private const int GUID_SIZE = 68;
-        //private const int USER_ID_SIZE = 32;
-        //private const int DATE_SIZE = 30;
        private const int BODY_SIZE = 100;
 
         //From Users Table
@@ -44,16 +43,17 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private const string GROUP_COL = "Group_Id";
         private const string NICK_COL = "Nickname";
 
+        //sizes of users the parameters
         private const int NICK_SIZE = 8;
 
         //Users parameters
         private const string GROUP_PARM = "@GroupID";
         private const string NICK_PARM = "@NICk";
 
-        private int _group; // the group to filter with
-        private string _nickName; // the nick name to filter with  
+        private int _group;                   // The group to filter with
+        private string _nickName;             // The nick name to filter with  
         private DateTime _lastRecivedMessage; // Save the time of the last recived message    
-        private int _userID; //The id of the user
+        private int _userID;                  // The id of the user
 
         #endregion
 
@@ -91,6 +91,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             _group = group;
         }
 
+        //Add a user id to the query
         public void addUserID(int id)
         {
             if (id <= 0)
@@ -144,6 +145,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         #region Abstract Imlamentation
 
+        //get the query string command
         protected override string getQueryString()
         {
             string quary = "";
@@ -228,6 +230,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return where;
         }
 
+        //add the time fiter to the WHERE
         private string BulidTimeFilter(string CurrentWhere)
         {
             string timeCondition = $"{DATE_COL} > {DATE_PARM}";
@@ -249,6 +252,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return where;
         }
 
+        //return INNER JOIN command
         private string JOIN()
         {
             return $"{TABLE_NAME} {INNER_JOIN} {USERS_TABLE} {ON} {TABLE_NAME}.{User_ID_COL} = {USERS_TABLE}.{USERS_ID_COL}";

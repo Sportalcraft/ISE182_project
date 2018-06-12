@@ -28,10 +28,34 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             InitializeComponent();
         }
 
+        #region Events
+
+        //Login \ register event
         private void userHandlerButton_Click(object sender, RoutedEventArgs e)
         {
             logister();
         }
+
+        //exit button event
+        private void exitButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChatRoom.exit();
+        }
+
+        // enter pressed event
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox box = sender as TextBox;
+                main.GroupidBox = box.Text;
+                logister();
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
 
         //Log in ore register
         private void logister()
@@ -56,19 +80,6 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             }
         }
 
-        private void exitButton_Click(object sender, RoutedEventArgs e)
-        {
-            ChatRoom.exit();
-        }
-
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                TextBox box = sender as TextBox;
-                main.GroupidBox = box.Text;
-                logister();
-            }
-        }
+        #endregion
     }
 }

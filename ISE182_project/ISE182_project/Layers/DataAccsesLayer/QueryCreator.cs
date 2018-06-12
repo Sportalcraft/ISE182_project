@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace ISE182_project.Layers.DataAccsesLayer
 {
-    // This class creates the quurt yo us in the data base
+    // This class creates the queris to use in the data base
     abstract class QueryCreator<T>
     {
         #region Members
 
-        //SQL statements
+        //SQL statements - so the compiler can check mispell errors (like SEkECT)
         protected const string SELECT = "SELECT";
         protected const string INSERT = "INSERT INTO";
         protected const string UPDATE = "UPDATE";
@@ -27,8 +27,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         protected const string ON = "ON";
         protected const string ORDER_BY = "ORDER BY";
 
-        private string _type; //SELECT, INSERT or UPDATE
-        private T _item; //The item to add or edit
+        private string _type;                           // SELECT, INSERT or UPDATE
+        private T _item;                                // The item to add or edit
         protected ICollection<SqlParameter> parameters; // the parametes of this query
 
         #endregion
@@ -104,7 +104,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return command;
         }
 
-        // add an item to the quart
+        // add an item to the query
         public void addQuaryItem(T item)
         {
             if (item == null)
@@ -161,6 +161,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
         }       
 
         #endregion
+
 
         //Get the string of the query
         protected abstract string getQueryString();

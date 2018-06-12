@@ -50,8 +50,6 @@ namespace Tester.Layers.BusinessLogic
         #endregion
 
 
-
-
         #region Healpers
 
         private static string RandomString(int length)
