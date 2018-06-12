@@ -39,6 +39,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             }
             catch(Exception e)
             {
+
                 throw;
             }
             finally
@@ -80,14 +81,14 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // create the connectio string
         private static string ConectionString()
         {
-            //Data Source=GLADOS\SQLEXPRESS;Initial Catalog=MS3;Integrated Security=True
-
-            string server_address = @"GLADOS\SQLEXPRESS"; //"ise172.ise.bgu.ac.il,1433\\DB_LAB";
+            string server_address = /*@"GLADOS\SQLEXPRESS"; */ "ise172.ise.bgu.ac.il,1433\\DB_LAB";
             string database_name = "MS3";
             string user_name = "publicUser";
             string password = "isANerd";
 
-            string connetion_string = $"Data Source={server_address};Initial Catalog={database_name};Integrated Security=True";//;User ID={user_name};Password={password}";
+            string connetion_string = $"Data Source={server_address};Initial Catalog={database_name};Integrated Security=True;User ID={user_name};Password={password}";
+
+            connetion_string = $"Server={server_address} ;Database={database_name};User ID={user_name};Password={password}";
             return connetion_string;
         }
 

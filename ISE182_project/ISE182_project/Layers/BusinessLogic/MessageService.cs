@@ -132,7 +132,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-            #region Sort
+        #region Sort
 
             //Sort a message List by the time
         public void sort(ChatRoom.Sort SortBy, bool descending)
@@ -207,8 +207,10 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 Execute();
 
-                if(RamData.Count > 0)
-                 _lastMessageTime = RamData.Last().Date;
+                if (RamData.Count > 0)
+                {
+                    _lastMessageTime = RamData.Last().Date;
+                }
             }
             catch
             {
@@ -322,7 +324,10 @@ namespace ISE182_project.Layers.BusinessLogic
             ICollection<IMessage> temp = me.Excute(query.getQuary());
 
             foreach (IMessage msg in temp)
-                add(msg);
+            {
+                if(msg.Date <= DateTime.Now.ToUniversalTime())
+                     add(msg);
+            }
         }
 
         private ICollection<IMessage> getFilterdMessages()
