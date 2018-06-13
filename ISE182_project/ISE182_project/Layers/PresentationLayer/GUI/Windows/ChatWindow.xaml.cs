@@ -42,6 +42,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             dispatcherTimer.Tick += dispatcherTimer_Tick;         // add event
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 2);  // set time between ticks
             dispatcherTimer.Start();
+
             UpdateScreen();
         }
 
@@ -121,20 +122,16 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         }
 
         //edit message
-        private void EditMessageEvent(object sender, SelectionChangedEventArgs e)
+        private void EditMessage_Event(object sender, SelectionChangedEventArgs e)
         {
             System.Windows.Controls.ListBox list = sender as System.Windows.Controls.ListBox;
 
+            if (list.SelectedIndex == -1)
+                return;
+
             IMessage toEdit = list.SelectedItem as IMessage;
 
-            try
-            {
-                ChatRoom.EditMessage(toEdit.Id, "Succesfully Edited message");
-            }
-            catch(Exception ex)
-            {
-                Error(ex.Message);
-            }
+            edit(toEdit, "Message Succesfully Edited");
         } 
 
         #endregion
@@ -198,6 +195,21 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 Error(ex.Message);
             }
 
+        }
+
+        //Edit a message
+        private void edit(IMessage msg, string newBody)
+        {
+            if (!msg.UserName.Equals(ChatRoom.LoggedUser.NickName) | !msg.GroupID.Equals(ChatRoom.LoggedUser.Group_ID.ToString()))
+            {
+                Error("You can edit only your own messges!");
+                return;
+            }
+
+            EditMenu editMenu = new EditMenu(msg, bindObject);
+            editMenu.Show();
+
+            UpdateScreen();
         }
 
         //display error message

@@ -55,7 +55,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
                     throw new ArgumentException(error);
                 }
-
+           
                 _body = value; // edit content
             }
         }

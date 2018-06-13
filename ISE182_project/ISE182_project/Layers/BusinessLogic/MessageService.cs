@@ -268,6 +268,10 @@ namespace ISE182_project.Layers.BusinessLogic
                     try
                     {
                         msg.editBody(newBody);
+
+                        //Update filtered list
+                        _lastFilteredList.Remove(dummy);
+                        _lastFilteredList.Add(new DisplayMessage(msg));
                     }
                     catch
                     {

@@ -89,6 +89,9 @@
       <DependentUpon>ChatWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Layers\PresentationLayer\GUI\Windows\EditMenu.xaml.cs">
+      <DependentUpon>EditMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Layers\PresentationLayer\GUI\Windows\Error.xaml.cs">
       <DependentUpon>Error.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -123,6 +126,10 @@
     <Page Include="Layers\PresentationLayer\GUI\Windows\ChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="Layers\PresentationLayer\GUI\Windows\EditMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Layers\PresentationLayer\GUI\Windows\Error.xaml">
       <SubType>Designer</SubType>

@@ -260,5 +260,33 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
                 OnPropertyChanged();
             }
         }
+
+        private string oldContent;
+        public string OldContent
+        {
+            get
+            {
+                return oldContent;
+            }
+            set
+            {
+                oldContent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string editMessageContent;
+        public string EditMessageContent
+        {
+            get
+            {
+                return editMessageContent;
+            }
+            set
+            {
+                editMessageContent = value;
+                OnPropertyChanged("MessageContent");
+            }
+        }
     }
 }
