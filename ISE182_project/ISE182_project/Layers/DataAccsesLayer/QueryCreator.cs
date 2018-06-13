@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // A constructor     
         public QueryCreator()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             parameters = new List<SqlParameter>();
             clear();
         }
@@ -47,14 +50,18 @@ namespace ISE182_project.Layers.DataAccsesLayer
         #region Type Setters
 
         //set this quart tyoe to select
-        public void SETtoSELECT()
+       public void SETtoSELECT()
        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             AddType(SELECT);
        }
 
         // set this quary type to insert, and get te item to insert
         public void SETtoINSERT(T item)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             addQuaryItem(item);
             AddType(INSERT);
         }
@@ -62,6 +69,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // set this quary type to update, and get te item to update 
         public void SETtoUPDATE(T item)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             addQuaryItem(item);
             AddType(UPDATE);
         }
@@ -73,12 +82,16 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // clear al the filters
         public virtual void clearFilters()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             clear();
         }
 
         // get the quary
         public SqlCommand getQuary()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             SqlCommand command = null;
             string quary;
             Connect con = new Connect();
@@ -107,6 +120,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // add an item to the query
         public void addQuaryItem(T item)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (item == null)
             {
                 string error = "this item is illeagal!";
@@ -141,6 +156,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // reset quary
         private void clear()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             _type = null;
             _item = default(T);
             parameters.Clear();
@@ -149,6 +166,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // add a type to the quary
         private void AddType(string type)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (type == null || !(type.Equals(SELECT) | type.Equals(INSERT) | type.Equals(UPDATE)))
             {
                 string error = "this type is illeagal!";
@@ -161,7 +180,6 @@ namespace ISE182_project.Layers.DataAccsesLayer
         }       
 
         #endregion
-
 
         //Get the string of the query
         protected abstract string getQueryString();

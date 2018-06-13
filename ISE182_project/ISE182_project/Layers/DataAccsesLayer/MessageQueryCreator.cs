@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,7 +62,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
         //A constructor
         public MessageQueryCreator(int MaxMessages) : base()
-        {            
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             clear();
             MAX_MESSAGES = MaxMessages;
         }
@@ -73,6 +76,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // clear filter options
         public override void clearFilters()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             base.clearFilters();
             clear();
         }
@@ -80,6 +85,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // add a group filter
         public void addGroupFilter(int group)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (group <= 0)
             {
                 string error = "this group is illeagal!";
@@ -94,6 +101,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //Add a user id to the query
         public void addUserID(int id)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+
             if (id <= 0)
             {
                 string error = "this id is illeagal!";
@@ -108,6 +118,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // add a nick name filter
         public void addNicknameFilter(string nickName)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+
             if (String.IsNullOrEmpty(nickName))
             {
                 string error = "this name is illeagal!";
@@ -130,6 +143,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // add a time filter
         public void addTimeFilter(DateTime from)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             if (from > DateTime.Now)
             {
                 string error = "this requested time is in the future!";
@@ -148,6 +163,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get the query string command
         protected override string getQueryString()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string quary = "";
 
             if(Type.Equals(INSERT))
@@ -179,6 +196,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //reset slections
         private void clear()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             _group = EMPTY_GROUP;
             _nickName = null;
             _lastRecivedMessage = EMPTY_TIME;
@@ -188,6 +207,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get a where to the filtering options
         private string where()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string where = whereNoTime();
 
             if(_group == EMPTY_GROUP & _nickName == null) // there is no filter to do
@@ -201,6 +222,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //return the where statement without time filter
         private string whereNoTime()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string where = "";
 
             SqlParameter tParameter;
@@ -233,6 +256,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //add the time fiter to the WHERE
         private string BulidTimeFilter(string CurrentWhere)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string timeCondition = $"{DATE_COL} > {DATE_PARM}";
             string where = "";
             SqlParameter tParameter;
@@ -255,13 +280,17 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //return INNER JOIN command
         private string JOIN()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return $"{TABLE_NAME} {INNER_JOIN} {USERS_TABLE} {ON} {TABLE_NAME}.{User_ID_COL} = {USERS_TABLE}.{USERS_ID_COL}";
         }
 
         // get the VALUES statements for INSERT quary
         private string values()
         {
-           string values =  VALUES +$" ({GUID_PARM},{USER_ID_PARM},{DATE_PARM},{BODY_PARM})";
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            string values =  VALUES +$" ({GUID_PARM},{USER_ID_PARM},{DATE_PARM},{BODY_PARM})";
             SqlParameter tParameter;
 
             tParameter = new SqlParameter(GUID_PARM, SqlDbType.UniqueIdentifier, GUID_SIZE);
@@ -286,6 +315,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get the SET statement for UPDATE queries
         private string set()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string where = $"{SET} {BODY_COL} = {BODY_PARM} {WHERE} {GUID_COL} = { GUID_PARM}";
             SqlParameter tParameter;
 

@@ -117,6 +117,8 @@ namespace ISE182_project.Layers.BusinessLogic
          // Add a user to the server
         private void AddToDS(IUser item)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             try
             {
                 query.clearFilters();

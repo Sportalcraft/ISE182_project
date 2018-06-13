@@ -14,41 +14,10 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class hanel the chatroom
     public static class ChatRoom
     {
-        private const string HOME_URL = @"http://localhost/";             // The url addres of the server at home
-        private const string BGU_URL = @"http://ise172.ise.bgu.ac.il:80"; // The url addres of the server
-        private static Place _location;                                   // The location of the client
         private static IUser _loggedinUser;                               // Current logged in user
         private static int _loggeninUserID;                               // The id of the loged user
 
         #region General
-
-        //The location of the client
-        public enum Place
-        {
-            Home,
-            University
-        }
-
-        //Getter to the URL
-        private static string URL
-        {
-            get
-            {
-                switch (_location)
-                {
-                    case Place.Home: return HOME_URL;
-                    case Place.University: return BGU_URL;
-                    default:
-                        {
-                            string error = "recived unknown enum value.";
-                            Logger.Log.Fatal(Logger.Developer(error));
-
-                            throw new ArgumentOutOfRangeException(error);
-                        }
-                }
-
-            }
-        }
 
         //Geter and setter to the current user
         private static IUser LoggedinUser
@@ -64,12 +33,11 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Initiating the ram's saves from disk
-        public static void start(Place location)
+        public static void start()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             MessageService.Instence.start(); // Initiating mesaages on ram
-            _location = location;   // Set the location
             _loggeninUserID = -1;
         }
 
@@ -92,6 +60,8 @@ namespace ISE182_project.Layers.BusinessLogic
         // return if tere is an loggedin user
         public static bool isLoggedIn()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return LoggedinUser != null;
         }
 
@@ -222,10 +192,10 @@ namespace ISE182_project.Layers.BusinessLogic
             MessageService.Instence.EditMessage(ID, newBody, LoggedinUser);
         }
 
-            #region Sort
+        #region Sort
 
             //Sort a message List by the time
-            public static void sort(Sort SortBy, bool descending)
+        public static void sort(Sort SortBy, bool descending)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -242,7 +212,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         #endregion
-
+    
         #region Filter
 
         // Receive all the messages from a certain user

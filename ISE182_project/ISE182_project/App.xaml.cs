@@ -18,7 +18,7 @@ namespace ISE182_project
         {
             base.OnStartup(e);
 
-            ChatRoom.start(ChatRoom.Place.Home); //HERE
+            ChatRoom.start(); //HERE
         }
     }
 }

@@ -19,6 +19,8 @@ namespace ISE182_project.Layers.BusinessLogic
 
         private string _password; // the password of the user
 
+        #region Constractors
+
         public User(string nickName, int GroupID /*, string password*/) : base(nickName, GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
@@ -36,17 +38,25 @@ namespace ISE182_project.Layers.BusinessLogic
             _password = password;
         }
 
+        #endregion
+
+        #region Getters
+
         //getter to the Passwrd
         public string Password
         {
             get { return _password; }
         }
 
+        #endregion
+
         #region functionalities
 
         //check passwod validity
         public bool isValidPassword(string Password)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return Password != null && //Not null
                 Password.Length >= MIN_PASSWORD_LENGTH && // Not too short
                 Password.Length <= MAX_PASSWORD_LENGTH; //Not too long

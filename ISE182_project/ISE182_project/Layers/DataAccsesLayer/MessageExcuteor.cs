@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,9 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // execute the queary and return the messaged tht were drown from the server
         public ICollection<IMessage> Excute(SqlCommand query)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+
             Guid guid;
             int UserID;           
             DateTime receivingTime; 
@@ -30,15 +34,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             while(reader.Read())
             {
-                guid = new Guid(reader.GetString(0).Trim());
-                UserID = reader.GetInt32(1);
-                receivingTime = reader.GetDateTime(2);
-                body = reader.GetString(3);
-                groupID = reader.GetInt32(4);
-                NickName = reader.GetString(5);
+                try
+                {
+                    guid = new Guid(reader.GetString(0).Trim());
+                    UserID = reader.GetInt32(1);
+                    receivingTime = reader.GetDateTime(2);
+                    body = reader.GetString(3);
+                    groupID = reader.GetInt32(4);
+                    NickName = reader.GetString(5);
 
-                IMessage msg = new Message(guid, receivingTime,groupID, NickName, body);
-                output.Add(msg);
+                    DisplayMessage msg = new DisplayMessage(guid, receivingTime, groupID, NickName, body);
+                    output.Add(msg);
+                }
+                catch { }
             }
 
             return output;

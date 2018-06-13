@@ -1,5 +1,6 @@
 ﻿using ISE182_project.Layers.BusinessLogic;
 using ISE182_project.Layers.CommunicationLayer;
+using ISE182_project.Layers.LoggingLayer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -72,9 +73,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             }
             catch (Exception ex)
             {
-                bindObject.ErrorText = ex.Message;
-                Error ePage = new Error(bindObject);
-                ePage.Show();
+                Error(ex.Message);
             }
         }
 
@@ -121,6 +120,23 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             }
         }
 
+        //edit message
+        private void EditMessageEvent(object sender, SelectionChangedEventArgs e)
+        {
+            System.Windows.Controls.ListBox list = sender as System.Windows.Controls.ListBox;
+
+            IMessage toEdit = list.SelectedItem as IMessage;
+
+            try
+            {
+                ChatRoom.EditMessage(toEdit.Id, "Succesfully Edited message");
+            }
+            catch(Exception ex)
+            {
+                Error(ex.Message);
+            }
+        } 
+
         #endregion
 
         #region Private Methods
@@ -143,13 +159,10 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 ChatRoom.send(message);
                 bindObject.MessageContent = "";
                 UpdateScreen();
-
             }
             catch (Exception ex)
             {
-                bindObject.ErrorText = ex.Message;
-                Error ePage = new Error(bindObject);
-                ePage.Show();
+                Error(ex.Message);
             }
         }
 
@@ -172,12 +185,29 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
 
         private void filter()
         {
-            if (bindObject.FilterUser)
-                ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
-            
-            if (bindObject.FilterGroupid)
-                ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+            try
+            {
+                if (bindObject.FilterUser)
+                    ChatRoom.filterByUser(bindObject.FilterNameString, int.Parse(bindObject.FilterGroupString));
 
+                if (bindObject.FilterGroupid)
+                    ChatRoom.filterByGroup(int.Parse(bindObject.FilterGroupString));
+            }
+            catch (Exception ex)
+            {
+                Error(ex.Message);
+            }
+
+        }
+
+        //display error message
+        private void Error(string error)
+        {
+            bindObject.ErrorText = error;
+            Logger.Log.Error(Logger.Maintenance(error));
+
+            Error ePage = new Error(bindObject);
+            ePage.Show();
         }
 
         #endregion

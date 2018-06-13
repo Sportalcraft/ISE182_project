@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // execute the queary and return the users the were drawn frm server
         public ICollection<IUser> Excute(SqlCommand query)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             int id;
             int Grpuo_id;
             string NickName;          
@@ -55,6 +58,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //check if a user can log in, and if si return it's id, return -1 if cann't log in
         public int Loginable(IUser user)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             UserQueryCreator qc = new UserQueryCreator();
             Connect conn = new Connect();
             string DSpassword;
@@ -79,6 +84,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //return if a user can register
         public bool canRegister(IUser user)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             UserQueryCreator qc = new UserQueryCreator();
             Connect conn = new Connect();
 

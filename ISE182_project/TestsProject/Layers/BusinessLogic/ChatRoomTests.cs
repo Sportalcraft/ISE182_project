@@ -18,7 +18,7 @@ namespace ISE182_project.Layers.BusinessLogic
         [TestInitialize]
         public void Init()
         {
-            ChatRoom.start(ChatRoom.Place.University); //HERE
+            ChatRoom.start(); //HERE
         }
 
         #region isLoggedIn

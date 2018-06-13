@@ -23,7 +23,7 @@ namespace ISE182_project.Layers.BusinessLogic
         private MessageQueryCreator query; // the query generator
         private DateTime _lastMessageTime; // the time of the last message
 
-        private ICollection<IMessage> _ramData; // Store a coppy of the data in the ram for quick acces       
+        private ICollection<Message> _ramData; // Store a coppy of the data in the ram for quick acces       
         private ICollection<IMessage> _lastFilteredList; //Save te filtered items     
 
         private ChatRoom.Sort _sortBy; //Save the last sort option
@@ -41,9 +41,9 @@ namespace ISE182_project.Layers.BusinessLogic
         private MessageService()
         {
             query = new MessageQueryCreator(MAX_MESSAGES);
-            _ramData = new List<IMessage>();
+            _ramData = new List<Message>();
             _lastFilteredList = new List<IMessage>();
-            _lastFilter = ""; 
+            _lastFilter = "None"; 
             _lastFilterNick = ""; 
             _lastFilterGroup = -1; 
 
@@ -78,7 +78,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //Getter and setter to the data stored in the ram
-        private ICollection<IMessage> RamData
+        private ICollection<Message> RamData
         {
             get { return _ramData; }
             set
@@ -91,10 +91,13 @@ namespace ISE182_project.Layers.BusinessLogic
         //add a message to the ram
         private void add(IMessage item)
         {
-            if(!RamData.Contains(item))
-                RamData.Add(item);
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            if (!RamData.Contains(item))
+                RamData.Add(new Message(item));
+
             if (!_lastFilteredList.Contains(item))
-                _lastFilteredList.Add(item);
+                _lastFilteredList.Add(new DisplayMessage(item));
 
             if (_lastFilteredList.Count > MAX_MESSAGES)
             {
@@ -108,6 +111,8 @@ namespace ISE182_project.Layers.BusinessLogic
         //Send a message and save into the ram
         public void send(IMessage item, int UserID)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             add(item);
             AddToDS(item, UserID);
         }
@@ -119,12 +124,14 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
+            string Filter = "ByUser";
+
             prepareGroupFilter(user.Group_ID);
             query.addNicknameFilter(user.NickName);
 
-            _lastFilteredList = getFilterdMessages();
+            saveFilterdMessages(Filter);
 
-            _lastFilter = "ByUser";
+             _lastFilter = Filter;
             _lastFilterGroup = user.Group_ID;
             _lastFilterNick = user.NickName;
         }
@@ -134,10 +141,13 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            prepareGroupFilter(groupID);
-            _lastFilteredList = getFilterdMessages();
+            string Filter = "ByGroup";
 
-            _lastFilter = "ByGroup";
+            prepareGroupFilter(groupID);
+
+            saveFilterdMessages(Filter);
+
+            _lastFilter = Filter;
             _lastFilterGroup = groupID;
             _lastFilterNick = "";
         }
@@ -145,11 +155,14 @@ namespace ISE182_project.Layers.BusinessLogic
         //reset filters
         public void resetFilters()
         {
-            _lastFilteredList = RamData;
-            LastSort();
-            _lastFilteredList = _lastFilteredList.Reverse().Take(MAX_MESSAGES).Reverse().ToList();
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            _lastFilter = "None";
+            string Filter = "None";
+
+            resetSavedFilterdmessages();
+            LastSort();
+          
+            _lastFilter = Filter;
             _lastFilterGroup = -1;
             _lastFilterNick = "";
         }
@@ -192,29 +205,6 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         #endregion
-
-
-        //return the last n saved messages
-        public ICollection<IMessage> lastNmesages(int amount)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            if (amount < 0)
-            {
-                string error = "User requested a negative number of mesaages";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentOutOfRangeException(error);
-            }
-
-            if (amount > RamData.Count)
-            {
-                Logger.Log.Warn(Logger.Maintenance("User requested more messages then there is to show"));
-                amount = RamData.Count;
-            }
-
-            return RamData.Reverse().Take(amount).Reverse().ToList();
-        }
 
         //retrive and save the new messages that were send after the last draw.
         public void DrawNewMessage()
@@ -263,7 +253,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //A dummy message to use in the .equals
             IMessage dummy = new Message(ID, DateTime.Now, "Dummy", 0, "Dummy");
 
-            foreach (Message msg in _lastFilteredList)
+            foreach (Message msg in RamData)
             {
                 if (msg.Equals(dummy))
                 {
@@ -347,10 +337,15 @@ namespace ISE182_project.Layers.BusinessLogic
         //init data
         public void start()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             reciveData();
 
-            _lastFilteredList = RamData;
-            sort(ChatRoom.Sort.Time, false); //Sortg by Time at start
+            //Defult sort options
+            _sortBy = ChatRoom.Sort.Time;
+            _descending = false;
+
+            resetSavedFilterdmessages();
 
             if (_lastFilteredList.Count > 0)
                 _lastMessageTime = _lastFilteredList.Last().Date;
@@ -365,6 +360,8 @@ namespace ISE182_project.Layers.BusinessLogic
         //Clear old filterrs and add filter by the group and by the time
         private void prepareGroupFilter(int group)
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             query.clearFilters();
             query.SETtoSELECT();
             query.addGroupFilter(group);
@@ -374,6 +371,8 @@ namespace ISE182_project.Layers.BusinessLogic
         //Execute queries
         private void Execute()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             MessageExcuteor me = new MessageExcuteor();
             ICollection<IMessage> temp = me.Excute(query.getQuary());
 
@@ -387,25 +386,54 @@ namespace ISE182_project.Layers.BusinessLogic
         //get mthe messages return by a filter
         private ICollection<IMessage> getFilterdMessages()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             MessageExcuteor me = new MessageExcuteor();
             return me.Excute(query.getQuary());
+        }
+
+        //save the filterd messages
+        private void saveFilterdMessages(string currentAskedFilter)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            ICollection<IMessage> filtered = getFilterdMessages();
+            _lastFilteredList = filtered;
+
         }
 
         //sort the messages by the last requested sort
         private void LastSort()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             sort(_sortBy, _descending); // resort
         }
 
         //filter the messages by the last requested filter
         private void LastFilter()
         {
-            switch(_lastFilter)
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            switch (_lastFilter)
             {
                 case "ByUser": FilterByUser(new User(_lastFilterNick, _lastFilterGroup)); break;
                 case "ByGroup": FilterByGroup(_lastFilterGroup); break;
                 default: break;
             }
+        }
+
+        // _lastFilteredList = RamData;
+        private void resetSavedFilterdmessages()
+        {
+            _lastFilteredList.Clear();
+
+            foreach (Message msg in RamData)
+                _lastFilteredList.Add(new DisplayMessage(msg));
+
+            LastSort(); //Sortg by Time at start
+            _lastFilteredList = _lastFilteredList.Reverse().Take(MAX_MESSAGES).Reverse().ToList();
+
         }
 
         #endregion

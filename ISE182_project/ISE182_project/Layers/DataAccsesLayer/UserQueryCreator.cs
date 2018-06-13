@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,16 +43,18 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //A constructor
         public UserQueryCreator() : base()
         {
-
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
         }
 
         #endregion
 
         #region Abstract Imlamentation
-        
+
         //reset filters
         public override void clearFilters()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             base.clearFilters();
             clear();
         }
@@ -59,6 +62,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //get te querry command string
         protected override string getQueryString()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string quary = "";
 
             if(_logister)
@@ -88,6 +93,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //set this query to check regiserable \ loginable
         public  void SetToLogisterQuery()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             SETtoSELECT();
             _logister = true;
         }
@@ -99,12 +106,16 @@ namespace ISE182_project.Layers.DataAccsesLayer
         // get the query to check regiserable \ loginable
         private string canLogisterQuery()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             return $"{SELECT} {ID_COL},{PASSWORD_COL} {FROM} {TABLE_NAME} {Where()}";
         }
 
         //Get the VALUE part of the query
         private string Values()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string query =  $"{VALUES} ({ GROUP_PARM},{NICK_PARM},{PASSWORD_PARM})";
             SqlParameter temp;
 
@@ -126,6 +137,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //Get the WHERE part of the query
         private string Where()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             string query = $"{WHERE} {GROUP_COL} = {GROUP_PARM} {AND} {NICK_COL} = {NICK_PARM}";
             SqlParameter temp;
 
@@ -143,6 +156,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         //clear inputs
         public void clear()
         {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
             _logister = false;
         }
 
