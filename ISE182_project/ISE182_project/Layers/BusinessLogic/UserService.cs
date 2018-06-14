@@ -16,14 +16,14 @@ namespace ISE182_project.Layers.BusinessLogic
     //This class manege the useres stored in RAM
     class UserService
     {
-        private UserQueryCreator query; // the query generator
+        private UserExcuteor _excuteor; // The excuteor to the DB
 
         #region singletone
 
         //private ctor
         private UserService()
         {
-            query = new UserQueryCreator();
+            _excuteor = new UserExcuteor();
         }
 
         private static UserService _instence; // the instence
@@ -121,10 +121,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             try
             {
-                query.clearFilters();
-                query.SETtoINSERT(item);
-                Connect conn = new Connect();
-                conn.ExecuteNonQuery(query.getQuary());
+                _excuteor.INSERT(item);
             }
             catch
             {

@@ -20,7 +20,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         private const int MAX_MESSAGES = 200; // maximum items per quary
 
-        private MessageQueryCreator query; // the query generator
+        private MessageExcuteor _excuteor; // the excuteor to the DB
         private DateTime _lastMessageTime; // the time of the last message
 
         private ICollection<Message> _ramData; // Store a coppy of the data in the ram for quick acces       
@@ -40,7 +40,7 @@ namespace ISE182_project.Layers.BusinessLogic
         //private ctor
         private MessageService()
         {
-            query = new MessageQueryCreator(MAX_MESSAGES);
+            _excuteor = new MessageExcuteor(MAX_MESSAGES);
             _ramData = new List<Message>();
             _lastFilteredList = new List<IMessage>();
             _lastFilter = "None"; 
@@ -126,8 +126,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             string Filter = "ByUser";
 
-            prepareGroupFilter(user.Group_ID);
-            query.addNicknameFilter(user.NickName);
+            _excuteor.FilterByUser(user);
 
             saveFilterdMessages(Filter);
 
@@ -143,7 +142,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             string Filter = "ByGroup";
 
-            prepareGroupFilter(groupID);
+            _excuteor.FilterByGroup(groupID);
 
             saveFilterdMessages(Filter);
 
@@ -211,9 +210,8 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));         
 
-            query.clearFilters();
-            query.SETtoSELECT();
-            query.addTimeFilter(_lastMessageTime);
+            _excuteor.clearFilters();
+            _excuteor.AddTimeFilter(_lastMessageTime);
 
             try
             {
@@ -281,10 +279,7 @@ namespace ISE182_project.Layers.BusinessLogic
                         throw new ArgumentOutOfRangeException(errormessage);
                     }
 
-                    query.clearFilters();
-                    query.SETtoUPDATE(msg);
-                    Connect con = new Connect();
-                    con.ExecuteNonQuery(query.getQuary());
+                    _excuteor.UPDATE(msg);
                     return;
                 }
             }
@@ -308,9 +303,13 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            query.clearFilters();
-            query.SETtoSELECT();
-            Execute();
+            ICollection<IMessage> temp = _excuteor.getALLLastMessages();
+
+            foreach (IMessage msg in temp)
+            {
+                if (msg.Date <= DateTime.Now.ToUniversalTime())
+                    add(msg);
+            }
         }
 
         // serialize messages
@@ -318,24 +317,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            query.SETtoINSERT(Data);
-            query.addUserID(UserID);
-
-            try
-            {
-                Connect con = new Connect();
-                con.ExecuteNonQuery(query.getQuary());
-                _lastMessageTime = Data.Date;
-                return true;
-            }
-            catch(Exception e)
-            {
-                string error = "Failed do add data to the DS";
-                Logger.Log.Error(Logger.Maintenance(error));
-
-                throw new ArgumentException(error);;
-            }
-            
+           return _excuteor.INSERT(Data, UserID) > 0;
         }
 
         //init data
@@ -361,24 +343,12 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #region Private Methods
 
-        //Clear old filterrs and add filter by the group and by the time
-        private void prepareGroupFilter(int group)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            query.clearFilters();
-            query.SETtoSELECT();
-            query.addGroupFilter(group);
-            query.addTimeFilter(_lastMessageTime);
-        }
-
         //Execute queries
         private void Execute()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            MessageExcuteor me = new MessageExcuteor();
-            ICollection<IMessage> temp = me.Excute(query.getQuary());
+            ICollection<IMessage> temp = _excuteor.getFilteredMessages();
 
             foreach (IMessage msg in temp)
             {
@@ -387,21 +357,12 @@ namespace ISE182_project.Layers.BusinessLogic
             }
         }
 
-        //get mthe messages return by a filter
-        private ICollection<IMessage> getFilterdMessages()
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            MessageExcuteor me = new MessageExcuteor();
-            return me.Excute(query.getQuary());
-        }
-
         //save the filterd messages
         private void saveFilterdMessages(string currentAskedFilter)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            ICollection<IMessage> filtered = getFilterdMessages();
+            ICollection<IMessage> filtered = _excuteor.getFilteredMessages();
             _lastFilteredList = filtered;
 
         }

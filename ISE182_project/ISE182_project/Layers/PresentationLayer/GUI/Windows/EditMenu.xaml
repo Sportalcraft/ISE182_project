@@ -20,7 +20,7 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Label Content="Old Conten&#xD;&#xA;t : " HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="25" Width="90"/>
-        <Label Content="{Binding oldContent, Mode=TwoWay}" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Height="25" Width="515" Grid.ColumnSpan="2">
+        <Label Content="{Binding OldContent, Mode=TwoWay}" HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Height="25" Width="515" Grid.ColumnSpan="2">
         </Label>
         <Label Content="New Content : " HorizontalAlignment="Left" Margin="20,70,0,0" VerticalAlignment="Top" Height="25" Width="90"/>
         <TextBox Text="{Binding EditMessageContent, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="20,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="515" KeyDown="TextBox_Enter_KeyDown" Grid.ColumnSpan="2"/>

@@ -55,6 +55,17 @@ namespace ISE182_project.Layers.DataAccsesLayer
             return output;      
         }
 
+        //Insert a new user to the data base
+        public void INSERT(IUser user)
+        {
+            UserQueryCreator query = new UserQueryCreator();
+
+            //query.clearFilters();
+            query.SETtoINSERT(user);
+            Connect conn = new Connect();
+            conn.ExecuteNonQuery(query.getQuary());
+        }
+
         //check if a user can log in, and if si return it's id, return -1 if cann't log in
         public int Loginable(IUser user)
         {

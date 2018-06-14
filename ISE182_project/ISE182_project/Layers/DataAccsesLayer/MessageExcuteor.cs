@@ -14,8 +14,104 @@ namespace ISE182_project.Layers.DataAccsesLayer
     //This class excute message related queries
     class MessageExcuteor
     {
+        private MessageQueryCreator query; // on object to create the queries
+        private DateTime _lastMessageTime; //The last recived message
+
+        public MessageExcuteor(int maxMessages)
+        {
+            query = new MessageQueryCreator(maxMessages);
+            _lastMessageTime = new DateTime(1, 1, 1);
+        }
+
+        #region Functionalites
+
+        //Add time filter
+        public void AddTimeFilter(DateTime time)
+        {
+            _lastMessageTime = time;
+        }
+
+        //Clear the filters
+        public void clearFilters()
+        {
+            query.clearFilters();
+        }
+
+        //recive all the messages from a certain user
+        public void FilterByUser(IUser user)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            prepareGroupFilter(user.Group_ID);
+            query.addNicknameFilter(user.NickName);
+        }
+
+        //recive all the messages from a certain group
+        public void FilterByGroup(int groupID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            prepareGroupFilter(groupID);
+        }
+
+
+        #endregion
+
+        #region SQL commends
+
+        // add message to the DB
+        public int INSERT(IMessage Data, int UserID)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            query.SETtoINSERT(Data);
+            query.addUserID(UserID);
+
+            try
+            {
+                Connect con = new Connect();
+                int changed = con.ExecuteNonQuery(query.getQuary());
+                _lastMessageTime = Data.Date;
+                return changed;
+            }
+            catch (Exception e)
+            {
+                string error = "Failed do add data to the DS";
+                Logger.Log.Error(Logger.Maintenance(error));
+
+                throw new ArgumentException(error); ;
+            }
+        }
+
+        //Update a message
+        public void UPDATE(IMessage msg)
+        {
+            query.clearFilters();
+            query.SETtoUPDATE(msg);
+            Connect con = new Connect();
+            con.ExecuteNonQuery(query.getQuary());
+        }
+
+        //get all the last messages - for initialization
+        public ICollection<IMessage> getALLLastMessages()
+        {
+            query.clearFilters();
+            return getFilteredMessages();
+    }
+
+        //get filered messahes
+        public ICollection<IMessage> getFilteredMessages()
+        {
+            query.SETtoSELECT();
+            return Excute(query.getQuary());
+        }
+
+        #endregion
+
+        #region Private Methods
+
         // execute the queary and return the messaged tht were drown from the server
-        public ICollection<IMessage> Excute(SqlCommand query)
+        private ICollection<IMessage> Excute(SqlCommand queryCommend)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -30,7 +126,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             ICollection<IMessage> output = new List<IMessage>();
 
             Connect conn = new Connect();
-            SqlDataReader reader = conn.ExecuteReader(query);
+            SqlDataReader reader = conn.ExecuteReader(queryCommend);
 
             while(reader.Read())
             {
@@ -51,6 +147,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
 
             return output;
         }
+
+        //Clear old filterrs and add filter by the group and by the time
+        private void prepareGroupFilter(int group)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            query.clearFilters();
+            query.SETtoSELECT();
+            query.addGroupFilter(group);
+            query.addTimeFilter(_lastMessageTime);
+        }
+
+        #endregion
 
     }
 }

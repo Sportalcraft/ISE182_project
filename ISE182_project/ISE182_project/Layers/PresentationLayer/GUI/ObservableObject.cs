@@ -70,7 +70,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.errorText = value;
-                OnPropertyChanged();
+                OnPropertyChanged("ErrorText");
             }
         }
         private bool mainWindowLoginRadio;
@@ -85,7 +85,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
                 if(!this.mainWindowLoginRadio)
                 {
                     this.mainWindowLoginRadio = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("MainWindowLoginRadio");
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.username = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("Username");
             }
         }
         private string groupID;
@@ -112,7 +112,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.groupID = value;
-                OnPropertyChanged();
+                OnPropertyChanged("GroupID");
             }
         }
         private string usernameBox;
@@ -125,7 +125,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.usernameBox = value;
-                OnPropertyChanged();
+                OnPropertyChanged("UsernameBox");
             }
         }
         private string groupidBox;
@@ -138,7 +138,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.groupidBox = value;
-                OnPropertyChanged();
+                OnPropertyChanged("GroupidBox");
             }
         }
         private bool filterUser;
@@ -151,7 +151,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.filterUser = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("FilterUser");
             }
         }
 
@@ -165,7 +165,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.filterGroupid = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("FilterGroupid");
             }
         }
         private bool filterNone;
@@ -178,7 +178,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.filterNone = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("FilterNone");
             }
         }
         private string filterGroupString;
@@ -191,7 +191,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.filterGroupString = value;
-                OnPropertyChanged();
+                OnPropertyChanged("FilterGroupString");
             }
         }
         private string filterNameString;
@@ -204,7 +204,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.filterNameString = value;
-                OnPropertyChanged();
+                OnPropertyChanged("FilterNameString");
             }
         }
         private bool sortAscending;
@@ -217,7 +217,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                     this.sortAscending = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("SortAscending");
             }
         }
         private bool sortDescending;
@@ -243,7 +243,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.sortOption = value;
-                OnPropertyChanged();
+                OnPropertyChanged("SortOption");
             }
         }
 
@@ -257,7 +257,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.toLogIn = value;
-                OnPropertyChanged();
+                OnPropertyChanged("ToLogIn");
             }
         }
 
@@ -271,7 +271,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 oldContent = value;
-                OnPropertyChanged();
+                OnPropertyChanged("OldContent");
             }
         }
 

@@ -95,6 +95,8 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         {
             if (bindObject.FilterNone)
                 ChatRoom.resetFilters();
+
+            UpdateScreen();
         }
 
         //Apply button click
