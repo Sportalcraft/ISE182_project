@@ -17,11 +17,9 @@ namespace ISE182_project.Layers.BusinessLogic
         private const int MIN_PASSWORD_LENGTH = 4; //Minimum password lenfth
         private const int MAX_PASSWORD_LENGTH = 8; //Maximum password lenfth
 
-        private string _password; // the password of the user
-
         #region Constractors
 
-        public User(string nickName, int GroupID /*, string password*/) : base(nickName, GroupID)
+        public User(string nickName, int GroupID) : base(nickName, GroupID)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -34,18 +32,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
                 throw new ArgumentException(error);
             }
-
-            _password = password;
-        }
-
-        #endregion
-
-        #region Getters
-
-        //getter to the Passwrd
-        public string Password
-        {
-            get { return _password; }
         }
 
         #endregion
@@ -53,7 +39,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region functionalities
 
         //check passwod validity
-        public bool isValidPassword(string Password)
+        public static bool isValidPassword(string Password)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 

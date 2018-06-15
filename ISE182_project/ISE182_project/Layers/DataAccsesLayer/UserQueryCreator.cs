@@ -34,6 +34,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
         private const int NICK_SIZE = 8;
         private const int PASWORD_SIZE = 64;
 
+        private string _encriptedPassword; //Save the encypted password typed by the user
+
         private bool _logister; // This to check if the the query is to check if the user can register of login
 
         #endregion
@@ -44,6 +46,23 @@ namespace ISE182_project.Layers.DataAccsesLayer
         public UserQueryCreator() : base()
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+        }
+
+        #endregion
+
+        #region setters
+
+        public void addEncriptedPassword(string password)
+        {
+            if (password == null)
+            {
+                string error = "the password ws not entred!";
+                Logger.Log.Error(Logger.Developer(error));
+
+                throw new InvalidOperationException(error);
+            }
+
+            _encriptedPassword = password;
         }
 
         #endregion
@@ -116,6 +135,14 @@ namespace ISE182_project.Layers.DataAccsesLayer
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
+            if(_encriptedPassword ==null)
+            {
+                string error = "the password ws not entred!";
+                Logger.Log.Error(Logger.Developer(error));
+
+                throw new InvalidOperationException(error);
+            }
+
             string query =  $"{VALUES} ({ GROUP_PARM},{NICK_PARM},{PASSWORD_PARM})";
             SqlParameter temp;
 
@@ -128,7 +155,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             parameters.Add(temp);
 
             temp = new SqlParameter(PASSWORD_PARM, SqlDbType.Char, PASWORD_SIZE);
-            temp.Value = QuaryItem.Password;
+            temp.Value = _encriptedPassword;
             parameters.Add(temp);
 
             return query;
@@ -159,6 +186,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             _logister = false;
+            _encriptedPassword = null;
         }
 
         #endregion

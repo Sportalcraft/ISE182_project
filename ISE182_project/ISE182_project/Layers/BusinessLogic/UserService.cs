@@ -45,7 +45,7 @@ namespace ISE182_project.Layers.BusinessLogic
         #region functionalities
 
         //Add a new user to the users list
-        public void register(IUser user)
+        public void register(IUser user, string password)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));          
 
@@ -65,7 +65,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new InvalidOperationException(error);
             }
 
-            AddToDS(user);
+            AddToDS(user, password);
         }
 
         #endregion
@@ -91,7 +91,7 @@ namespace ISE182_project.Layers.BusinessLogic
         }
 
         //cheak if a user can login, and id so, return it's id. or -1 if can't login
-        public int canLogIn(IUser user)
+        public int canLogIn(IUser user, string password)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -105,7 +105,7 @@ namespace ISE182_project.Layers.BusinessLogic
                 throw new ArgumentNullException(error);
             }
 
-            return ue.Loginable(user);
+            return ue.Loginable(user, password);
         }
 
         #endregion
@@ -115,13 +115,13 @@ namespace ISE182_project.Layers.BusinessLogic
         #region private methods
 
          // Add a user to the server
-        private void AddToDS(IUser item)
+        private void AddToDS(IUser item, string password)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
             try
             {
-                _excuteor.INSERT(item);
+                _excuteor.INSERT(item, password);
             }
             catch
             {

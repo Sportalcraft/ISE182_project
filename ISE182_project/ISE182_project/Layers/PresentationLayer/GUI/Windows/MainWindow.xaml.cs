@@ -65,9 +65,9 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 int groupID = int.Parse(main.GroupidBox);
 
                 if (!main.ToLogIn)
-                    ChatRoom.register(main.UsernameBox, groupID);
+                    ChatRoom.register(main.UsernameBox, groupID); //Add password here
 
-                ChatRoom.login(main.UsernameBox, groupID);
+                ChatRoom.login(main.UsernameBox, groupID); //Add password here
                 ChatWindow cw = new ChatWindow(this.main);
                 cw.Show();
                 this.Hide();

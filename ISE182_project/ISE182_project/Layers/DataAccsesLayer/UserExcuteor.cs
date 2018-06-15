@@ -56,18 +56,19 @@ namespace ISE182_project.Layers.DataAccsesLayer
         }
 
         //Insert a new user to the data base
-        public void INSERT(IUser user)
+        public void INSERT(IUser user, string ebcryptedPassword)
         {
             UserQueryCreator query = new UserQueryCreator();
 
             //query.clearFilters();
             query.SETtoINSERT(user);
+            query.addEncriptedPassword(ebcryptedPassword);
             Connect conn = new Connect();
             conn.ExecuteNonQuery(query.getQuary());
         }
 
         //check if a user can log in, and if si return it's id, return -1 if cann't log in
-        public int Loginable(IUser user)
+        public int Loginable(IUser user, string encriptedPaswword)
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
@@ -86,7 +87,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             id = reader.GetInt32(0);
             DSpassword = reader.GetString(1).Trim();
 
-            if (DSpassword.Equals(user.Password))
+            if (DSpassword.Equals(encriptedPaswword))
                 return id;
 
             return -1;
