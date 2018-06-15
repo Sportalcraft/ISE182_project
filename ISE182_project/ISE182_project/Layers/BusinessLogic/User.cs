@@ -16,6 +16,8 @@ namespace ISE182_project.Layers.BusinessLogic
     {
         private const int MIN_PASSWORD_LENGTH = 4; //Minimum password lenfth
         private const int MAX_PASSWORD_LENGTH = 8; //Maximum password lenfth
+        private const int MIN_USERNAME_LENGTH = 1; //Minimum username lenfth
+        private const int MAX_USERNAME_LENGTH = 8; //Maximum username lenfth
 
         #region Constractors
 
@@ -23,11 +25,9 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            string password = "123456";
-
-            if (!isValidPassword(password))
+            if (!isValidUserName(nickName))
             {
-                string error = "The paswword is illegal";
+                string error = "The username is illegal";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new ArgumentException(error);
@@ -36,7 +36,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
         #endregion
 
-        #region functionalities
+        #region Validation
 
         //check passwod validity
         public static bool isValidPassword(string Password)
@@ -48,6 +48,20 @@ namespace ISE182_project.Layers.BusinessLogic
                 Password.Length <= MAX_PASSWORD_LENGTH; //Not too long
         }
 
+        //check user name validity
+        public static bool isValidUserName(string userName)
+        {
+            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
+
+            return userName != null && //Not null
+                userName.Length >= MIN_USERNAME_LENGTH && // Not too short
+                userName.Length <= MAX_USERNAME_LENGTH; //Not too long
+        }
+
+
+        #endregion
+
+        #region functionalities
 
         //Send a new message to the chatroom and save it
         public void send(string msg, int id)
