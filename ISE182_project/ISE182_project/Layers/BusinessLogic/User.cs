@@ -15,7 +15,7 @@ namespace ISE182_project.Layers.BusinessLogic
     class User : DisplayUser, IUser
     {
         private const int MIN_PASSWORD_LENGTH = 4; //Minimum password lenfth
-        private const int MAX_PASSWORD_LENGTH = 8; //Maximum password lenfth
+        private const int MAX_PASSWORD_LENGTH = 16; //Maximum password lenfth
         private const int MIN_USERNAME_LENGTH = 1; //Minimum username lenfth
         private const int MAX_USERNAME_LENGTH = 8; //Maximum username lenfth
 

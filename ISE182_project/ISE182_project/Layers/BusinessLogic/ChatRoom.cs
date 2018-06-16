@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace ISE182_project.Layers.BusinessLogic
 {
@@ -70,7 +71,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            IUser user = new User(nickname, GroupID/*, password */);
+            IUser user = new User(nickname, GroupID);
 
             if (isLoggedIn()) //Already logged In
             {
@@ -96,7 +97,7 @@ namespace ISE182_project.Layers.BusinessLogic
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            IUser user = new User(nickname, GroupID/*, password */);
+            IUser user = new User(nickname, GroupID);
             int id;
 
             if (isLoggedIn()) //Already logged In
@@ -139,7 +140,7 @@ namespace ISE182_project.Layers.BusinessLogic
             _loggeninUserID = -1;
             LoggedinUser = null; // Change the loggedin user to null
         }
-
+        
         #endregion
 
         #region Message
@@ -242,6 +243,6 @@ namespace ISE182_project.Layers.BusinessLogic
         #endregion
 
         #endregion
-
+       
     }
 }

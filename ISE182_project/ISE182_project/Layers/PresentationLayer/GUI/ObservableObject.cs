@@ -89,6 +89,19 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
                 }
             }
         }
+        private string password;
+        public string Password
+        {
+            get
+            {
+                return this.password;
+            }
+            set
+            {
+                this.username = value;
+                OnPropertyChanged("password");
+            }
+        }
         private string username;
         public string Username
         {
@@ -125,6 +138,19 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             set
             {
                 this.usernameBox = value;
+                OnPropertyChanged("UsernameBox");
+            }
+        }
+        private string passwordBox;
+        public string passwordBox
+        {
+            get
+            {
+                return this.passwordBox;
+            }
+            set
+            {
+                this.passwordBox = value;
                 OnPropertyChanged("UsernameBox");
             }
         }

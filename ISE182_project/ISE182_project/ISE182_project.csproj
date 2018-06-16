@@ -83,6 +83,7 @@
     <Compile Include="Layers\BusinessLogic\User.cs" />
     <Compile Include="Layers\PersistentLayer\UserSerializationService.cs" />
     <Compile Include="Layers\PresentationLayer\CLI\CLI.cs" />
+    <Compile Include="Layers\PresentationLayer\GUI\hashing.cs" />
     <Compile Include="Layers\PresentationLayer\GUI\ListBox.cs" />
     <Compile Include="Layers\PresentationLayer\GUI\ObservableObject.cs" />
     <Compile Include="Layers\PresentationLayer\GUI\Windows\ChatWindow.xaml.cs">
