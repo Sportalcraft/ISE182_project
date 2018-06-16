@@ -14,8 +14,6 @@ namespace ISE182_project.Layers.BusinessLogic
     // and represent a user in the chatroom
     class User : DisplayUser, IUser
     {
-        private const int MIN_PASSWORD_LENGTH = 4; //Minimum password lenfth
-        private const int MAX_PASSWORD_LENGTH = 16; //Maximum password lenfth
         private const int MIN_USERNAME_LENGTH = 1; //Minimum username lenfth
         private const int MAX_USERNAME_LENGTH = 8; //Maximum username lenfth
 
@@ -37,16 +35,6 @@ namespace ISE182_project.Layers.BusinessLogic
         #endregion
 
         #region Validation
-
-        //check passwod validity
-        public static bool isValidPassword(string Password)
-        {
-            Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
-
-            return Password != null && //Not null
-                Password.Length >= MIN_PASSWORD_LENGTH && // Not too short
-                Password.Length <= MAX_PASSWORD_LENGTH; //Not too long
-        }
 
         //check user name validity
         public static bool isValidUserName(string userName)
