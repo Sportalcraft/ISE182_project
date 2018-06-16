@@ -2,9 +2,9 @@
 using System.Text;
 using System.Security.Cryptography;
 
-namespace ConsoleApp3
+namespace ISE182_project.Layers.PresentationLayer.GUI
 {
-    class hashing
+    public class hashing
     {
         private const string SALT = "1337";
     /// <summary>

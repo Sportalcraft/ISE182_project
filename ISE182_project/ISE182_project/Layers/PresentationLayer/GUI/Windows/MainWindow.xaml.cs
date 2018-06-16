@@ -1,4 +1,5 @@
 ﻿using ISE182_project.Layers.BusinessLogic;
+using ISE182_project.Layers.PresentationLayer.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,9 +66,9 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 int groupID = int.Parse(main.GroupidBox);
 
                 if (!main.ToLogIn)
-                    ChatRoom.register(main.UsernameBox, groupID,GUI.hashing.GetHashString(main.passwordBox)); //Add password here
+                    ChatRoom.register(main.UsernameBox, groupID,hashing.GetHashString(main.PasswordBox)); //Add password here
 
-                ChatRoom.login(main.UsernameBox, groupID, GUI.hashing.GetHashString(main.passwordBox)); //Add password here
+                ChatRoom.login(main.UsernameBox, groupID, hashing.GetHashString(main.PasswordBox)); //Add password here
                 ChatWindow cw = new ChatWindow(this.main);
                 cw.Show();
                 this.Hide();
@@ -81,5 +82,10 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         }
 
         #endregion
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            main.Password = passwordBox.Password;
+        }
     }
 }

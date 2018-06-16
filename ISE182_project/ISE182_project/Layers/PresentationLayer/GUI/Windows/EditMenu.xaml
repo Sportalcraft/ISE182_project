@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ISE182_project.Layers.PresentationLayer.GUI.Windows"
         mc:Ignorable="d"
         Title="EditMenu" Height="221" Width="563.333">
-    <Grid Margin="0,0,3.667,1">
+    <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="355*"/>
             <ColumnDefinition Width="201*"/>
@@ -24,7 +24,7 @@
         </Label>
         <Label Content="New Content : " HorizontalAlignment="Left" Margin="20,70,0,0" VerticalAlignment="Top" Height="25" Width="90"/>
         <TextBox Text="{Binding EditMessageContent, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="20,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="515" KeyDown="TextBox_Enter_KeyDown" Grid.ColumnSpan="2"/>
-        <Button Content="Aplay" HorizontalAlignment="Left" Margin="235,150,0,0" VerticalAlignment="Top" Width="75" Click="Aplay_Click"/>
+        <Button Content="Apply" HorizontalAlignment="Left" Margin="235,150,0,0" VerticalAlignment="Top" Width="75" Click="Aplay_Click"/>
 
     </Grid>
 </Window>

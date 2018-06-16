@@ -142,7 +142,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             }
         }
         private string passwordBox;
-        public string passwordBox
+        public string PasswordBox
         {
             get
             {

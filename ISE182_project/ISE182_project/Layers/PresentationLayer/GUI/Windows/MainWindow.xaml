@@ -16,13 +16,14 @@
                 <GradientStop Color="#FFE2E2E2" Offset="0.5"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <RadioButton IsChecked="{Binding ToLogIn, Mode=OneWayToSource}" Content="Login" HorizontalAlignment="Left" Margin="40,167,0,0" VerticalAlignment="Top"/>
-        <RadioButton Content="Register" HorizontalAlignment="Left" Margin="120,167,0,0" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding UsernameBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <RadioButton IsChecked="{Binding ToLogIn, Mode=OneWayToSource}" Content="Login" HorizontalAlignment="Left" Margin="40,134,0,0" VerticalAlignment="Top"/>
+        <RadioButton Content="Register" HorizontalAlignment="Left" Margin="120,134,0,0" VerticalAlignment="Top"/>
+        <TextBox Text="{Binding UsernameBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
         <TextBox Text="{Binding GroupidBox, Mode=OneWayToSource}" HorizontalAlignment="Left" Height="23" Margin="108,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center" KeyDown="TextBox_KeyDown"/>
-        <Label Content="Username:" HorizontalAlignment="Left" Margin="40,196,0,0" VerticalAlignment="Top" Height="23" VerticalContentAlignment="Center"/>
+        <Label Content="Password:" HorizontalAlignment="Left" Margin="40,196,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
+        <Label Content="Username:" HorizontalAlignment="Left" Margin="40,163,0,0" VerticalAlignment="Top" Height="23" VerticalContentAlignment="Center"/>
         <Label Content="GroupID:" HorizontalAlignment="Left" Margin="40,229,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center"/>
-        <Button Content="Go!" HorizontalAlignment="Left" Margin="202,266,0,0" VerticalAlignment="Top" Width="75" Click="userHandlerButton_Click">
+        <Button Content="Go!" HorizontalAlignment="Left" Margin="200,266,0,0" VerticalAlignment="Top" Width="75" Click="userHandlerButton_Click">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE2E2E2" Offset="0"/>
@@ -40,6 +41,12 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-
+        <PasswordBox Name="passwordBox" PasswordChanged="PasswordBox_PasswordChanged" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <Image Source="/Layers/PresentationLayer/GUI/images/chat.png" HorizontalAlignment="Left"  Height="60" Margin="40,68,0,0" VerticalAlignment="Top" Width="60"/>
+        <Label Content="Chat Room" HorizontalAlignment="Left" Margin="100,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontFamily="Rage Italic" FontWeight="Bold" FontSize="48" Foreground="#FFB00000">
+            <Label.Effect>
+                <DropShadowEffect Opacity="0.25" BlurRadius="3"/>
+            </Label.Effect>
+        </Label>
     </Grid>
 </Window>
