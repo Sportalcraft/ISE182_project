@@ -14,7 +14,7 @@ namespace ISE182_project.Layers.BusinessLogic
     [TestClass]
     public class ChatRoomTests
     {
-        private const string password = "123456";
+        private const string PASSWORD = "123456"; //Globla password for testing
 
         [TestInitialize]
         public void Init()
@@ -83,7 +83,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // try to register
             try
             {
-                ChatRoom.register(UserName, GroupID, password);
+                ChatRoom.register(UserName, GroupID, PASSWORD);
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // "" registration
             try
             {
-                ChatRoom.register("", GroupID, password);
+                ChatRoom.register("", GroupID, PASSWORD);
                 Assert.Fail("registered with empty string");
             }
             catch (Exception e)
@@ -110,7 +110,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //Null registration
             try
             {
-                ChatRoom.register(null, GroupID, password); ;
+                ChatRoom.register(null, GroupID, PASSWORD); ;
                 Assert.Fail("registered with null");
             }
             catch (Exception e)
@@ -122,13 +122,13 @@ namespace ISE182_project.Layers.BusinessLogic
 
             try
             {
-                ChatRoom.register("Elephant", GroupID, password);
+                ChatRoom.register("Elephant", GroupID, PASSWORD);
             }
             catch { }
 
             try
             {
-                ChatRoom.register("Elephant", GroupID, password);
+                ChatRoom.register("Elephant", GroupID, PASSWORD);
                 Assert.Fail("registered with existing user");
             }
             catch (Exception e)
@@ -168,7 +168,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //Login when logged in
             try
             {
-                ChatRoom.login(UserName, GroupID, password);
+                ChatRoom.login(UserName, GroupID, PASSWORD);
                 Assert.Fail("login when loggedin");
             }
             catch (Exception e)
@@ -179,7 +179,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // "" LogIn
             try
             {
-                ChatRoom.login("", GroupID, password);
+                ChatRoom.login("", GroupID, PASSWORD);
             }
             catch (Exception e)
             {
@@ -189,7 +189,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // Null LogIn
             try
             {
-                ChatRoom.login(null, GroupID, password);
+                ChatRoom.login(null, GroupID, PASSWORD);
             }
             catch (Exception e)
             {
@@ -199,11 +199,77 @@ namespace ISE182_project.Layers.BusinessLogic
             // logIn whithout register
             try
             {
-                ChatRoom.login(RandomString(8), GroupID, password);
+                ChatRoom.login(RandomString(8), GroupID, PASSWORD);
             }
             catch (Exception e)
             {
                //GOOD
+            }
+        }
+
+        #endregion
+
+        #region login with Passwors
+
+        [TestMethod()]
+        public void login_Password_Test_Positive()
+        {
+            string UserName = RandomString(5);
+            int GroupID = RandomInt();
+            string paass = RandomString(6);
+
+            LogInWithPassword(UserName, GroupID, paass);
+
+            try
+            {
+                if (!ChatRoom.LoggedUser.NickName.Equals(UserName))
+                    Assert.Fail("wass not logged in, user mame error");
+
+                if (ChatRoom.LoggedUser.Group_ID != GroupID)
+                    Assert.Fail("wass not logged in, user mame error");
+            }
+            catch
+            {
+                Assert.Fail("was not logged in");
+            }
+
+            // logout
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch { }
+        }
+
+        [TestMethod()]
+        public void login_Password_Test_Negative()
+        {
+            string UserName = RandomString(5);
+            int GroupID = RandomInt();
+            string paass = RandomString(6);
+
+            LogInWithPassword(UserName, GroupID, paass);
+
+            // logout
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch { }
+
+            //trying to register with diffrent passwords
+
+            for(int i = 1; i<100; i++)
+            {
+                try
+                {
+                    ChatRoom.login(UserName, GroupID, RandomString(7));
+                    Assert.Fail("mange to login with incirrect password!!!");
+                }
+                catch
+                {
+                    //GOOD - faild to log in
+                }
             }
         }
 
@@ -388,7 +454,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             for (int i = 0; i < namestarts.Length; i++)
             {
-                UserName = namestarts[i] + RandomString(7);
+                UserName = namestarts[i] + RandomString(2);
                 LogIn(UserName, GroupID);
                 ChatRoom.send("Nick Name Sort Test #"+i);
                 System.Threading.Thread.Sleep(1001);
@@ -513,7 +579,6 @@ namespace ISE182_project.Layers.BusinessLogic
 
 
 
-
         #region Healpers
 
         private static string RandomString(int length)
@@ -538,11 +603,17 @@ namespace ISE182_project.Layers.BusinessLogic
             }
             catch { }
 
-            //rgister + login if not registered
+            //rgister
             try
             {
-                ChatRoom.register(UserName, GroupID, password);
-                ChatRoom.login(UserName, GroupID, password);
+                ChatRoom.register(UserName, GroupID, PASSWORD);
+            }
+            catch { }
+
+            // login
+            try
+            {
+                ChatRoom.login(UserName, GroupID, PASSWORD);
             }
             catch { }
 
@@ -555,6 +626,42 @@ namespace ISE182_project.Layers.BusinessLogic
                     Assert.Fail("Didn't logged in 100  + "+UserName+" + " + GroupID);
             }
             catch(Exception e)
+            {
+                Assert.Fail("Didn't logged in 123 : " + e.Message);
+            }
+        }
+
+        private static void LogInWithPassword(string UserName, int GroupID, string password)
+        {
+            //logout if logged in
+            try
+            {
+                ChatRoom.logout();
+            }
+            catch { }
+            //rgister
+            try
+            {
+                ChatRoom.register(UserName, GroupID, password);
+            }
+            catch { }
+
+            // login
+            try
+            {
+                ChatRoom.login(UserName, GroupID, password);
+            }
+            catch { }
+
+            //Make sure user is connected
+            try
+            {
+                bool t = ChatRoom.isLoggedIn();
+
+                if (!t)
+                    Assert.Fail("Didn't logged in 100  + " + UserName + " + " + GroupID);
+            }
+            catch (Exception e)
             {
                 Assert.Fail("Didn't logged in 123 : " + e.Message);
             }

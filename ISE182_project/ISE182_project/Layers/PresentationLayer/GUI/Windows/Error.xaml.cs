@@ -26,5 +26,13 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             this.DataContext = bindObject;
             InitializeComponent();
         }
+
+        public Error(string error)
+        {
+            this.bindObject = new ObservableObject();
+            bindObject.ErrorText = error;
+            this.DataContext = bindObject;
+            InitializeComponent();
+        }
     }
 }

@@ -145,7 +145,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
                 catch { }
             }
 
-            return output;
+            return output.Reverse().ToList();
         }
 
         //Clear old filterrs and add filter by the group and by the time

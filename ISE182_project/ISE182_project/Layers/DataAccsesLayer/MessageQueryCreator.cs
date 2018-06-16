@@ -181,7 +181,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
             //Create query
             switch (Type)
             {
-                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} {TABLE_NAME}.*, {USERS_TABLE}.{GROUP_COL}, {USERS_TABLE}.{NICK_COL} {FROM} {JOIN()} {where()} {ORDER_BY} {DATE_COL}"; break;
+                case SELECT: quary = $"{SELECT} {TOP} {MAX_MESSAGES} {TABLE_NAME}.*, {USERS_TABLE}.{GROUP_COL}, {USERS_TABLE}.{NICK_COL} {FROM} {JOIN()} {where()} {ORDER_BY} {DATE_COL} {DESC}"; break;
                 case INSERT: quary = $"{INSERT} {TABLE_NAME} ({GUID_COL},{User_ID_COL},{DATE_COL},{BODY_COL}) {values()}"; break;
                 case UPDATE: quary = $"{UPDATE} {TABLE_NAME} {set()}"; break;
             }

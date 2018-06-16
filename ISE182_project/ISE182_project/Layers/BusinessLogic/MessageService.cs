@@ -99,6 +99,9 @@ namespace ISE182_project.Layers.BusinessLogic
             if (!_lastFilteredList.Contains(item))
                 _lastFilteredList.Add(new DisplayMessage(item));
 
+            LastFilter(); //Filter again by the last filter
+            LastSort(); //Sort before sending
+
             if (_lastFilteredList.Count > MAX_MESSAGES)
             {
                 if(_descending)
@@ -217,12 +220,15 @@ namespace ISE182_project.Layers.BusinessLogic
             {
                 Execute();
 
+                LastFilter(); //Filter again by the last filter
+                LastSort(); //Sort before sending
+
                 if (_lastFilteredList.Count > 0)
                 {
                     if(_descending)
-                        _lastMessageTime = getMessages().First().Date;
+                        _lastMessageTime = _lastFilteredList.First().Date;
                     else
-                        _lastMessageTime = getMessages().Last().Date;
+                        _lastMessageTime = _lastFilteredList.Last().Date;
                 }
             }
             catch

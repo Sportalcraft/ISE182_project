@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Tester.Layers.BusinessLogic
 {
     [TestClass()]
-    class LoggerTests
+    public class LoggerTests
     {
         #region Developer
 
@@ -36,9 +36,9 @@ namespace Tester.Layers.BusinessLogic
         public void Server_Positive()
         {
             string s = RandomString(120);
-            string withReference = Logger.Developer(s);
+            string withReference = Logger.Server(s);
 
-            Assert.AreEqual("Server : " + s, Logger.Developer(s));
+            Assert.AreEqual("Server : " + s, Logger.Server(s));
         }
 
         [TestMethod()]

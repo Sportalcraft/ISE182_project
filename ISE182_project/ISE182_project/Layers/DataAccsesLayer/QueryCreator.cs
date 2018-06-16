@@ -27,6 +27,7 @@ namespace ISE182_project.Layers.DataAccsesLayer
         protected const string INNER_JOIN = "INNER JOIN";
         protected const string ON = "ON";
         protected const string ORDER_BY = "ORDER BY";
+        protected const string DESC = "DESC";
 
         private string _type;                           // SELECT, INSERT or UPDATE
         private T _item;                                // The item to add or edit
