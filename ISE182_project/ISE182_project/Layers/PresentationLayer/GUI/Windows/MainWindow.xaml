@@ -41,7 +41,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <PasswordBox Name="passwordBox" PasswordChanged="PasswordBox_PasswordChanged" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
+        <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" HorizontalAlignment="Left" Height="23" Margin="108,200,0,0" VerticalAlignment="Top" Width="132" VerticalContentAlignment="Center"/>
         <Image Source="/Layers/PresentationLayer/GUI/images/chat.png" HorizontalAlignment="Left"  Height="60" Margin="40,68,0,0" VerticalAlignment="Top" Width="60"/>
         <Label Content="Chat Room" HorizontalAlignment="Left" Margin="100,68,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" FontFamily="Rage Italic" FontWeight="Bold" FontSize="48" Foreground="#FFB00000">
             <Label.Effect>

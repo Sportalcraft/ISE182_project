@@ -12,9 +12,9 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
     /// </summary>
     /// <param name="inputString">string to hash</param>
     /// <returns>hashed string represented as byte array</returns>
-        public static byte[] GetHash(string inputString1)
+    private static byte[] GetHash(string inputString1)
     {
-            string inputString = SALT + inputString1;
+        string inputString = SALT + inputString1;
         HashAlgorithm algorithm = SHA256.Create();
         return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
     }

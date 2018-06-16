@@ -54,6 +54,14 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
             }
         }
 
+        //password changed
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordBox box = sender as PasswordBox;
+
+            main.Password = box.Password;
+        }
+
         #endregion
 
         #region Private Methods
@@ -66,9 +74,9 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
                 int groupID = int.Parse(main.GroupidBox);
 
                 if (!main.ToLogIn)
-                    ChatRoom.register(main.UsernameBox, groupID,hashing.GetHashString(main.PasswordBox)); //Add password here
+                    ChatRoom.register(main.UsernameBox, groupID, hashing.GetHashString(main.Password));
 
-                ChatRoom.login(main.UsernameBox, groupID, hashing.GetHashString(main.PasswordBox)); //Add password here
+                ChatRoom.login(main.UsernameBox, groupID, hashing.GetHashString(main.Password));
                 ChatWindow cw = new ChatWindow(this.main);
                 cw.Show();
                 this.Hide();
@@ -82,10 +90,6 @@ namespace ISE182_project.Layers.PresentationLayer.GUI.Windows
         }
 
         #endregion
-
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            main.Password = passwordBox.Password;
-        }
+     
     }
 }

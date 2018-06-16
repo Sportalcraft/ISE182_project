@@ -98,7 +98,7 @@ namespace ISE182_project.Layers.PresentationLayer.GUI
             }
             set
             {
-                this.username = value;
+                this.password = value;
                 OnPropertyChanged("password");
             }
         }
