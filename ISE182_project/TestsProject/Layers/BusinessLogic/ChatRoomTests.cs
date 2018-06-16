@@ -14,6 +14,7 @@ namespace ISE182_project.Layers.BusinessLogic
     [TestClass]
     public class ChatRoomTests
     {
+        private const string password = "123456";
 
         [TestInitialize]
         public void Init()
@@ -82,7 +83,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // try to register
             try
             {
-                ChatRoom.register(UserName, GroupID);
+                ChatRoom.register(UserName, GroupID, password);
             }
             catch
             {
@@ -98,7 +99,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // "" registration
             try
             {
-                ChatRoom.register("", GroupID);
+                ChatRoom.register("", GroupID, password);
                 Assert.Fail("registered with empty string");
             }
             catch (Exception e)
@@ -109,7 +110,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //Null registration
             try
             {
-                ChatRoom.register(null, GroupID); ;
+                ChatRoom.register(null, GroupID, password); ;
                 Assert.Fail("registered with null");
             }
             catch (Exception e)
@@ -121,13 +122,13 @@ namespace ISE182_project.Layers.BusinessLogic
 
             try
             {
-                ChatRoom.register("Elephant", GroupID);
+                ChatRoom.register("Elephant", GroupID, password);
             }
             catch { }
 
             try
             {
-                ChatRoom.register("Elephant", GroupID);
+                ChatRoom.register("Elephant", GroupID, password);
                 Assert.Fail("registered with existing user");
             }
             catch (Exception e)
@@ -167,7 +168,7 @@ namespace ISE182_project.Layers.BusinessLogic
             //Login when logged in
             try
             {
-                ChatRoom.login(UserName, GroupID);
+                ChatRoom.login(UserName, GroupID, password);
                 Assert.Fail("login when loggedin");
             }
             catch (Exception e)
@@ -178,7 +179,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // "" LogIn
             try
             {
-                ChatRoom.login("", GroupID);
+                ChatRoom.login("", GroupID, password);
             }
             catch (Exception e)
             {
@@ -188,7 +189,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // Null LogIn
             try
             {
-                ChatRoom.login(null, GroupID);
+                ChatRoom.login(null, GroupID, password);
             }
             catch (Exception e)
             {
@@ -198,7 +199,7 @@ namespace ISE182_project.Layers.BusinessLogic
             // logIn whithout register
             try
             {
-                ChatRoom.login(RandomString(8), GroupID);
+                ChatRoom.login(RandomString(8), GroupID, password);
             }
             catch (Exception e)
             {
@@ -540,8 +541,8 @@ namespace ISE182_project.Layers.BusinessLogic
             //rgister + login if not registered
             try
             {
-                ChatRoom.register(UserName, GroupID);
-                ChatRoom.login(UserName, GroupID);
+                ChatRoom.register(UserName, GroupID, password);
+                ChatRoom.login(UserName, GroupID, password);
             }
             catch { }
 
