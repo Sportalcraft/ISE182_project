@@ -83,7 +83,7 @@ namespace ISE182_project.Layers.BusinessLogic
 
             if (!UserService.Instence.canRegister(user)) //Was regusterd
             {
-                string error = "The user tried to register to a not register account";
+                string error = "The user tried to register to a taken account";
                 Logger.Log.Error(Logger.Maintenance(error));
 
                 throw new InvalidOperationException(error);

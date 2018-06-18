@@ -324,8 +324,8 @@ namespace ISE182_project.Layers.DataAccsesLayer
             tParameter.Value = QuaryItem.MessageContent;
             parameters.Add(tParameter);
 
-            tParameter = new SqlParameter(GUID_PARM, SqlDbType.UniqueIdentifier, GUID_SIZE);
-            tParameter.Value = QuaryItem.Id;
+            tParameter = new SqlParameter(GUID_PARM, /* SqlDbType.UniqueIdentifier */ SqlDbType.Char, GUID_SIZE); //CHECK HERE
+            tParameter.Value = QuaryItem.Id.ToString();
             parameters.Add(tParameter);
 
             return where;

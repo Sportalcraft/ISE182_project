@@ -98,13 +98,13 @@ namespace ISE182_project.Layers.DataAccsesLayer
         {
             Logger.Log.Debug(Logger.MethodStart(MethodBase.GetCurrentMethod()));
 
-            string server_address = @"GLADOS\SQLEXPRESS"; //*/ "ise172.ise.bgu.ac.il,1433\\DB_LAB";
+            string server_address = /*@"GLADOS\SQLEXPRESS"; */ "ise172.ise.bgu.ac.il,1433\\DB_LAB";
             string database_name = "MS3";
             string user_name = "publicUser";
             string password = "isANerd";
 
-            string connetion_string = $"Data Source={server_address};Initial Catalog={database_name};Integrated Security=True";
-            //string connetion_string = $"Server={server_address} ;Database={database_name};User ID={user_name};Password={password}";
+            //string connetion_string = $"Data Source={server_address};Initial Catalog={database_name};Integrated Security=True";
+            string connetion_string = $"Server={server_address} ;Database={database_name};User ID={user_name};Password={password}";
             return connetion_string;
         }
 
